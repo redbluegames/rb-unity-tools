@@ -164,7 +164,8 @@ public class dfTweenCountToNumber : dfTweenPlayableBase
 			SetCurrentNumber ((int)Mathf.Lerp (originalNumber, targetNumber, elapsed / tweenDuration));
 			AssignCurrentNumberToLabel ();
 			if (playSounds && currentNumber != previousNumber) {
-				AudioManager.Instance.PlayCountSound (counterAudioSource);
+				// ToDo: Play a count sound
+				//AudioManager.Instance.PlayCountSound (counterAudioSource);
 			}
 			yield return new WaitForSeconds (minTweenTime);
 		}

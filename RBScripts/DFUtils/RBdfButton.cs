@@ -65,10 +65,11 @@ public class RBdfButton : dfButton
 	internal protected override void OnClick (dfMouseEventArgs args)
 	{
 		base.OnClick (args);
-		if (!AudioManager.Instance.isSFXMuted) {
+		// ToDo: Play a sound
+		/* if (!AudioManager.Instance.isSFXMuted) {
 			clickSoundSource.clip = SoundManager.LoadFromGroup (AudioManager.UI_CLICK_GROUP);
 			clickSoundSource.Play ();
-		}
+		} */
 	}
 
 	/// <summary>

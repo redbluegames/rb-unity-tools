@@ -8,9 +8,11 @@ using System.Collections.Generic;
  */
 public class AttackCast : MonoBehaviour
 {
+	bool needsBegin = true;
+
 	// GameObjects that show the two cast positions - start and end
-	GameObject debugCurrentPosition;
-	GameObject debugLastPosition;
+	GameObject debugCurrentPositionObject;
+	GameObject debugLastPositionObject;
 
 	// Track last position of this game object
 	Vector3 lastFramePosition;
@@ -24,32 +26,90 @@ public class AttackCast : MonoBehaviour
 	// The bits this attack should hit
 	public LayerMask hitLayer;
 
+	// Delegate template that specifies action to take on hit.
+	public delegate void OnHitEvent (RaycastHit hit);
+	public event OnHitEvent OnHit;
+
 	// Flags for showing debug information
 	public bool debugShowCasts;
 	public bool debugShowHits;
 
-	// Store reference to attack that this cast is associated with
-	public Attack attackInfo;
-
+	/*
+	 * Initialize the AttackCast when enabled
+	 */
 	void OnEnable ()
 	{
-		// TODO: Could support cast to source position, like I did in Ben10
+		// Immediately disable the script if it was not started through Begin.
+		if (needsBegin) {
+			enabled = false;
+			return;
+		}
 
-		// Reinitialize previous position
+		// Initialize previous position to the current attack position
 		lastFramePosition = transform.position;
 
 		// Clear previously hit objects so that we can re-hit them
 		ignoreObjects.Clear ();
 		ignoreObjects.Add (transform.root.gameObject);
+		
+		// TODO: Could support cast to source position, like I did in Ben10 to test
+		// for a character's arm
+		
+		// Cast to see if anything is inside the starting position
+		CastForEmbeddedCollisions ();
+	}
+
+	/// <summary>
+	/// Casts against the hit layer to see if any objects are starting embedded in the initial
+	/// sphere. An additional cast tries to confirm the hit location for the embedded object.
+	/// </summary>
+	void CastForEmbeddedCollisions ()
+	{
+		Collider[] embeddedColliders = Physics.OverlapSphere (transform.position, radius, hitLayer);
+		foreach (Collider collider in embeddedColliders) {
+			// We need to create a RaycastHit event for each collider to get a collision location.
+			// Since it's impossible to see where an overlap occured in the sphere, cast towards
+			// the collider's position to try and find it.
+
+			// Ignore objects in the ignore list. TODO: This duplicates code from ReportHits, so
+			// this should get cleaned up.
+			if (ignoreObjects.Contains (collider.transform.gameObject)) {
+				continue;
+			}
+
+			Vector3 directionToHitCollider = collider.gameObject.transform.position - transform.position;
+			// In case we somehow end up with the same position as the hit, throw it out to prevent
+			// errors
+			if(Mathf.Approximately(0.0f, directionToHitCollider.magnitude))
+			{
+				continue;
+			}
+
+			Ray castRay = new Ray (transform.position, directionToHitCollider.normalized); 
+			RaycastHit hit = new RaycastHit ();
+			collider.Raycast (castRay, out hit, directionToHitCollider.magnitude);
+			if (hit.collider != null) {
+				ReportHit (hit);
+			}
+		}
 	}
 
 	/*
-	 * Begin the attack sweep. Must be associated with attack information.
+	 * Cleanup the AttackCast when disabled
 	 */
-	public void Begin (Attack attack)
+	void OnDisable ()
 	{
+		DestroyDebugObjects ();
+	}
+
+	/*
+	 * Begin the attack sweep by setting cast object to active.
+	 */
+	public void Begin ()
+	{
+		needsBegin = false;
+		enabled = true;
 		gameObject.SetActive (true);
-		attackInfo = attack;
 	}
 
 	/*
@@ -57,14 +117,16 @@ public class AttackCast : MonoBehaviour
 	 */
 	public void End ()
 	{
+		OnHit = null;
 		gameObject.SetActive (false);
 	}
 
 	// Update is called once per frame
-	void LateUpdate ()
+	void Update ()
 	{
-		Vector3 direction = (transform.position - lastFramePosition).normalized;
-		float distance = Vector3.Distance (lastFramePosition, transform.position);
+		Vector3 direction = (transform.position - lastFramePosition);
+		float distance = direction.magnitude;
+		direction.Normalize ();
 		RaycastHit[] hits;
 		hits = Physics.SphereCastAll (lastFramePosition, radius, direction, distance, hitLayer);
 		ReportHits (hits);
@@ -82,7 +144,7 @@ public class AttackCast : MonoBehaviour
 		}
 
 		// Spawn debug objects if they haven't been spawned
-		if (debugCurrentPosition == null) {
+		if (debugCurrentPositionObject == null) {
 			SpawnDebugObjects ();
 		}
 
@@ -97,16 +159,16 @@ public class AttackCast : MonoBehaviour
 		}
 
 		// Make sure spheres represent current cast radius as a diameter
-		debugLastPosition.transform.localScale = (Vector3.one * (radius * 2));
-		debugCurrentPosition.transform.localScale = (Vector3.one * (radius * 2));
+		debugLastPositionObject.transform.localScale = (Vector3.one * (radius * 2));
+		debugCurrentPositionObject.transform.localScale = (Vector3.one * (radius * 2));
 
 		// Hide spheres if debugs are off
-		debugLastPosition.SetActive (debugShowCasts);
-		debugCurrentPosition.SetActive (debugShowCasts);
+		debugLastPositionObject.SetActive (debugShowCasts);
+		debugCurrentPositionObject.SetActive (debugShowCasts);
 
 		// Set the new positions of the spheres
-		debugLastPosition.transform.position = lastFramePosition;
-		debugCurrentPosition.transform.position = transform.position;
+		debugLastPositionObject.transform.position = lastFramePosition;
+		debugCurrentPositionObject.transform.position = transform.position;
 	}
 
 	/*
@@ -115,21 +177,32 @@ public class AttackCast : MonoBehaviour
 	void SpawnDebugObjects ()
 	{
 		Material debugMaterial = new Material (Shader.Find ("Transparent/Diffuse"));
-		debugCurrentPosition = GameObject.CreatePrimitive (PrimitiveType.Sphere);
-		debugCurrentPosition.transform.position = transform.position;
-		debugCurrentPosition.renderer.material = debugMaterial;
-		debugCurrentPosition.renderer.material.color = new Color (0, 1.0f, 0, .3f);
-		debugCurrentPosition.collider.enabled = false;
-		debugCurrentPosition.transform.parent = transform;
-		debugCurrentPosition.SetActive (debugShowCasts);
+		debugCurrentPositionObject = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+		debugCurrentPositionObject.transform.position = transform.position;
+		debugCurrentPositionObject.renderer.material = debugMaterial;
+		debugCurrentPositionObject.renderer.material.color = new Color (0, 1.0f, 0, .3f);
+		debugCurrentPositionObject.collider.enabled = false;
+		debugCurrentPositionObject.transform.parent = transform;
+		debugCurrentPositionObject.SetActive (debugShowCasts);
 
-		debugLastPosition = GameObject.CreatePrimitive (PrimitiveType.Sphere);
-		debugLastPosition.transform.position = lastFramePosition;
-		debugLastPosition.renderer.material = debugMaterial;
-		debugLastPosition.renderer.material.color = new Color (1.0f, 1.0f, 0, .3f);
-		debugLastPosition.collider.enabled = false;
-		debugLastPosition.transform.parent = transform;
-		debugLastPosition.SetActive (debugShowCasts);
+		debugLastPositionObject = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+		debugLastPositionObject.transform.position = lastFramePosition;
+		debugLastPositionObject.renderer.material = debugMaterial;
+		debugLastPositionObject.renderer.material.color = new Color (1.0f, 1.0f, 0, .3f);
+		debugLastPositionObject.collider.enabled = false;
+		debugLastPositionObject.transform.parent = transform;
+		debugLastPositionObject.SetActive (debugShowCasts);
+	}
+
+	/*
+	 * Destroy the objects spawned to show debug casts
+	 */
+	void DestroyDebugObjects ()
+	{
+		if (debugCurrentPositionObject != null) {
+			Destroy (debugCurrentPositionObject);
+			Destroy (debugLastPositionObject);
+		}
 	}
 
 	/*
@@ -138,7 +211,7 @@ public class AttackCast : MonoBehaviour
 	void ReportHits (RaycastHit[] hits)
 	{
 		foreach (RaycastHit hit in hits) {
-			OnHit (hit);
+			ReportHit (hit);
 		}
 	}
 
@@ -146,9 +219,9 @@ public class AttackCast : MonoBehaviour
 	 * Apply the OnHit function to a specified Raycast hit. This should be made project-agnostic
 	 * at some point, so that AttackCasts can be a tool.
 	 */
-	void OnHit (RaycastHit hit)
+	void ReportHit (RaycastHit hit)
 	{
-		// Throw out iIgnored objects
+		// Throw out ignored objects
 		if (ignoreObjects.Contains (hit.collider.transform.root.gameObject)) {
 			return;
 		}
@@ -157,22 +230,12 @@ public class AttackCast : MonoBehaviour
 			Debug.DrawRay (hit.point, hit.normal, Color.red, 0.5f);
 		}
 
+		// Trigger OnHit event if anyone is subscribed
+		if (OnHit != null) {
+			OnHit (hit);
+		}
+
 		GameObject hitGameObject = hit.collider.gameObject;
 		ignoreObjects.Add (hitGameObject);
-
-		Fighter hitFighter = (Fighter)hitGameObject.GetComponent<Fighter> ();
-		Fighter myFighter = (Fighter)transform.root.gameObject.GetComponent<Fighter> ();
-
-		if (hitFighter != null) {
-			if (myFighter != null) {
-				// No friendly fire, for now
-				if (hitFighter.team != myFighter.team) {
-					hitFighter.TakeHit (hit, attackInfo, transform.root);
-					myFighter.NotifyAttackHit ();
-				}
-			}
-		}
-		Debug.Log ("Hit! Object: " + hitGameObject.name);
 	}
-
 }

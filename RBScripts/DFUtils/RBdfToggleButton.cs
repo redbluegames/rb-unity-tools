@@ -13,7 +13,7 @@ public class RBdfToggleButton : MonoBehaviour
 	dfSprite icon;
 
 	// Preference Type
-	public AvailablePreferences preferenceToBind;
+	public Preferences.AvailablePreferences preferenceToBind;
 
 	// Sprites
 	public string activeButtonSprite;
@@ -65,10 +65,10 @@ public class RBdfToggleButton : MonoBehaviour
 
 	bool IsPreferenceSet ()
 	{
-		if (preferenceToBind == AvailablePreferences.music) {
-			return GameDataManager.Instance.GetMusicPreference ();
-		} else if (preferenceToBind == AvailablePreferences.sound) {
-			return GameDataManager.Instance.GetSoundPreference ();
+		if (preferenceToBind == Preferences.AvailablePreferences.music) {
+			return Preferences.GetMusicPreference ();
+		} else if (preferenceToBind == Preferences.AvailablePreferences.sound) {
+			return Preferences.GetSoundPreference ();
 		} else {
 			return false;
 		}
