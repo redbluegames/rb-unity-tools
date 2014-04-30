@@ -1,0 +1,2 @@
+#Ignore .meta's for libraries, since Unity will generate them when needed.
+*.meta
