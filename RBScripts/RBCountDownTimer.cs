@@ -6,81 +6,76 @@ using System.Collections;
  * this need to check back periodically to see if time is up.
  * Then, if the timer is needed again, reset it.
  */
-public class RBCountDownTimer
+public class RBCountDownTimer : MonoBehaviour
 {
-	float timeStarted;
-	float duration;
-	bool isRunning;
-	
+	public float TimeStarted {get; private set;}
+	public float Duration {get; private set;}
+	public float TimeRemaining {get; private set;}
+	public bool IsRunning  {get; private set;}
+
 	const float UNSET = float.MaxValue;
-	
-	/*
-	 * Null constructor. Set our duration to a known invalid value.
-	 */
+
+	public delegate void CompleteEvent ();
+	public CompleteEvent OnComplete;
+
 	public RBCountDownTimer ()
 	{
-		isRunning = false;
-		duration = UNSET;
-		timeStarted = UNSET;
+		InitializeToDefaults ();
 	}
 	
-	/*
-	 * Start the timer.
-	 */
+	void InitializeToDefaults ()
+	{
+		IsRunning = false;
+		Duration = UNSET;
+		TimeStarted = UNSET;
+		TimeRemaining = 0.0f;
+	}
+
+	/// <summary>
+	/// Starts the timer. Fires off OnComplete when done.
+	/// </summary>
+	/// <param name="desiredDuration">The desired duration for the timer in game seconds.</param>
 	public void StartTimer (float desiredDuration)
 	{
-		duration = desiredDuration;
-		timeStarted = Time.time;
-		isRunning = true;
+		// Stop the timer if it's running
+		StopAllCoroutines ();
+
+		StartCoroutine(CountdownForDuration(desiredDuration));
 	}
-	
-	/*
-	 * Unsets the duration and timeStarted fields. This is important
-	 * to call if you plan to reuse the timer.
-	 */
+
+	IEnumerator CountdownForDuration (float desiredDuration)
+	{
+		IsRunning = true;
+		Duration = desiredDuration;
+		TimeStarted = Time.time;
+
+		TimeRemaining = Duration;
+		while (TimeRemaining >= 0.0f ) {
+			TimeRemaining -= Time.deltaTime;
+			yield return null;
+		}
+
+		CompleteCountdown();
+	}
+
+	/// <summary>
+	/// End a completed timer.
+	/// </summary>
+	void CompleteCountdown ()
+	{
+		if (OnComplete != null) {
+			OnComplete ();
+		}
+
+		InitializeToDefaults ();
+	}
+
+	/// <summary>
+	/// Stop the timer without firing off the complete event.
+	/// </summary>
 	public void StopTimer ()
 	{
-		duration = UNSET;
-		timeStarted = UNSET;
-		isRunning = false;
-	}
-	
-	/*
-	 * Check if time is up for the timer. If no duration has been specified, or
-	 * if time isn't up, return false.
-	 */
-	public bool IsTimeUp ()
-	{
-		if (duration == UNSET) {
-			return false;
-		}
-		return GetTimeLeft () <= 0;
-	}
-	
-	/*
-	 * Return if the timer has been set.
-	 */
-	public bool IsRunning ()
-	{
-		return isRunning;
-	}
-	
-	/*
-	 * Get the time remaining on the timer.
-	 */
-	public float GetTimeLeft ()
-	{
-		WarnIfUnSet ();
-		return duration - (Time.time - timeStarted);
-	}
-	
-	/*
-	 * Helper warning to tell coder they called a method that needs duration set.
-	 */
-	void WarnIfUnSet ()
-	{
-		if (!isRunning || duration == UNSET || timeStarted == UNSET) {
-			Debug.LogWarning ("Tried to check time left on stopped or unset timer.");
-		}
+		InitializeToDefaults ();
+		StopAllCoroutines ();
 	}
 }
