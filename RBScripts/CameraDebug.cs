@@ -32,6 +32,7 @@ namespace RedBlueTools
 		// Use this for initialization
 		void Start ()
 		{
+			// Disable the script if it's a debug build.
 			if(!Debug.isDebugBuild) {
 				enabled = false;
 			}
