@@ -1,2 +1,4 @@
 #Ignore .meta's for libraries, since Unity will generate them when needed.
-*.meta
+#*.meta
+#No actually, that's wrong. The GUID is stored in metadata, so we need
+#all projects to point to the same GUIDs.
