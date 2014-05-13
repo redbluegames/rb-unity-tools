@@ -19,42 +19,37 @@
 namespace RedBlueTools
 {
 	[System.Serializable]
-	public class RBAchievements
+	public class RBAchievement
 	{
-		public RBAchievement[] achievements;
+		public string id { get; private set; }
 
-		public RBAchievements (string[] achievementIDs)
+		public bool submitted { get; private set; }
+
+		public bool sentOnce { get; private set; }
+
+		public bool earned { get; private set; }
+	
+		public RBAchievement (string id, bool submitted, bool sentOnce, bool hasbeenEarned)
 		{
-			achievements = new RBAchievement[achievementIDs.Length];
-			for(int i = 0; i < achievementIDs.Length; i++)
-			{
-				achievements[i] = new RBAchievement( achievementIDs[i], false, false, false);
-			}
+			this.id = id;
+			this.submitted = submitted;
+			this.sentOnce = sentOnce;
+			this.earned = hasbeenEarned;
 		}
 
-
-		public int Length {
-			get {
-				return achievements.Length;
-			}
-			private set {
-				Length = value;
-			}
+		public void MarkAchievementEarned ()
+		{
+			earned = true;
 		}
 
-		public RBAchievement GetAchievement (int index)
+		public void MarkAchievementSubmitted ()
 		{
-			return achievements [index];
+			submitted = true;
 		}
 
-		public RBAchievement GetAchievement (string id)
+		public void SetAchievementSent (bool sentStatus)
 		{
-			for (int i = 0; i < achievements.Length; ++i) {
-				if (achievements [i].id.CompareTo (id) == 0) {
-					return achievements [i];
-				}
-			}
-			return null;
+			sentOnce = sentStatus;
 		}
 	}
 }
