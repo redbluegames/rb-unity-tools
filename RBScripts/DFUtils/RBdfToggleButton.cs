@@ -1,4 +1,4 @@
-﻿/*****************************************************************************
+/*****************************************************************************
  *  Red Blue Tools are Unity Editor utilities. Some utilities require 3rd party tools.
  *  Copyright (C) 2014 Red Blue Games, LLC
  *  
@@ -31,7 +31,8 @@ namespace RedBlueTools
 		dfSprite icon;
 
 		// Preference Type
-		public Preferences.AvailablePreferences preferenceToBind;
+		public string preferenceKey;
+//		public Preferences.AvailablePreferences preferenceToBind;
 
 		// Sprites
 		public string activeButtonSprite;
@@ -72,7 +73,7 @@ namespace RedBlueTools
 
 		void RenderButtonForPreference ()
 		{
-			if (IsPreferenceSet ()) {
+			if (IsPreferenceSet (preferenceKey)) {
 				button.BackgroundSprite = activeButtonSprite;
 				icon.SpriteName = activeIconSprite;
 			} else {
@@ -81,12 +82,10 @@ namespace RedBlueTools
 			}
 		}
 
-		bool IsPreferenceSet ()
+		bool IsPreferenceSet (string key)
 		{
-			if (preferenceToBind == Preferences.AvailablePreferences.music) {
-				return Preferences.GetMusicPreference ();
-			} else if (preferenceToBind == Preferences.AvailablePreferences.sound) {
-				return Preferences.GetSoundPreference ();
+			if (PlayerPrefs.HasKey (key)) {
+				return PlayerPrefs.GetInt (key, 1) >= 1 ? true : false;
 			} else {
 				return false;
 			}

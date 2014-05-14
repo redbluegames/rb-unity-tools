@@ -94,7 +94,7 @@ namespace RedBlueTools
 			if (SyncOnRun) {
 				string currentText = GetTextFromObject ();
 				// Trim out the unit, if it has one.
-				if (!string.IsNullOrEmpty(numberUnit)) {
+				if (!string.IsNullOrEmpty (numberUnit)) {
 					currentText = currentText.TrimEnd (numberUnit.ToCharArray ());
 				}
 				if (!int.TryParse (currentText, out currentNumber)) {

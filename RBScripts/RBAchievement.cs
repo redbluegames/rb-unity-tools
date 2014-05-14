@@ -16,6 +16,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
+using UnityEngine;
+
 namespace RedBlueTools
 {
 	[System.Serializable]
@@ -23,33 +25,40 @@ namespace RedBlueTools
 	{
 		public string id { get; private set; }
 
-		public bool submitted { get; private set; }
+		public Status status { get; private set; }
 
-		public bool sentOnce { get; private set; }
+		public enum Status
+		{
+			Unearned = 0,
+			EarnedUnsent = 1,
+			EarnedSentOnce = 2,
+			EarnedSubmitted = 3
+		}
 
-		public bool earned { get; private set; }
-	
-		public RBAchievement (string id, bool submitted, bool sentOnce, bool hasbeenEarned)
+		public RBAchievement (string id, int status)
 		{
 			this.id = id;
-			this.submitted = submitted;
-			this.sentOnce = sentOnce;
-			this.earned = hasbeenEarned;
+			this.status = (Status)status;
 		}
 
 		public void MarkAchievementEarned ()
 		{
-			earned = true;
+			status = Status.EarnedUnsent;
 		}
 
 		public void MarkAchievementSubmitted ()
 		{
-			submitted = true;
+			status = Status.EarnedSubmitted;
 		}
 
-		public void SetAchievementSent (bool sentStatus)
+		public void MarkAchievementSent ()
 		{
-			sentOnce = sentStatus;
+			status = Status.EarnedSentOnce;
+		}
+
+		public void SetStatus (Status newStatus)
+		{
+			status = newStatus;
 		}
 	}
 }
