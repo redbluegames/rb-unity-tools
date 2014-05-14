@@ -87,7 +87,7 @@ namespace RedBlueTools
 			if (PlayerPrefs.HasKey (key)) {
 				return PlayerPrefs.GetInt (key, 1) >= 1 ? true : false;
 			} else {
-				return false;
+				return true;
 			}
 		}
 	}
