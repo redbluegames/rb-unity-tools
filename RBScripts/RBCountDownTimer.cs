@@ -62,7 +62,6 @@ namespace RedBlueTools
 		{
 			// Stop the timer if it's running
 			StopAllCoroutines ();
-
 			StartCoroutine (CountdownForDuration (desiredDuration));
 		}
 
@@ -86,11 +85,10 @@ namespace RedBlueTools
 		/// </summary>
 		void CompleteCountdown ()
 		{
+			InitializeToDefaults ();
 			if (OnComplete != null) {
 				OnComplete ();
 			}
-
-			InitializeToDefaults ();
 		}
 
 		/// <summary>
@@ -102,5 +100,4 @@ namespace RedBlueTools
 			StopAllCoroutines ();
 		}
 	}
-
 }
