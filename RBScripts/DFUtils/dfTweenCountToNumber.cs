@@ -185,8 +185,7 @@ namespace RedBlueTools
 				SetCurrentNumber ((int)Mathf.Lerp (originalNumber, targetNumber, elapsed / tweenDuration));
 				AssignCurrentNumberToLabel ();
 				if (playSounds && currentNumber != previousNumber) {
-					// TODO: Play a count sound
-					//AudioManager.Instance.PlayCountSound (counterAudioSource);
+					AudioManager.Instance.PlayCountSound (counterAudioSource);
 				}
 				yield return new WaitForSeconds (minTweenTime);
 			}

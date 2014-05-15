@@ -83,11 +83,7 @@ namespace RedBlueTools
 		internal protected override void OnClick (dfMouseEventArgs args)
 		{
 			base.OnClick (args);
-			// TODO: Play a sound
-			/* if (!AudioManager.Instance.isSFXMuted) {
-			clickSoundSource.clip = SoundManager.LoadFromGroup (AudioManager.UI_CLICK_GROUP);
-			clickSoundSource.Play ();
-		} */
+			AudioManager.Instance.PlayUIClick (clickSoundSource);
 		}
 
 		/// <summary>
