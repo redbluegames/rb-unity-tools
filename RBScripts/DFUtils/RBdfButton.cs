@@ -74,6 +74,7 @@ namespace RedBlueTools
 		{
 			base.OnMouseUp (args);
 			onUpTween.Play ();
+			onDownTween.Reset ();
 		}
 
 		/// <summary>
