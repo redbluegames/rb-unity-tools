@@ -49,17 +49,17 @@ namespace RedBlueTools
 		void OnEnable ()
 		{
 			RenderButtonForPreference ();
-			button.MouseUp += OnMouseUp;
+			button.MouseUp += HandleClick;
 			button.ControlShown += OnControlShown;
 		}
 
 		void OnDisable ()
 		{
-			button.MouseUp -= OnMouseUp;
+			button.MouseUp -= HandleClick;
 			button.ControlShown -= OnControlShown;
 		}
 
-		void OnMouseUp (dfControl control, dfMouseEventArgs mouseEvent)
+		void HandleClick (dfControl control, dfMouseEventArgs mouseEvent)
 		{
 			RenderButtonForPreference ();
 		}
