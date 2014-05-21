@@ -66,7 +66,7 @@ namespace RedBlueTools
 			if (isFading) {
 				StopCurrentFade ();
 			}
-			StartCoroutine (FadeToOpacity (1.0f, duration));
+			StartCoroutine (FadeToOpacity (1.0f, duration, 0.1f));
 		}
 
 		public void FadeOut (float duration)
@@ -74,7 +74,7 @@ namespace RedBlueTools
 			if (isFading) {
 				StopCurrentFade ();
 			}
-			StartCoroutine (FadeToOpacity (0.0f, duration));
+			StartCoroutine (FadeToOpacity (0.0f, duration, 0.0f));
 		}
 
 		/// <summary>
@@ -82,8 +82,9 @@ namespace RedBlueTools
 		/// </summary>
 		/// <returns>The to opacity.</returns>
 		/// <param name="desiredOpacity">Desired opacity.</param>
-		/// <param name="duration">Fade Time.</param>
-		IEnumerator FadeToOpacity (float desiredOpacity, float fadeTime)
+		/// <param name="fadeTime">Fade Time.</param>
+		/// <param name="timeToRemainFullyFaded">Time to remain at full fade value before completing.</param>
+		IEnumerator FadeToOpacity (float desiredOpacity, float fadeTime, float timeToRemainFullyFaded)
 		{	
 			isFading = true;
 			float startingOpacity = texture.Opacity;
@@ -104,6 +105,10 @@ namespace RedBlueTools
 				yield return null;
 			}
 
+			// Pause when fully faded just to give time to perceive the screen is fully obscured. 
+			if(timeToRemainFullyFaded > 0.0f ) {
+				yield return new WaitForSeconds(timeToRemainFullyFaded);
+			}
 			CompleteFade ();
 		}
 
