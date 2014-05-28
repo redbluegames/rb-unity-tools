@@ -23,7 +23,7 @@ namespace RedBlueTools
 	public class CameraShake : MonoBehaviour
 	{
 		// Position offsets from the camera
-		Vector3 defaultPosition;
+		public Vector3 DefaultPosition;
 		Vector3 shakeOffset;
 
 		void Start ()
@@ -38,7 +38,7 @@ namespace RedBlueTools
 		void SetupDefaults ()
 		{
 			// Resolve offset so that we can get the angle to the target
-			defaultPosition = camera.transform.position;
+			DefaultPosition = camera.transform.position;
 		}
 
 		void LateUpdate ()
@@ -52,7 +52,7 @@ namespace RedBlueTools
 	 */
 		void ResolveOffsets ()
 		{
-			camera.transform.position = defaultPosition + shakeOffset;
+			camera.transform.position = DefaultPosition + shakeOffset;
 		}
 
 	#region Shake Functionality
