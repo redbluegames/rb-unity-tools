@@ -87,6 +87,12 @@ namespace RedBlueTools
 		IEnumerator FadeToOpacity (float desiredOpacity, float fadeTime, float timeToRemainFullyFaded)
 		{	
 			isFading = true;
+
+			// Wait one frame before fading to fix sorting issues that occur when switching screens
+			// prior to a fade out.
+			SendToFront ();
+			yield return null;
+
 			float startingOpacity = texture.Opacity;
 			float opacityChangePerSecond = (desiredOpacity - startingOpacity) / fadeTime;
 			float expectedOpacity = startingOpacity;
@@ -106,8 +112,8 @@ namespace RedBlueTools
 			}
 
 			// Pause when fully faded just to give time to perceive the screen is fully obscured. 
-			if(timeToRemainFullyFaded > 0.0f ) {
-				yield return new WaitForSeconds(timeToRemainFullyFaded);
+			if (timeToRemainFullyFaded > 0.0f) {
+				yield return new WaitForSeconds (timeToRemainFullyFaded);
 			}
 			CompleteFade ();
 		}
