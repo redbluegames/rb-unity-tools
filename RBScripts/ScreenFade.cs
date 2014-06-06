@@ -24,30 +24,44 @@ namespace RedBlueTools
 	public class ScreenFade : MonoBehaviour
 	{
 
+		dfTweenFloat fadeInTween;
+		dfTweenFloat fadeOutTween;
 		dfTextureSprite texture;
-
+		
 		// Events to send to any subscribers
+		public event FadeCompleteHandler FadeComplete;
 		public delegate void FadeCompleteHandler ();
 
-		public event FadeCompleteHandler FadeComplete;
-
 		bool isFading;
+		
+		/// <summary>
+		/// Awake is called by the Unity engine when the script instance is being loaded.
+		/// </summary>
+		void Awake ()
+		{
+			texture = GetComponent<dfTextureSprite> ();
+
+			if (Application.isPlaying) {
+				AddAndInitializeTweens ();
+			}
+		}
+		
+		/// <summary>
+		/// This function is called by the Unity engine when the control will be destroyed.
+		/// </summary>
+		void OnDestroy ()
+		{
+			if (Application.isPlaying) {
+				DestroyTweens ();
+			}
+		}
 
 		void Start ()
 		{
-			texture = GetComponent<dfTextureSprite> ();
 			texture.Opacity = 0.0f;
 
 			dfGUIManager manager = transform.parent.gameObject.GetComponent<dfGUIManager> ();
 			texture.Size = manager.GetScreenSize ();
-		}
-
-		/// <summary>
-		/// Forces the fader to be the frontmost widget.
-		/// </summary>
-		void SendToFront ()
-		{
-			texture.ZOrder = 100;
 		}
 
 		public void FadeToWhite (float fadeTime)
@@ -61,76 +75,123 @@ namespace RedBlueTools
 		}
 
 		void FadeIntoColor (Color fadeColor, float duration)
-		{	
+		{
 			texture.Color = fadeColor;
-			if (isFading) {
+
+			if(isFading) {
 				StopCurrentFade ();
 			}
-			StartCoroutine (FadeToOpacity (1.0f, duration, 0.1f));
+
+			isFading = true;
+			fadeInTween.Length = duration;
+			fadeInTween.Play ();
 		}
 
 		public void FadeOut (float duration)
 		{	
-			if (isFading) {
+			if(isFading) {
 				StopCurrentFade ();
 			}
-			StartCoroutine (FadeToOpacity (0.0f, duration, 0.0f));
-		}
 
-		/// <summary>
-		/// Linearly fades to the desired opacity in the specified amount of time
-		/// </summary>
-		/// <returns>The to opacity.</returns>
-		/// <param name="desiredOpacity">Desired opacity.</param>
-		/// <param name="fadeTime">Fade Time.</param>
-		/// <param name="timeToRemainFullyFaded">Time to remain at full fade value before completing.</param>
-		IEnumerator FadeToOpacity (float desiredOpacity, float fadeTime, float timeToRemainFullyFaded)
-		{	
 			isFading = true;
-
-			// Wait one frame before fading to fix sorting issues that occur when switching screens
-			// prior to a fade out.
-			SendToFront ();
-			yield return null;
-
-			float startingOpacity = texture.Opacity;
-			float opacityChangePerSecond = (desiredOpacity - startingOpacity) / fadeTime;
-			float expectedOpacity = startingOpacity;
-			float elapsed = 0.0f;
-			while (elapsed < fadeTime) {
-				elapsed += Time.deltaTime;
-
-				// write and read from a variable since texture's Opacity won't be written as often
-				// as this coroutine runs, causing lagging results.
-				expectedOpacity = Mathf.Clamp01 (expectedOpacity + (opacityChangePerSecond * Time.deltaTime));
-				texture.Opacity = expectedOpacity;
-
-				// Make sure the fade texture remains in front of everything else for the duration of
-				// the fade
-				SendToFront ();
-				yield return null;
-			}
-
-			// Pause when fully faded just to give time to perceive the screen is fully obscured. 
-			if (timeToRemainFullyFaded > 0.0f) {
-				yield return new WaitForSeconds (timeToRemainFullyFaded);
-			}
-			CompleteFade ();
-		}
-
-		void CompleteFade ()
-		{
-			isFading = false;
-
-			if (FadeComplete != null) {
-				FadeComplete ();
-			}
+			fadeOutTween.Length = duration;
+			fadeOutTween.Play ();
 		}
 	
 		void StopCurrentFade ()
 		{
-			StopAllCoroutines ();
+			fadeInTween.Stop ();
+			fadeOutTween.Stop ();
+
 			CompleteFade ();
 		}
+		
+		void CompleteFade ()
+		{
+			isFading = false;
+			
+			if (FadeComplete != null) {
+				FadeComplete ();
+			}
+		}
+
+		void AddAndInitializeTweens ()
+		{
+			AddTweens ();
+			InitiatilizeTweens ();
+		}
+
+		void AddTweens ()
+		{
+			// These must be added as components so that the tween base script behaves properly.
+			fadeInTween = (dfTweenFloat)gameObject.AddComponent<dfTweenFloat> ();
+			fadeOutTween = (dfTweenFloat)gameObject.AddComponent<dfTweenFloat> ();
+		}
+
+		void InitiatilizeTweens ()
+		{
+			fadeInTween.TweenName = "FadeIn";
+			fadeInTween.Target = new dfComponentMemberInfo ();
+			fadeInTween.Target.Component = texture;
+			fadeInTween.Target.MemberName = "Opacity";
+			fadeInTween.Function = dfEasingType.SineEaseOut;
+			fadeInTween.Length = 2.0f;
+			float startOpacity = 0.0f;
+			fadeInTween.StartValue = startOpacity;
+			float endOpacity = 1.0f;
+			fadeInTween.EndValue = endOpacity;
+			
+			fadeInTween.TweenCompleted += HandleTweenCompleted;
+
+			fadeOutTween.TweenName = "FadeOut";
+			fadeOutTween.Target = new dfComponentMemberInfo ();
+			fadeOutTween.Target.Component = texture;
+			fadeOutTween.Target.MemberName = "Opacity";
+			fadeOutTween.Function = dfEasingType.SineEaseOut;
+			fadeOutTween.Length = 2.0f;
+			fadeOutTween.StartDelay = 0.2f;
+			startOpacity = 1.0f;
+			fadeOutTween.StartValue = startOpacity;
+			endOpacity = 0.0f;
+			fadeOutTween.EndValue = endOpacity;
+			fadeOutTween.TweenCompleted += HandleTweenCompleted;
+		}
+		
+		void HandleTweenCompleted (dfTweenPlayableBase sender)
+		{
+			CompleteFade ();
+		}
+		
+		/// <summary>
+		/// Destroy both the up and down tweens so as not to leak them.
+		/// </summary>
+		void DestroyTweens ()
+		{
+			if (fadeOutTween != null) {
+				Destroy (fadeOutTween);
+			}
+			if (fadeInTween != null) {
+				Destroy (fadeInTween);
+			}
+		}
+
+		void LateUpdate ()
+		{
+			// DF shifts z-order all the time. I wish I could just move this screenfader
+			// to a high z-order and it work, but it keeps getting pushed back.
+			// This is admitedly a workaround.
+			if(isFading) {
+				SendToFront ();
+			}
+		}
+		
+		/// <summary>
+		/// Forces the fader to be the frontmost widget.
+		/// </summary>
+		void SendToFront ()
+		{
+			texture.ZOrder = 100;
+		}
+
 	}
 }
