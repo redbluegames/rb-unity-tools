@@ -14,20 +14,19 @@ public class RequireWireDrawer : PropertyDrawer
 		EditorGUI.indentLevel = 0;
 
 		// Draw label
-		GUI.Label(position, label.text + " (Required)", EditorStyles.label);
-		position = EditorGUI.PrefixLabel (position, GUIUtility.GetControlID (FocusType.Passive), label);
+		var rRect = new Rect (position.x - 8, position.y, position.width, position.height);
+		GUI.Label(rRect, "*", EditorStyles.label);
 
-		int fieldWidth = 250;
-		var prefixRect = new Rect (position.x, position.y, fieldWidth, position.height);
-		var valueRect = new Rect (position.x, prefixRect.y, fieldWidth, position.height);
+		int fieldWidth = 400;
+		var valueRect = new Rect (position.x, position.y, fieldWidth, position.height);
 
-		property.objectReferenceValue = EditorGUI.ObjectField(valueRect, property.objectReferenceValue, typeof(GameObject), true);
-		prefixRect.y += prefixRect.height + 1;
+		EditorGUI.PropertyField (valueRect, property);
 		valueRect.y += valueRect.height + 1;
 
 		if (property.objectReferenceValue == null) {
 			if (!hasError) {
-				Debug.LogError (property.name + " has not been wired in the editor.");
+				Debug.LogError (string.Format ("{0} on object {1} has not been wired in the editor.", 
+				                               property.name, property.serializedObject.targetObject.name));
 			}
 			hasError = true;
 		} else {
