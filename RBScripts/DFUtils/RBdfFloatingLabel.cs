@@ -23,6 +23,7 @@ namespace RedBlueTools
 	public class RBdfFloatingLabel : MonoBehaviour
 	{
 		public Camera mainCamera;
+		public GameObject followTarget;
 		public dfLabel label;
 		dfControl myControl;
 		dfGUIManager manager;
@@ -59,7 +60,7 @@ namespace RedBlueTools
 			set {
 				worldPosition = value;
 				Vector2 screenPoint = manager.ScreenToGui (mainCamera.WorldToScreenPoint (worldPosition));
-				myControl.RelativePosition = (Vector3)screenPoint;
+				myControl.RelativePosition = new Vector2 (screenPoint.x - myControl.Width/2, screenPoint.y - myControl.Height/2);
 			}
 		}
 
@@ -85,6 +86,13 @@ namespace RedBlueTools
 				if (label == null) {
 					Debug.LogError ("RBdfFloatingLabel not set up. Must add a label as a child game object or specify one.");
 				}
+			}
+		}
+
+		void Update ()
+		{
+			if (followTarget != null) {
+				WorldPosition = followTarget.transform.position;
 			}
 		}
 	}
