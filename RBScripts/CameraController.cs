@@ -24,13 +24,14 @@ public class CameraController : MonoBehaviour
 {
 	public GameObject followTarget;
 	public int viewPortIndex;
+	public float drag = 0;
 
 	// Position offsets from the camera
 	public Vector3 defaultOffset;
 	public Quaternion defaultRotation { get; private set; }
 	public float defaultFieldOfView  { get; private set; }
 	Vector3 shakeOffset;
-	Vector3 followOffset;
+	Vector3 followPosition;
 	float fieldOfViewOffset;
 
 	void Start ()
@@ -68,7 +69,7 @@ public class CameraController : MonoBehaviour
 	{
 		// Set the offset this camera uses when following its target
 		if (followTarget != null) {
-			followOffset = followTarget.transform.position;
+			followPosition = followTarget.transform.position;
 		}
 	}
 
@@ -78,7 +79,9 @@ public class CameraController : MonoBehaviour
 	 */
 	void ResolveOffsets ()
 	{
-		camera.transform.position = defaultOffset + followOffset + shakeOffset;
+		Vector3 desiredLocation = followPosition + defaultOffset + shakeOffset;
+		Vector3 delta = desiredLocation - camera.transform.position;
+		camera.transform.position += (delta * (1-drag));
 		transform.rotation = defaultRotation;
 		//camera.fieldOfView = defaultFieldOfView + fieldOfViewOffset;
 	}
