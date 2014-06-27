@@ -33,7 +33,9 @@ namespace RedBlueTools
 
 		public float TimeRemaining { get; private set; }
 
-		public bool IsRunning  { get; private set; }
+		public bool IsRunning { get; private set; }
+
+		public bool IsPaused { get; private set; }
 
 		const float UNSET = float.MaxValue;
 
@@ -73,7 +75,9 @@ namespace RedBlueTools
 
 			TimeRemaining = Duration;
 			while (TimeRemaining >= 0.0f) {
-				TimeRemaining -= Time.deltaTime;
+				if (!IsPaused) {
+					TimeRemaining -= Time.deltaTime;
+				}
 				yield return null;
 			}
 
@@ -98,6 +102,16 @@ namespace RedBlueTools
 		{
 			InitializeToDefaults ();
 			StopAllCoroutines ();
+		}
+
+		public void PauseTimer ()
+		{
+			IsPaused = true;
+		}
+
+		public void UnPauseTimer ()
+		{
+			IsPaused = false;
 		}
 	}
 }
