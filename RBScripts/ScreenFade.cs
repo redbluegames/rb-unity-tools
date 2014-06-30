@@ -61,7 +61,13 @@ namespace RedBlueTools
 			texture.Opacity = 0.0f;
 
 			dfGUIManager manager = transform.parent.gameObject.GetComponent<dfGUIManager> ();
+			// For some reason, webplayer doesn't always get the correct screen size. Workaround is
+			// to just make it huge.
+			#if UNITY_WEBPLAYER
+			texture.Size = new Vector2 (2000.0f, 2000.0f);
+			#else
 			texture.Size = manager.GetScreenSize ();
+			#endif
 		}
 
 		public void FadeToWhite (float fadeTime)
@@ -78,7 +84,7 @@ namespace RedBlueTools
 		{
 			texture.Color = fadeColor;
 
-			if(isFading) {
+			if (isFading) {
 				StopCurrentFade ();
 			}
 
@@ -89,7 +95,7 @@ namespace RedBlueTools
 
 		public void FadeOut (float duration)
 		{	
-			if(isFading) {
+			if (isFading) {
 				StopCurrentFade ();
 			}
 
@@ -180,7 +186,7 @@ namespace RedBlueTools
 			// DF shifts z-order all the time. I wish I could just move this screenfader
 			// to a high z-order and it work, but it keeps getting pushed back.
 			// This is admitedly a workaround.
-			if(isFading) {
+			if (isFading) {
 				SendToFront ();
 			}
 		}
