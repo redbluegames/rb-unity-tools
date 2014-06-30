@@ -48,6 +48,9 @@ namespace RedBlueTools
 			set {
 				labelColor = value;
 				label.Color = labelColor;
+				if(label.Shadow) {
+					label.ShadowColor = labelColor * 0.4f;
+				}
 			}
 		}
 	
