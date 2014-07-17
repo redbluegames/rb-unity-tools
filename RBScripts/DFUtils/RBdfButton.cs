@@ -84,7 +84,7 @@ namespace RedBlueTools
 		internal protected override void OnClick (dfMouseEventArgs args)
 		{
 			base.OnClick (args);
-			AudioManager.Instance.PlayUIClick (clickSoundSource);
+			//AudioManager.Instance.PlayUIClick (clickSoundSource);
 		}
 
 		/// <summary>
