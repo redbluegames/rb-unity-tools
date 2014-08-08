@@ -29,6 +29,8 @@ namespace RedBlueTools
 		dfGUIManager manager;
 		string labelText;
 
+		public float YOffset;
+
 		public string LabelText {
 			get {
 				return labelText;
@@ -62,6 +64,7 @@ namespace RedBlueTools
 			}
 			set {
 				worldPosition = value;
+				worldPosition.y += YOffset;
 				Vector2 screenPoint = manager.ScreenToGui (mainCamera.WorldToScreenPoint (worldPosition));
 				myControl.RelativePosition = new Vector2 (screenPoint.x - myControl.Width/2, screenPoint.y - myControl.Height/2);
 			}
