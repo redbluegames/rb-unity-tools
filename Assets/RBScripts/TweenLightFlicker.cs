@@ -16,31 +16,41 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 using UnityEngine;
+using System.Collections;
 
 namespace RedBlueTools
 {
-/// <summary>
-/// Move a texture across a plane at a given linear speed.
-/// </summary>
-	public class TweenScrollTexture : MonoBehaviour
+	[RequireComponent(typeof(Light))]
+	public class TweenLightFlicker : MonoBehaviour
 	{
-		public Vector2 speed;
-		public bool IsPaused;
-		Material textureToScroll;
+		// Turn flicker on or off
+		public bool flickerOn;
+
+		// Flicker Charactersitics
+		public float lightsOutMultiplier = 0.2f;
+		public float frequency = 3.0f;
+
+		// Base intensity, automatically taken from light parameters.
+		float baseIntensity;
 	
-		void Awake ()
+		void Start ()
 		{
-			textureToScroll = renderer.material;
+			baseIntensity = GetComponent<Light>().intensity;
+			StartCoroutine (Flicker ());
 		}
 	
 		void Update ()
 		{
-			if (!IsPaused) {
-				float xOffset = (Time.time * speed.x) % 1;
-				float yOffset = (Time.time * speed.y) % 1;
-				textureToScroll.mainTextureOffset = new Vector2 (xOffset, yOffset);
+		}
+
+		IEnumerator Flicker ()
+		{
+			while (flickerOn) {
+				GetComponent<Light>().intensity = baseIntensity * lightsOutMultiplier;
+				yield return new WaitForSeconds (0.005f);
+				GetComponent<Light>().intensity = baseIntensity;
+				yield return new WaitForSeconds (Random.Range (0, frequency));
 			}
 		}
-	
 	}
 }

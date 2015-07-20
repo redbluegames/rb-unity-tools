@@ -45,7 +45,7 @@ public class CameraController : MonoBehaviour
 	 */
 	void SetupDefaults ()
 	{
-		defaultFieldOfView = camera.fieldOfView;
+		defaultFieldOfView = GetComponent<Camera>().fieldOfView;
 
 		// Resolve offset so that we can get the angle to the target
 		ResolveOffsets ();
@@ -80,8 +80,8 @@ public class CameraController : MonoBehaviour
 	void ResolveOffsets ()
 	{
 		Vector3 desiredLocation = followPosition + defaultOffset + shakeOffset;
-		Vector3 delta = desiredLocation - camera.transform.position;
-		camera.transform.position += (delta * (1-drag));
+		Vector3 delta = desiredLocation - GetComponent<Camera>().transform.position;
+		GetComponent<Camera>().transform.position += (delta * (1-drag));
 		transform.rotation = defaultRotation;
 		//camera.fieldOfView = defaultFieldOfView + fieldOfViewOffset;
 	}
@@ -94,7 +94,7 @@ public class CameraController : MonoBehaviour
 		float border = 0.002f;
 		float portion = (1.0f / numViewports) - (border);
 		float spacing = viewPortIndex * border;
-		camera.rect = new Rect ((viewPortIndex * portion) + spacing, 0, portion, 1);
+		GetComponent<Camera>().rect = new Rect ((viewPortIndex * portion) + spacing, 0, portion, 1);
 	}
 
 
@@ -138,14 +138,14 @@ public class CameraController : MonoBehaviour
 	 */
 	IEnumerator SetFieldOfView (ZoomProperty zoomProperty)
 	{
-		float startingFieldOfView = camera.fieldOfView;
+		float startingFieldOfView = GetComponent<Camera>().fieldOfView;
 		float elapsed = 0;
 
 		while (elapsed < zoomProperty.duration) {
 			elapsed += Time.deltaTime;
 			float percentageComplete = elapsed / zoomProperty.duration;
 			float newFieldOfView = Mathf.Lerp (startingFieldOfView, zoomProperty.fieldOfView, percentageComplete);
-			camera.fieldOfView = newFieldOfView;
+			GetComponent<Camera>().fieldOfView = newFieldOfView;
 			yield return null;
 		}
 	}

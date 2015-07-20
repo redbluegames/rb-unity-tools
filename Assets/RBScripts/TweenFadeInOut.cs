@@ -86,7 +86,7 @@ namespace RedBlueTools
 		IEnumerator Fade ()
 		{
 			isFading = true;
-			Color currentColor = gameObject.renderer.material.color;
+			Color currentColor = gameObject.GetComponent<Renderer>().material.color;
 		
 			while (!IsAlphaAtTarget()) {
 				// Recalculate the rate of change in case targets change mid fade
@@ -95,7 +95,7 @@ namespace RedBlueTools
 				float rate = (MAX_ALPHA / fadeTime) * Mathf.Sign (alphaRemaining);
 
 				currentColor.a = Mathf.Clamp01 (currentColor.a + rate * Time.deltaTime);
-				gameObject.renderer.material.color = currentColor;
+				gameObject.GetComponent<Renderer>().material.color = currentColor;
 				yield return null;
 			}
 			isFading = false;
@@ -107,7 +107,7 @@ namespace RedBlueTools
 		/// <returns><c>true</c> if this instance is alpha at target; otherwise, <c>false</c>.</returns>
 		private bool IsAlphaAtTarget ()
 		{
-			return Mathf.Approximately (gameObject.renderer.material.color.a, targetAlpha);
+			return Mathf.Approximately (gameObject.GetComponent<Renderer>().material.color.a, targetAlpha);
 		}
 
 	}

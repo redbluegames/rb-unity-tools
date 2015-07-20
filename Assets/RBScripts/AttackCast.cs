@@ -197,17 +197,17 @@ namespace RedBlueTools
 			Material debugMaterial = new Material (Shader.Find ("Transparent/Diffuse"));
 			debugCurrentPositionObject = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			debugCurrentPositionObject.transform.position = transform.position;
-			debugCurrentPositionObject.renderer.material = debugMaterial;
-			debugCurrentPositionObject.renderer.material.color = new Color (0, 1.0f, 0, .3f);
-			debugCurrentPositionObject.collider.enabled = false;
+			debugCurrentPositionObject.GetComponent<Renderer>().material = debugMaterial;
+			debugCurrentPositionObject.GetComponent<Renderer>().material.color = new Color (0, 1.0f, 0, .3f);
+			debugCurrentPositionObject.GetComponent<Collider>().enabled = false;
 			debugCurrentPositionObject.transform.parent = transform;
 			debugCurrentPositionObject.SetActive (debugShowCasts);
 
 			debugLastPositionObject = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			debugLastPositionObject.transform.position = lastFramePosition;
-			debugLastPositionObject.renderer.material = debugMaterial;
-			debugLastPositionObject.renderer.material.color = new Color (1.0f, 1.0f, 0, .3f);
-			debugLastPositionObject.collider.enabled = false;
+			debugLastPositionObject.GetComponent<Renderer>().material = debugMaterial;
+			debugLastPositionObject.GetComponent<Renderer>().material.color = new Color (1.0f, 1.0f, 0, .3f);
+			debugLastPositionObject.GetComponent<Collider>().enabled = false;
 			debugLastPositionObject.transform.parent = transform;
 			debugLastPositionObject.SetActive (debugShowCasts);
 		}

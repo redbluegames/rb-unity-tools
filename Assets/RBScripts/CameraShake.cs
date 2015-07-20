@@ -38,7 +38,7 @@ namespace RedBlueTools
 		void SetupDefaults ()
 		{
 			// Resolve offset so that we can get the angle to the target
-			DefaultPosition = camera.transform.position;
+			DefaultPosition = GetComponent<Camera>().transform.position;
 		}
 
 		void LateUpdate ()
@@ -52,7 +52,7 @@ namespace RedBlueTools
 	 */
 		void ResolveOffsets ()
 		{
-			camera.transform.position = DefaultPosition + shakeOffset;
+			GetComponent<Camera>().transform.position = DefaultPosition + shakeOffset;
 		}
 
 	#region Shake Functionality

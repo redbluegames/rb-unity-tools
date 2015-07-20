@@ -36,7 +36,7 @@ namespace RedBlueTools
 		// Use this for initialization
 		void Start ()
 		{
-			baseIntensity = light.intensity;
+			baseIntensity = GetComponent<Light>().intensity;
 			randomStart = Random.Range (-1000.0f, 1000.0f);
 		}
 
@@ -45,7 +45,7 @@ namespace RedBlueTools
 			if (noiseOn) {
 				float progress = (randomStart + Time.time) * speed;
 				float flickerNoise = Mathf.PerlinNoise (progress, 0) * magnitude;
-				light.intensity = baseIntensity + flickerNoise;
+				GetComponent<Light>().intensity = baseIntensity + flickerNoise;
 			}
 		}
 	}

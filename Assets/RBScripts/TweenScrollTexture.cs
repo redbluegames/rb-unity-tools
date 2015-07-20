@@ -19,13 +19,28 @@ using UnityEngine;
 
 namespace RedBlueTools
 {
-	public class SortingLayer2D : MonoBehaviour
+/// <summary>
+/// Move a texture across a plane at a given linear speed.
+/// </summary>
+	public class TweenScrollTexture : MonoBehaviour
 	{
-		public string sortLayer;
-
-		void Start ()
+		public Vector2 speed;
+		public bool IsPaused;
+		Material textureToScroll;
+	
+		void Awake ()
 		{
-			renderer.sortingLayerName = sortLayer;
+			textureToScroll = GetComponent<Renderer>().material;
 		}
+	
+		void Update ()
+		{
+			if (!IsPaused) {
+				float xOffset = (Time.time * speed.x) % 1;
+				float yOffset = (Time.time * speed.y) % 1;
+				textureToScroll.mainTextureOffset = new Vector2 (xOffset, yOffset);
+			}
+		}
+	
 	}
 }
