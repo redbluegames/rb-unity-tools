@@ -72,8 +72,14 @@ namespace RedBlueTools
 				}
 			}
 		}
- 
-		private static bool applicationIsQuitting = false;
+		
+		static bool applicationIsQuitting = false;
+		
+		// WORKAROUND: Allow bool to be reflagged so that Unit Tests can set up singletons in editor.
+		public static void ResetSingleton ()
+		{
+			applicationIsQuitting = false;
+		}
 
 		/*
 	 * When Unity quits, it destroys objects in a random order.

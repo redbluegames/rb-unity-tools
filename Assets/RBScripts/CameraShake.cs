@@ -31,10 +31,9 @@ namespace RedBlueTools
 			SetupDefaults ();
 		}
 
-		/*
-	 * Helper function that wires up all default settings for
-	 * the camera.
-	 */
+		/// <summary>
+		/// Helper function that wires up all default settings for the camera.
+		/// </summary>
 		void SetupDefaults ()
 		{
 			// Resolve offset so that we can get the angle to the target
@@ -46,10 +45,10 @@ namespace RedBlueTools
 			ResolveOffsets ();
 		}
 
-		/*
-	 * Calculate where the camera will display after having performed other
-	 * game updates. Things like shake and camera follow should take effect now.
-	 */
+		/// <summary>
+		/// Calculate where the camera will display after having performed other
+		///	game updates. Things like shake and camera follow should take effect now.
+		/// </summary>
 		void ResolveOffsets ()
 		{
 			GetComponent<Camera>().transform.position = DefaultPosition + shakeOffset;
@@ -57,22 +56,26 @@ namespace RedBlueTools
 
 	#region Shake Functionality
 		// -------------------------------------------------------------------------
-		/*
-	 * Shake the camera with a given speed, duration, and magnitude using a Perlin
-	 * noised utility.
-	 */
+		/// <summary>
+		/// Shake the camera with a given speed, duration, and magnitude using Perlin noise
+		/// </summary>
+		/// <param name="speed">Speed.</param>
+		/// <param name="duration">Duration.</param>
+		/// <param name="magnitude">Magnitude.</param>
 		public void Shake (float speed, float duration, float magnitude)
 		{
 			StartCoroutine (SetShakeOffset (speed, duration, magnitude));
 		}
 
-		/*
-	 * Shake camera, setting temporary offset variables which will be applied on
-	 * LateUpdate.
-	 * 
-	 * Resource:
-	 * http://unitytipsandtricks.blogspot.com/2013/05/camera-shake.html
-	 */
+		/// <summary>
+		/// Shake camera, setting temporary offset variables which will be applied on
+		///	LateUpdate. 
+		///	Resource: http://unitytipsandtricks.blogspot.com/2013/05/camera-shake.html
+		/// </summary>
+		/// <returns>The shake offset.</returns>
+		/// <param name="speed">Speed.</param>
+		/// <param name="duration">Duration.</param>
+		/// <param name="magnitude">Magnitude.</param>
 		IEnumerator SetShakeOffset (float speed, float duration, float magnitude)
 		{
 			float randomStart = Random.Range (-1000.0f, 1000.0f);

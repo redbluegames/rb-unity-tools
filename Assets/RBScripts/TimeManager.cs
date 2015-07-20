@@ -43,9 +43,9 @@ namespace RedBlueTools
 		{
 		}
 	
-		/*
-	 * Pauses the game, or increments the pause counter if it's already paused.
-	 */
+		/// <summary>
+		/// Pauses the game, or increments the pause counter if it's already paused.
+		/// </summary>
 		public void RequestPause ()
 		{
 			pauseRequests++;
@@ -53,10 +53,10 @@ namespace RedBlueTools
 			ResolveTimeScale ();
 		}
 	
-		/*
-	 * Attempts to unpause the game. Once all requests to pause have been unwound, the game
-	 * unpauses.
-	 */
+		/// <summary>
+		/// Attempts to unpause the game. Once all requests to pause have been unwound, the game
+		/// unpauses.
+		/// </summary>
 		public void RequestUnpause ()
 		{
 			pauseRequests--;

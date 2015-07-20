@@ -19,28 +19,37 @@ using UnityEngine;
 
 namespace RedBlueTools
 {
-/// <summary>
-/// Move a texture across a plane at a given linear speed.
-/// </summary>
+	[RequireComponent (typeof (TextureShifter))]
+	/// <summary>
+	/// Move a texture across a plane at a given linear speed.
+	/// </summary>
 	public class TweenScrollTexture : MonoBehaviour
 	{
 		public Vector2 speed;
 		public bool IsPaused;
-		Material textureToScroll;
+		TextureShifter textureShifter;
+		Vector2 currentOffset;
+		public bool MoveAsSinWave;
+		public int SinCycleSeconds = 60;
 	
 		void Awake ()
 		{
-			textureToScroll = GetComponent<Renderer>().material;
+			currentOffset = Vector2.zero;
+			textureShifter = GetComponent<TextureShifter>();
 		}
 	
 		void Update ()
 		{
 			if (!IsPaused) {
-				float xOffset = (Time.time * speed.x) % 1;
-				float yOffset = (Time.time * speed.y) % 1;
-				textureToScroll.mainTextureOffset = new Vector2 (xOffset, yOffset);
+				float xOffset = (Time.deltaTime * speed.x);
+				float yOffset = (Time.deltaTime * speed.y);
+				if (MoveAsSinWave) {
+					float sinBasedOffset = Mathf.Sin((Time.timeSinceLevelLoad * Mathf.PI * 2) / SinCycleSeconds);
+					yOffset = sinBasedOffset * (Time.deltaTime * speed.y);
+				}
+				currentOffset = new Vector2( (currentOffset.x + xOffset) % 1, (currentOffset.y + yOffset) % 1);
+				textureShifter.ShiftTexture(currentOffset);
 			}
 		}
-	
 	}
 }

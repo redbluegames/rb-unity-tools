@@ -24,63 +24,58 @@ namespace RedBlueTools
  * this need to check back periodically to see how much time
  * has gone by.
  */
-	public class RBCountUpTimer
+	[System.Serializable]
+	public class RBTimeSince
 	{
 		float timeStarted;
-		bool isRunning;
-		const float UNSET = float.MaxValue;
-	
-		/*
-	 * Null constructor. Set our duration to a known invalid value.
-	 */
-		public RBCountUpTimer ()
+		public bool IsRunning {get; private set;}
+		const float UNSET = float.NaN;
+
+		/// <summary>
+		/// The amount of time in seconds the timer has been running.
+		/// </summary>
+		/// <value>The elapsed.</value>
+		public float Elapsed
 		{
-			StopTimer ();
-		}
-	
-		/*
-	 * Start the timer.
-	 */
-		public void StartTimer ()
-		{
-			timeStarted = Time.time;
-			isRunning = true;
-		}
-	
-		/*
-	 * Unsets the duration and timeStarted fields. This is important
-	 * to call if you plan to reuse the timer.
-	 */
-		public void StopTimer ()
-		{
-			timeStarted = UNSET;
-			isRunning = false;
+			get {
+				WarnIfUnSet ();
+				return Time.time - timeStarted;
+			}
 		}
 
-		/*
-	 * Return if the timer has been set.
-	 */
-		public bool IsRunning ()
+		/// <summary>
+		/// Null constructor. Set our duration to a known invalid value.
+		/// </summary>
+		public RBTimeSince ()
 		{
-			return isRunning;
+			Stop ();
+		}
+
+		/// <summary>
+		/// Starts the timesince
+		/// </summary>
+		public void Start ()
+		{
+			timeStarted = Time.time;
+			IsRunning = true;
 		}
 	
-		/*
-	 * Get the amount of time in seconds the timer has been running.
-	 */
-		public float GetTimeSinceStarted ()
+		/// <summary>
+		/// Stop tracking time and clear the timestamps
+		/// </summary>
+		public void Stop ()
 		{
-			WarnIfUnSet ();
-			return Time.time - timeStarted;
+			timeStarted = UNSET;
+			IsRunning = false;
 		}
 	
-		/*
-	 * Helper warning to tell coder they called a method that needs duration set.
-	 */
+		/// <summary>
+		/// Warns to tell coder they called a method that needs duration set.
+		/// </summary>
 		void WarnIfUnSet ()
 		{
-			if (!isRunning || timeStarted == UNSET) {
-				Debug.LogWarning ("Tried to check time left on stopped or unset timer.");
+			if (!IsRunning || timeStarted == UNSET) {
+				Debug.LogWarning ("Tried to check time left on stopped or unset timesince.");
 			}
 		}
 	}
