@@ -98,5 +98,20 @@ namespace RedBlueTools
 			float angle = Vector2.Angle (vector, targetDirection);
 			return angle <= (tolerance * 0.5f);
 		}
+
+		/// <summary>
+		/// Rotates the vector clockwise by an angle in radius
+		/// </summary>
+		/// <returns>The rotated vector.</returns>
+		/// <param name="vector">Vector to rotate.</param>
+		/// <param name="angle">Angle in radians</param>
+		public static Vector2 RotateByRadians (this Vector2 vector, float angle)
+		{
+			float vectorAsAngle = Mathf.Atan2 (vector.y, vector.x);
+			float combinedAngle = vectorAsAngle - angle;
+			Vector2 rotatedVector = new Vector2 (Mathf.Cos (combinedAngle), Mathf.Sin (combinedAngle));
+			rotatedVector *= vector.magnitude;
+			return rotatedVector;
+		}
 	}
 }
