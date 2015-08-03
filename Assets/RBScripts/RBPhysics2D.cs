@@ -25,7 +25,8 @@ public class RBPhysics2D
 		return hits;
 	}
 
-	static void DrawBoxAndHits (Collider2D[] hits, Vector2 cornerA, Vector2 cornerB) {
+	static void DrawBoxAndHits (Collider2D[] hits, Vector2 cornerA, Vector2 cornerB)
+	{
 		Color drawColor = Color.green;
 		if (hits != null && hits.Length > 0) {
 			drawColor = Color.red;
@@ -70,8 +71,8 @@ public class RBPhysics2D
 	#region Debug Drawing
 	static void DebugDrawColliders (Collider2D[] colliders)
 	{
-		for(int i = 0; i < colliders.Length; i++) {
-			DebugDrawCollider (colliders[i]);
+		for (int i = 0; i < colliders.Length; i++) {
+			DebugDrawCollider (colliders [i]);
 		}
 	}
 
@@ -79,14 +80,19 @@ public class RBPhysics2D
 	{
 		if (collider.GetType () == typeof(CircleCollider2D)) {
 			CircleCollider2D circleCollider = collider as CircleCollider2D;
-			DebugDrawCircle ((Vector2) circleCollider.transform.position + circleCollider.offset, circleCollider.radius, Color.yellow);
+			DebugDrawCircle ((Vector2)circleCollider.transform.position + circleCollider.offset, circleCollider.radius, Color.yellow);
 		} else if (collider.GetType () == typeof(BoxCollider2D)) {
 			BoxCollider2D boxCollider = collider as BoxCollider2D;
-			Vector2 cornerA = (Vector2) boxCollider.transform.position + boxCollider.offset;
+			Vector2 cornerA = (Vector2)boxCollider.transform.position + boxCollider.offset;
 			Vector2 cornerB = cornerA;
 			cornerA -= (boxCollider.size * 0.5f);
 			cornerB += (boxCollider.size * 0.5f);
 			DebugDrawBox (cornerA, cornerB, Color.yellow);
+		} else if (collider.GetType () == typeof(PolygonCollider2D)) {
+			PolygonCollider2D polyCollider = collider as PolygonCollider2D;
+			if (polyCollider.pathCount >= 1) {
+				DebugDrawPolygon ((Vector2)polyCollider.transform.position + polyCollider.offset, polyCollider.GetPath(0), Color.yellow);
+			}
 		}
 	}
 
@@ -130,6 +136,19 @@ public class RBPhysics2D
 			startPoint = nextPoint;
 
 			currentDrawingAngle = nextAngle;
+		}
+	}
+
+	public static void DebugDrawPolygon (Vector2 offset, Vector2[] points, Color color, float duration = 0.01f)
+	{
+		for (int i = 0; i < points.Length - 1; i++) {
+			Vector2 nextPoint = points [i + 1] + offset;
+			Vector2 currentPoint = points [i] + offset;
+			Debug.DrawLine (currentPoint, nextPoint, color, duration);
+		}
+		// Connect back to start
+		if (points.Length > 1) {
+			Debug.DrawLine (points [points.Length - 1] + offset, points [0] + offset, color, duration);
 		}
 	}
 	#endregion
