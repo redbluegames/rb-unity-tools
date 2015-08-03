@@ -11,7 +11,7 @@ public class RBPhysics2D
 	                         float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
 	{
 		Collider2D hit = Physics2D.OverlapArea (cornerA, cornerB, layerMask, minDepth, maxDepth);
-		DrawBoxForHits (new Collider2D[] {hit}, cornerA, cornerB);
+		DrawBoxAndHits (new Collider2D[] {hit}, cornerA, cornerB);
 
 		return hit;
 	}
@@ -20,12 +20,12 @@ public class RBPhysics2D
 	                                float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
 	{
 		Collider2D[] hits = Physics2D.OverlapAreaAll (cornerA, cornerB, layerMask, minDepth, maxDepth);
-		DrawBoxForHits (hits, cornerA, cornerB);
+		DrawBoxAndHits (hits, cornerA, cornerB);
 
 		return hits;
 	}
 
-	static void DrawBoxForHits (Collider2D[] hits, Vector2 cornerA, Vector2 cornerB) {
+	static void DrawBoxAndHits (Collider2D[] hits, Vector2 cornerA, Vector2 cornerB) {
 		Color drawColor = Color.green;
 		if (hits != null && hits.Length > 0) {
 			drawColor = Color.red;
@@ -40,7 +40,7 @@ public class RBPhysics2D
 	                                  float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
 	{
 		Collider2D hit = Physics2D.OverlapCircle (center, radius, layerMask, minDepth, maxDepth);
-		DrawCircleForHits (new Collider2D[] {hit}, center, radius);
+		DrawCircleAndHits (new Collider2D[] {hit}, center, radius);
 
 		return hit;
 	}
@@ -49,12 +49,12 @@ public class RBPhysics2D
 	                                             float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
 	{
 		Collider2D[] hits = Physics2D.OverlapCircleAll (center, radius, layerMask, minDepth, maxDepth);
-		DrawCircleForHits (hits, center, radius);
+		DrawCircleAndHits (hits, center, radius);
 
 		return hits;
 	}
 
-	static void DrawCircleForHits (Collider2D[] hits, Vector2 center, float radius)
+	static void DrawCircleAndHits (Collider2D[] hits, Vector2 center, float radius)
 	{
 		Color drawColor = Color.green;
 		if (hits != null && hits.Length > 0) {
@@ -79,7 +79,14 @@ public class RBPhysics2D
 	{
 		if (collider.GetType () == typeof(CircleCollider2D)) {
 			CircleCollider2D circleCollider = collider as CircleCollider2D;
-			DebugDrawCircle(circleCollider.transform.position, circleCollider.radius, Color.yellow);
+			DebugDrawCircle ((Vector2) circleCollider.transform.position + circleCollider.offset, circleCollider.radius, Color.yellow);
+		} else if (collider.GetType () == typeof(BoxCollider2D)) {
+			BoxCollider2D boxCollider = collider as BoxCollider2D;
+			Vector2 cornerA = (Vector2) boxCollider.transform.position + boxCollider.offset;
+			Vector2 cornerB = cornerA;
+			cornerA -= (boxCollider.size * 0.5f);
+			cornerB += (boxCollider.size * 0.5f);
+			DebugDrawBox (cornerA, cornerB, Color.yellow);
 		}
 	}
 
