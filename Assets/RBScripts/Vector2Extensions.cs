@@ -11,7 +11,35 @@ namespace RedBlueTools
 		}
 
 		/// <summary>
-		/// Rounds to nearest arc (with 4 arcs, -45 -> 45 returns (1.0, 0.0))
+		/// Determines if the vector is within the arc specified by a direction bisecting an angle.
+		/// </summary>
+		/// <returns><c>true</c> if the vector is within the arc the arc; otherwise, <c>false</c>.</returns>
+		/// <param name="vector">Source Vector</param>
+		/// <param name="arcBisector">Arc bisector</param>
+		/// <param name="arcAngle">Arc angle</param>
+		public static bool IsWithinArc(this Vector2 vector, Vector2 arcBisector, float arcAngle)
+		{
+			// Can't compare if source vector has no direction
+			if (vector == Vector2.zero) {
+				return false;
+			}
+
+			// Can't compare to an arc without a direction
+			if (arcBisector == Vector2.zero) {
+				return false;
+			}
+
+			// Can't be within a negative angle
+			if (arcAngle < 0.0f) {
+				return false;
+			}
+
+			float angle = Vector2.Angle (vector, arcBisector);
+			return angle <= (arcAngle * 0.5f);
+		}
+
+		/// <summary>
+		/// Rounds to nearest arc (with 4 arcs, all vectors that point from -45 to 45 return (1.0, 0.0))
 		/// </summary>
 		/// <returns>The bisecting vector for the arc</returns>
 		/// <param name="vector">The vector to convert.</param>
@@ -20,7 +48,7 @@ namespace RedBlueTools
 		public static Vector2 RoundToNearestArc(this Vector2 vector, int numArcs, float rotationDegrees = 0.0f)
 		{
 			int arc = vector.GetNearestArc(numArcs, rotationDegrees);
-			Vector2 arcBisector = vector.GetVectorForArc(arc, numArcs, rotationDegrees);
+			Vector2 arcBisector = vector.GetBisectorForArc(arc, numArcs, rotationDegrees);
 
 			// Reapply the original vector's magnitude
 			return arcBisector * vector.magnitude;
@@ -37,7 +65,7 @@ namespace RedBlueTools
 			return arc;
 		}
 		
-		static Vector2 GetVectorForArc(this Vector2 vector, int arc, int numArcs, float rotationDegrees = 0.0f)
+		static Vector2 GetBisectorForArc(this Vector2 vector, int arc, int numArcs, float rotationDegrees = 0.0f)
 		{
 			float arcsToRadians = (2 * Mathf.PI) / numArcs;
 			float arcAngleRotated = (arc * arcsToRadians) + (rotationDegrees * Mathf.Deg2Rad);
@@ -73,7 +101,7 @@ namespace RedBlueTools
 		/// <returns>The cardinal direction within the specified bias.</returns>
 		/// <param name="vector">Vector to bias.</param>
 		/// <param name="biasAngle">Bias angle.</param>
-		public static Vector2 BiasToCardinals (this Vector2 vectorToBias, float biasAngle = 30.0f)
+		public static Vector2 BiasToCardinals (this Vector2 vectorToBias, float biasAngle)
 		{
 			Vector2 biasedVector = vectorToBias;
 			float assistAngle = biasAngle;
@@ -85,18 +113,12 @@ namespace RedBlueTools
 				-Vector2.up
 			};
 			foreach(Vector2 angle in angles) {
-				if(vectorToBias.IsWithinAngleTolerance(angle, assistAngle)) {
+				if(vectorToBias.IsWithinArc(angle, assistAngle)) {
 					biasedVector = angle;
 				}
 			}
 
 			return biasedVector;
-		}
-
-		public static bool IsWithinAngleTolerance(this Vector2 vector, Vector2 targetDirection, float tolerance)
-		{
-			float angle = Vector2.Angle (vector, targetDirection);
-			return angle <= (tolerance * 0.5f);
 		}
 
 		/// <summary>

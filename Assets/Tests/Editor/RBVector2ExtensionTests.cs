@@ -35,6 +35,53 @@ public class RBVector2ExtensionTests
 	}
 
 	[Test]
+	public void IsWithinArc_ZeroSourceVector_ReturnsFalse ()
+	{
+		Vector2 zero = Vector2.zero;
+		Vector2 upTarget = Vector2.up;
+		
+		Assert.False (zero.IsWithinArc (upTarget, 180.0f), "Zero source vector should never be within degrees.");
+	}
+
+	[Test]
+	public void IsWithinArc_ZeroArcDirection_ReturnsFalse ()
+	{
+		Vector2 unit = Vector2.up;
+		Vector2 zeroTarget = Vector2.zero;
+
+		Assert.False (unit.IsWithinArc (zeroTarget, 180.0f), "Zero target vector should never be within degrees.");
+	}
+
+	[Test]
+	public void IsWithinArc_ZeroDegreeToleranceEqualVectors_ReturnsTrue ()
+	{
+		Assert.True (Vector2.up.IsWithinArc (Vector2.up, 0.0f), "Exact vectors should always be within zero degrees.");
+	}
+
+	[Test]
+	public void IsWithinArc_OppositeVectors360Arc_ReturnsTrue ()
+	{
+		Assert.True (Vector2.up.IsWithinArc (Vector2.down, 360.0f), "All non-zero vectors should always be with a 360 arc.");
+	}
+
+	[Test]
+	public void IsWithinArc_NormalCaseInTolerance_ReturnsTrue ()
+	{
+		Vector2 diagonalUpLeft = new Vector2 (-1.0f, 1.0f);
+
+		Assert.True (diagonalUpLeft.IsWithinArc (Vector2.up, 90.0f), "DiagonalUpLeft should be inside the 90 degree up arc.");
+	}
+
+	[Test]
+	public void IsWithinArc_NormalCaseOutsideTolerance_ReturnsTrue ()
+	{
+		Vector2 diagonalUpRight = new Vector2 (1.0f, 1.0f);
+		Vector2 diagonalUpLeft = new Vector2 (-1.0f, 1.0f);
+		
+		Assert.False (diagonalUpLeft.IsWithinArc (diagonalUpRight, 179.0f), "DiagonalUpRight and DiagonalUpLeft should be not be within 179 degrees.");
+	}
+
+	[Test]
 	public void RoundToArc_ZeroVector_RemainsZero ()
 	{
 		// Arrange
