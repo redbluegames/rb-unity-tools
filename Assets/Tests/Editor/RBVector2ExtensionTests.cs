@@ -242,13 +242,13 @@ public class RBVector2ExtensionTests
 	{
 		Vector2[] angles = new Vector2[]
 		{
-			new Vector2 (1.0f, 0.01f), // RIGHT
+			new Vector2 (1.0f, 0.01f), // RIGHT-ISH
 			new Vector2 (1.0f, -0.01f),
-			new Vector2 (0.01f, 1.0f), // UP
+			new Vector2 (0.01f, 1.0f), // UP-ISH
 			new Vector2 (-0.01f, 1.0f),
-			new Vector2 (-1.0f, 0.01f), // LEFT
+			new Vector2 (-1.0f, 0.01f), // LEFT-ISH
 			new Vector2 (-1.0f, -0.01f),
-			new Vector2 (0.01f, -1.0f), // DOWN
+			new Vector2 (0.01f, -1.0f), // DOWN-ISH
 			new Vector2 (-0.01f, -1.0f),
 		};
 		Vector2[] expectedAngle = new Vector2[]
@@ -277,13 +277,13 @@ public class RBVector2ExtensionTests
 	{
 		Vector2[] angles = new Vector2[]
 		{
-			new Vector2 (1.0f, 0.5f), // RIGHT
+			new Vector2 (1.0f, 0.5f), // RIGHT-ISH
 			new Vector2 (1.0f, -0.3f),
-			new Vector2 (0.5f, 1.0f), // UP
+			new Vector2 (0.5f, 1.0f), // UP-ISH
 			new Vector2 (-0.3f, 1.0f),
-			new Vector2 (-1.0f, 0.5f), // LEFT
+			new Vector2 (-1.0f, 0.5f), // LEFT-ISH
 			new Vector2 (-1.0f, -0.3f),
-			new Vector2 (0.5f, -1.0f), // DOWN
+			new Vector2 (0.5f, -1.0f), // DOWN-ISH
 			new Vector2 (-0.3f, -1.0f),
 		};
 		
