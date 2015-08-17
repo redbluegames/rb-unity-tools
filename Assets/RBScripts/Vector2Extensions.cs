@@ -103,6 +103,14 @@ namespace RedBlueTools
 		/// <param name="biasAngle">Bias angle.</param>
 		public static Vector2 BiasToCardinals (this Vector2 vectorToBias, float biasAngle)
 		{
+			if (biasAngle > 90.0f) {
+				// When biasing by greater than quadrant, bias to nearest 90, not by first vector we test against.
+				biasAngle = 90.0f;
+			}
+			// Can't bias by negative degrees
+			if (biasAngle < 0.0f) {
+				return vectorToBias;
+			}
 			Vector2 biasedVector = vectorToBias;
 			float assistAngle = biasAngle;
 			Vector2[] angles = new Vector2[]
@@ -115,6 +123,9 @@ namespace RedBlueTools
 			foreach(Vector2 angle in angles) {
 				if(vectorToBias.IsWithinArc(angle, assistAngle)) {
 					biasedVector = angle;
+					// Restore magnitude of original vector
+					biasedVector *= vectorToBias.magnitude;
+					break;
 				}
 			}
 
