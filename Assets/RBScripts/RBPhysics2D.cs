@@ -9,6 +9,7 @@ public class RBPhysics2D
 	public static Color HitCastColor = Color.red;
 	public static Color HitNormalsColor = Color.magenta;
 
+
 	#region RayCast Wrapper
 	public static RaycastHit2D RayCast (Vector2 origin, Vector2 direction, float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers,
 	                                    float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
@@ -190,30 +191,17 @@ public class RBPhysics2D
 	#region Primitive Drawing
 	static void DebugDrawCircle (Vector2 center, float radius, Color color, float numSegments = 40, float duration = 0.01f)
 	{	
-		// Precompute values based on segments
-		float radiansPerCast = (2 * Mathf.PI) / numSegments;
-		float cosTheta = Mathf.Cos (radiansPerCast);
-		float sinTheta = Mathf.Sin (radiansPerCast);
-		
-		// Build rotation matrix about z axis
-		Vector2[] rotation = new Vector2[] {
-			new Vector2 (cosTheta, -sinTheta),
-			new Vector2 (sinTheta, cosTheta)
-		};
-		float startingRadians = 0.0f;
-		Vector2 vertexStart = new Vector2 (Mathf.Cos (startingRadians), Mathf.Sin (startingRadians));
-		vertexStart *= radius;
-		
+		Quaternion rotQuaternion = Quaternion.AngleAxis (360.0f / numSegments, Vector3.forward);
+		Vector2 vertexStart = new Vector2( radius, 0.0f);
 		for (int i = 0; i < numSegments; i++) {
-			Vector2 rotatedPoint = new Vector2 (Vector2.Dot (vertexStart, rotation [0]), 
-			                                    Vector2.Dot (vertexStart, rotation [1]));
+			Vector2 rotatedPoint = rotQuaternion * vertexStart;
 			// Draw the segment, shifted by the center
 			Debug.DrawLine (center + vertexStart, center + rotatedPoint, color, duration);
 			
 			vertexStart = rotatedPoint;
 		}
 	}
-
+		
 	static void DebugDrawBox (Vector2 worldTopLeft, Vector2 worldBottomRight, Color color, float duration = 0.01f)
 	{
 		// Convert corners to local offsets and position
