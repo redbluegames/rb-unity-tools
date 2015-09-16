@@ -195,7 +195,7 @@ public class RBPhysics2D
 		float cosTheta = Mathf.Cos (radiansPerCast);
 		float sinTheta = Mathf.Sin (radiansPerCast);
 		
-		// Build rotation matrix
+		// Build rotation matrix about z axis
 		Vector2[] rotation = new Vector2[] {
 			new Vector2 (cosTheta, -sinTheta),
 			new Vector2 (sinTheta, cosTheta)
@@ -263,13 +263,18 @@ public class RBPhysics2D
 		Debug.DrawLine (origin, endpoint, color, 0.01f);
 
 		// Draw arrowhead so we can see direction
-		Vector2 arrow = endpoint - origin;
-		float arrowheadWidthScale = 0.05f;
-		Vector2 arrowheadX = new Vector2 (arrow.y, -arrow.x) * arrowheadWidthScale;
-		float arrowheadLengthScale = 2f;
-		Vector2 arrowheadY = new Vector2 (arrowheadX.y, -arrowheadX.x) * arrowheadLengthScale;
-		Debug.DrawLine (endpoint, endpoint + arrowheadX + arrowheadY, color, 0.01f);
-		Debug.DrawLine (endpoint, endpoint - arrowheadX + arrowheadY, color, 0.01f);
+		// Configure arrow
+		float arrowThetaDegrees = 30.0f;
+		float arrowheadLength = 0.05f;
+		Vector2 arrowheadHandle = (origin - endpoint) * arrowheadLength;
+
+		Quaternion arrowRotationR = Quaternion.AngleAxis (arrowThetaDegrees, Vector3.forward);
+		Vector2 arrowheadR = arrowRotationR * arrowheadHandle;
+		Debug.DrawLine (endpoint, endpoint + arrowheadR, color, 0.01f);
+
+		Quaternion arrowRotationL = Quaternion.AngleAxis (-arrowThetaDegrees, Vector3.forward);
+		Vector2 arrowheadL = arrowRotationL * arrowheadHandle;
+		Debug.DrawLine (endpoint, endpoint + arrowheadL, color, 0.01f);
 	}
 	#endregion
 }
