@@ -46,22 +46,21 @@ public class RBPhysics2D
 			}
 		}
 
-		Debug.DrawLine (origin, endpoint, drawColor, 0.01f);
-		// Draw arrow so we can see direction
-		Vector2 arrow = endpoint - origin;
-		float arrowheadWidthScale = 0.05f;
-		Vector2 arrowheadX = new Vector2 (arrow.y, -arrow.x) * arrowheadWidthScale;
-		float arrowheadLengthScale = 2f;
-		Vector2 arrowheadY = new Vector2 (arrowheadX.y, -arrowheadX.x) * arrowheadLengthScale;
-		Debug.DrawLine (endpoint, endpoint + arrowheadX + arrowheadY, drawColor, 0.01f);
-		Debug.DrawLine (endpoint, endpoint - arrowheadX + arrowheadY, drawColor, 0.01f);
+		DebugDrawArrow (origin, endpoint, drawColor);
 	}
 
 	static void DrawRaycastHit2D (RaycastHit2D hit)
 	{
+		// Draw the hit collider
 		if (hit.collider != null) {
 			DebugDrawCollider (hit.collider);
+		}
 
+		// Draw the normal at the hit location, or a circle for hits from rays originating inside collider
+		bool isRayOriginatingFromInside = Mathf.Approximately (hit.fraction, 0.0f);
+		if (isRayOriginatingFromInside) {
+			DebugDrawCircle (hit.point, 0.2f, HitNormalsColor);
+		} else {
 			Debug.DrawRay (hit.point, hit.normal, HitNormalsColor, 0.01f);
 		}
 	}
@@ -213,6 +212,20 @@ public class RBPhysics2D
 		if (points.Length > 1) {
 			Debug.DrawLine (points [points.Length - 1] + offset, points [0] + offset, color, duration);
 		}
+	}
+
+	public static void DebugDrawArrow (Vector2 origin, Vector2 endpoint, Color color, float duration = 0.01f)
+	{
+		Debug.DrawLine (origin, endpoint, color, 0.01f);
+
+		// Draw arrowhead so we can see direction
+		Vector2 arrow = endpoint - origin;
+		float arrowheadWidthScale = 0.05f;
+		Vector2 arrowheadX = new Vector2 (arrow.y, -arrow.x) * arrowheadWidthScale;
+		float arrowheadLengthScale = 2f;
+		Vector2 arrowheadY = new Vector2 (arrowheadX.y, -arrowheadX.x) * arrowheadLengthScale;
+		Debug.DrawLine (endpoint, endpoint + arrowheadX + arrowheadY, color, 0.01f);
+		Debug.DrawLine (endpoint, endpoint - arrowheadX + arrowheadY, color, 0.01f);
 	}
 	#endregion
 }
