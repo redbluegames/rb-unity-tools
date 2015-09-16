@@ -2,7 +2,7 @@
 using System.Collections;
 
 [ExecuteInEditMode]
-public class RBPhysics2DCaster : MonoBehaviour {
+public class RBPhysics2DOverlapCaster : MonoBehaviour {
 
 	public CastType Cast;
 	public enum CastType
@@ -17,7 +17,7 @@ public class RBPhysics2DCaster : MonoBehaviour {
 	public Vector2 CornerBOffset;
 	public LayerMask castLayers;
 
-	void OnGUI ()
+	void OnRenderObject ()
 	{
 		switch (Cast) {
 		case CastType.OverlapCircle : 

@@ -5,8 +5,53 @@ using UnityEditor;
 public class RBPhysics2D
 {
 	public static bool ShowCasts = true;
+	public static Color HitColliderColor = Color.yellow;
+	public static Color CastColor = Color.green;
+	public static Color HitCastColor = Color.red;
+	public static Color HitNormalsColor = Color.magenta;
 
-	#region Cast Wrappers
+	#region RayCast Wrapper
+	public static RaycastHit2D RayCast (Vector2 origin, Vector2 direction, float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers,
+	                                    float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+	{
+		RaycastHit2D hit = Physics2D.Raycast (origin, direction, distance, layerMask, minDepth, maxDepth);
+		DrawRayAndHits (new RaycastHit2D[] {hit}, origin, direction, distance);
+		return hit;
+	}
+
+	static void DrawRayAndHits (RaycastHit2D [] hits, Vector2 origin, Vector2 direction, float distance = Mathf.Infinity)
+	{
+		float maxLineDistance = 100000.0f;
+		float lineDrawDistance = Mathf.Min (distance, maxLineDistance);
+		DrawLineAndHits (hits, origin, origin + (direction * lineDrawDistance));
+	}
+
+	static void DrawLineAndHits (RaycastHit2D [] hits, Vector2 origin, Vector2 endpoint)
+	{
+		Color drawColor = CastColor;
+		if (hits != null && hits.Length > 0) {
+			for (int i = 0; i < hits.Length; i++) {
+				DrawRaycastHit2D (hits[i]);
+				if (hits[i].collider != null) {
+					drawColor = HitCastColor;
+				}
+			}
+		}
+
+		Debug.DrawLine (origin, endpoint, drawColor, 0.01f);
+	}
+
+	static void DrawRaycastHit2D (RaycastHit2D hit)
+	{
+		if (hit.collider != null) {
+			DebugDrawCollider (hit.collider);
+
+			Debug.DrawRay (hit.point, hit.normal, HitNormalsColor, 0.01f);
+		}
+	}
+	#endregion
+
+	#region OverlapAreaCast Wrapper
 	public static Collider2D OverlapArea (Vector2 cornerA, Vector2 cornerB, int layerMask = Physics2D.DefaultRaycastLayers, 
 	                         float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
 	{
@@ -27,16 +72,18 @@ public class RBPhysics2D
 
 	static void DrawBoxAndHits (Collider2D[] hits, Vector2 cornerA, Vector2 cornerB)
 	{
-		Color drawColor = Color.green;
+		Color drawColor = CastColor;
 		if (hits != null && hits.Length > 0) {
-			drawColor = Color.red;
+			drawColor = HitCastColor;
 			
 			DebugDrawColliders (hits);
 		}
 		
 		DebugDrawBox (cornerA, cornerB, drawColor);
 	}
-
+	#endregion
+	
+	#region OverlapACircleCast Wrapper
 	public static Collider2D OverlapCircle (Vector2 center, float radius, int layerMask = Physics2D.DefaultRaycastLayers, 
 	                                  float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
 	{
@@ -57,9 +104,9 @@ public class RBPhysics2D
 
 	static void DrawCircleAndHits (Collider2D[] hits, Vector2 center, float radius)
 	{
-		Color drawColor = Color.green;
+		Color drawColor = CastColor;
 		if (hits != null && hits.Length > 0) {
-			drawColor = Color.red;
+			drawColor = HitCastColor;
 			
 			DebugDrawColliders (hits);
 		}
@@ -80,18 +127,18 @@ public class RBPhysics2D
 	{
 		if (collider.GetType () == typeof(CircleCollider2D)) {
 			CircleCollider2D circleCollider = collider as CircleCollider2D;
-			DebugDrawCircle ((Vector2)circleCollider.transform.position + circleCollider.offset, circleCollider.radius, Color.yellow);
+			DebugDrawCircle ((Vector2)circleCollider.transform.position + circleCollider.offset, circleCollider.radius, HitColliderColor);
 		} else if (collider.GetType () == typeof(BoxCollider2D)) {
 			BoxCollider2D boxCollider = collider as BoxCollider2D;
 			Vector2 cornerA = (Vector2)boxCollider.transform.position + boxCollider.offset;
 			Vector2 cornerB = cornerA;
 			cornerA -= (boxCollider.size * 0.5f);
 			cornerB += (boxCollider.size * 0.5f);
-			DebugDrawBox (cornerA, cornerB, Color.yellow);
+			DebugDrawBox (cornerA, cornerB, HitColliderColor);
 		} else if (collider.GetType () == typeof(PolygonCollider2D)) {
 			PolygonCollider2D polyCollider = collider as PolygonCollider2D;
 			if (polyCollider.pathCount >= 1) {
-				DebugDrawPolygon ((Vector2)polyCollider.transform.position + polyCollider.offset, polyCollider.GetPath(0), Color.yellow);
+				DebugDrawPolygon ((Vector2)polyCollider.transform.position + polyCollider.offset, polyCollider.GetPath(0), HitColliderColor);
 			}
 		}
 	}
