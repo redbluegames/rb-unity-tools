@@ -7,19 +7,19 @@ public class RBPhysics2DRayCaster : MonoBehaviour {
 	public CastType Cast;
 	public enum CastType
 	{
-		OverlapCircle,
-		OverlapArea,
+		Raycast,
 	}
 	
 	public bool CastAll;
-	public float Radius;
-	public Vector2 CornerAOffset;
-	public Vector2 CornerBOffset;
+	public float Distance;
 	public LayerMask castLayers;
 	
 	void OnRenderObject ()
 	{
-		RBPhysics2D.RayCast (transform.position, transform.up, 20);
-		//RBPhysics2D.
+		if (CastAll) {
+			RBPhysics2D.RayCastAll (transform.position, transform.up, Distance, castLayers);
+		} else {
+			RBPhysics2D.RayCast (transform.position, transform.up, Distance, castLayers);
+		}
 	}
 }

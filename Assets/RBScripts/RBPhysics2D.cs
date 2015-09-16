@@ -18,6 +18,14 @@ public class RBPhysics2D
 		DrawRayAndHits (new RaycastHit2D[] {hit}, origin, direction, distance);
 		return hit;
 	}
+	
+	public static RaycastHit2D[] RayCastAll (Vector2 origin, Vector2 direction, float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers,
+	                                    float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+	{
+		RaycastHit2D[] hits = Physics2D.RaycastAll (origin, direction, distance, layerMask, minDepth, maxDepth);
+		DrawRayAndHits (hits, origin, direction, distance);
+		return hits;
+	}
 
 	static void DrawRayAndHits (RaycastHit2D [] hits, Vector2 origin, Vector2 direction, float distance = Mathf.Infinity)
 	{
@@ -39,6 +47,14 @@ public class RBPhysics2D
 		}
 
 		Debug.DrawLine (origin, endpoint, drawColor, 0.01f);
+		// Draw arrow so we can see direction
+		Vector2 arrow = endpoint - origin;
+		float arrowheadWidthScale = 0.05f;
+		Vector2 arrowheadX = new Vector2 (arrow.y, -arrow.x) * arrowheadWidthScale;
+		float arrowheadLengthScale = 2f;
+		Vector2 arrowheadY = new Vector2 (arrowheadX.y, -arrowheadX.x) * arrowheadLengthScale;
+		Debug.DrawLine (endpoint, endpoint + arrowheadX + arrowheadY, drawColor, 0.01f);
+		Debug.DrawLine (endpoint, endpoint - arrowheadX + arrowheadY, drawColor, 0.01f);
 	}
 
 	static void DrawRaycastHit2D (RaycastHit2D hit)
