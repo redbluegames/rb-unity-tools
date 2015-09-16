@@ -4,7 +4,6 @@ using UnityEditor;
 
 public class RBPhysics2D
 {
-	public static bool ShowCasts = true;
 	public static Color HitColliderColor = Color.yellow;
 	public static Color CastColor = Color.green;
 	public static Color HitCastColor = Color.red;
@@ -98,7 +97,7 @@ public class RBPhysics2D
 	}
 	#endregion
 	
-	#region OverlapACircleCast Wrapper
+	#region OverlapCircleCast Wrapper
 	public static Collider2D OverlapCircle (Vector2 center, float radius, int layerMask = Physics2D.DefaultRaycastLayers, 
 	                                  float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
 	{
@@ -127,10 +126,9 @@ public class RBPhysics2D
 		}
 		DebugDrawCircle (center, radius, drawColor);
 	}
-
 	#endregion
 
-	#region Debug Drawing
+	#region Debug Drawing for Colliders
 	static void DebugDrawColliders (Collider2D[] colliders)
 	{
 		for (int i = 0; i < colliders.Length; i++) {
@@ -141,40 +139,81 @@ public class RBPhysics2D
 	static void DebugDrawCollider (Collider2D collider)
 	{
 		if (collider.GetType () == typeof(CircleCollider2D)) {
-			CircleCollider2D circleCollider = collider as CircleCollider2D;
-			DebugDrawCircle ((Vector2)circleCollider.transform.position + circleCollider.offset, circleCollider.radius, HitColliderColor);
+			DebugDrawCircleCollider2D ((CircleCollider2D)collider);
 		} else if (collider.GetType () == typeof(BoxCollider2D)) {
-			BoxCollider2D boxCollider = collider as BoxCollider2D;
-
-			// Define the corners about the origin
-			Vector2 halfSize = boxCollider.size * 0.5f;
-			Vector2 cornerTL = new Vector2 (-halfSize.x, halfSize.y);
-			Vector2 cornerBR = new Vector2 (halfSize.x, -halfSize.y);
-
-			// Offset corners by collider's offset
-			cornerTL += boxCollider.offset;
-			cornerBR += boxCollider.offset;
-
-			DebugDrawBox (boxCollider.transform.position, cornerTL, cornerBR, boxCollider.transform.rotation, HitColliderColor);
+			DebugDrawBoxCollider2D ((BoxCollider2D)collider);
 		} else if (collider.GetType () == typeof(PolygonCollider2D)) {
-			PolygonCollider2D polyCollider = collider as PolygonCollider2D;
-			if (polyCollider.pathCount >= 1) {
-				Vector2[] path = polyCollider.GetPath (0);
-				// Apply transform's rotation to points
-				Vector3[] rotatedPath = new Vector3[path.Length];
-				Quaternion rotation = polyCollider.transform.rotation;
-				for (int i = 0; i < path.Length; i++) {
-					// First offset points by polygon collider's offset
-					Vector3 offsetPoint = path [i] + polyCollider.offset;
-					Vector3 rotatedPoint = rotation * new Vector3 (offsetPoint.x, offsetPoint.y, 0.0f);
-					rotatedPath [i] = rotatedPoint;
-				}
-				// render polygon at transform's position
-				DebugDrawPolygon (polyCollider.transform.position, rotatedPath, HitColliderColor);
-			}
+			DebugDrawPolygonCollider2D ((PolygonCollider2D)collider);
+		} else {
+			throw new System.NotImplementedException ("Tried to DebugDraw a collider of unrecognized type. Type: " + collider.GetType ());
 		}
 	}
-	
+
+	static void DebugDrawCircleCollider2D (CircleCollider2D circleCollider)
+	{
+		DebugDrawCircle ((Vector2)circleCollider.transform.position + circleCollider.offset, circleCollider.radius, HitColliderColor);
+	}
+
+	static void DebugDrawBoxCollider2D (BoxCollider2D boxCollider)
+	{
+		// Define the corners about the origin
+		Vector2 halfSize = boxCollider.size * 0.5f;
+		Vector2 cornerTL = new Vector2 (-halfSize.x, halfSize.y);
+		Vector2 cornerBR = new Vector2 (halfSize.x, -halfSize.y);
+		
+		// Offset corners by collider's offset
+		cornerTL += boxCollider.offset;
+		cornerBR += boxCollider.offset;
+		
+		DebugDrawBox (boxCollider.transform.position, cornerTL, cornerBR, boxCollider.transform.rotation, HitColliderColor);
+	}
+
+	static void DebugDrawPolygonCollider2D (PolygonCollider2D polyCollider)
+	{
+		if (polyCollider.pathCount >= 1) {
+			Vector2[] path = polyCollider.GetPath (0);
+			// Apply transform's rotation to points
+			Vector2[] rotatedPath = new Vector2[path.Length];
+			Quaternion rotation = polyCollider.transform.rotation;
+			for (int i = 0; i < path.Length; i++) {
+				// First offset points by polygon collider's offset
+				Vector3 offsetPoint = path [i] + polyCollider.offset;
+				Vector3 rotatedPoint = rotation * new Vector3 (offsetPoint.x, offsetPoint.y, 0.0f);
+				rotatedPath [i] = (Vector2)rotatedPoint;
+			}
+			// render polygon at transform's position
+			DebugDrawPolygon (polyCollider.transform.position, rotatedPath, HitColliderColor);
+		}
+	}
+	#endregion
+
+	#region Primitive Drawing
+	static void DebugDrawCircle (Vector2 center, float radius, Color color, float numSegments = 40, float duration = 0.01f)
+	{	
+		// Precompute values based on segments
+		float radiansPerCast = (2 * Mathf.PI) / numSegments;
+		float cosTheta = Mathf.Cos (radiansPerCast);
+		float sinTheta = Mathf.Sin (radiansPerCast);
+		
+		// Build rotation matrix
+		Vector2[] rotation = new Vector2[] {
+			new Vector2 (cosTheta, -sinTheta),
+			new Vector2 (sinTheta, cosTheta)
+		};
+		float startingRadians = 0.0f;
+		Vector2 vertexStart = new Vector2 (Mathf.Cos (startingRadians), Mathf.Sin (startingRadians));
+		vertexStart *= radius;
+		
+		for (int i = 0; i < numSegments; i++) {
+			Vector2 rotatedPoint = new Vector2 (Vector2.Dot (vertexStart, rotation [0]), 
+			                                    Vector2.Dot (vertexStart, rotation [1]));
+			// Draw the segment, shifted by the center
+			Debug.DrawLine (center + vertexStart, center + rotatedPoint, color, duration);
+			
+			vertexStart = rotatedPoint;
+		}
+	}
+
 	static void DebugDrawBox (Vector2 worldTopLeft, Vector2 worldBottomRight, Color color, float duration = 0.01f)
 	{
 		// Convert corners to local offsets and position
@@ -204,44 +243,15 @@ public class RBPhysics2D
 		Debug.DrawLine (rotatedTopRight, rotatedTopLeft, color, duration);
 	}
 
-	static void DebugDrawCircle (Vector2 center, float radius, Color color, float numSegments = 40, float duration = 0.01f)
+	public static void DebugDrawPolygon (Vector2 center, Vector2[] points, Color color, float duration = 0.01f)
 	{
-		if (!ShowCasts) {
-			return;
-		}
-
-		// Precompute values based on segments
-		float radiansPerCast = (2 * Mathf.PI) / numSegments;
-		float cosTheta = Mathf.Cos (radiansPerCast);
-		float sinTheta = Mathf.Sin (radiansPerCast);
-
-		// Build rotation matrix
-		Vector2[] rotation = new Vector2[] {
-			new Vector2 (cosTheta, -sinTheta),
-			new Vector2 (sinTheta, cosTheta)
-		};
-		float startingRadians = 0.0f;
-		Vector2 vertexStart = new Vector2 (Mathf.Cos (startingRadians), Mathf.Sin (startingRadians));
-		vertexStart *= radius;
-
-		for (int i = 0; i < numSegments; i++) {
-			Vector2 rotatedPoint = new Vector2 (Vector2.Dot (vertexStart, rotation [0]), 
-			                               Vector2.Dot (vertexStart, rotation [1]));
-			// Draw the segment, shifted by the center
-			Debug.DrawLine (center + vertexStart, center + rotatedPoint, color, duration);
-			
-			vertexStart = rotatedPoint;
-		}
-	}
-
-	public static void DebugDrawPolygon (Vector3 center, Vector3[] points, Color color, float duration = 0.01f)
-	{
+		// Draw each segment except the last
 		for (int i = 0; i < points.Length - 1; i++) {
 			Vector3 nextPoint = points [i + 1] + center;
 			Vector3 currentPoint = points [i] + center;
 			Debug.DrawLine (currentPoint, nextPoint, color, duration);
 		}
-		// Connect back to start
+		// Draw the last segment by connecting it back to the start
 		if (points.Length > 1) {
 			Debug.DrawLine (points [points.Length - 1] + center, points [0] + center, color, duration);
 		}
@@ -249,6 +259,7 @@ public class RBPhysics2D
 
 	public static void DebugDrawArrow (Vector2 origin, Vector2 endpoint, Color color, float duration = 0.01f)
 	{
+		// Draw the line that makes up the body of the arrow
 		Debug.DrawLine (origin, endpoint, color, 0.01f);
 
 		// Draw arrowhead so we can see direction
