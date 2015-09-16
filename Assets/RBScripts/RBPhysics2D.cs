@@ -27,20 +27,20 @@ public class RBPhysics2D
 		return hits;
 	}
 
-	static void DrawRayAndHits (RaycastHit2D [] hits, Vector2 origin, Vector2 direction, float distance = Mathf.Infinity)
+	static void DrawRayAndHits (RaycastHit2D[] hits, Vector2 origin, Vector2 direction, float distance = Mathf.Infinity)
 	{
 		float maxLineDistance = 100000.0f;
 		float lineDrawDistance = Mathf.Min (distance, maxLineDistance);
 		DrawLineAndHits (hits, origin, origin + (direction * lineDrawDistance));
 	}
 
-	static void DrawLineAndHits (RaycastHit2D [] hits, Vector2 origin, Vector2 endpoint)
+	static void DrawLineAndHits (RaycastHit2D[] hits, Vector2 origin, Vector2 endpoint)
 	{
 		Color drawColor = CastColor;
 		if (hits != null && hits.Length > 0) {
 			for (int i = 0; i < hits.Length; i++) {
-				DrawRaycastHit2D (hits[i]);
-				if (hits[i].collider != null) {
+				DrawRaycastHit2D (hits [i]);
+				if (hits [i].collider != null) {
 					drawColor = HitCastColor;
 				}
 			}
@@ -93,7 +93,7 @@ public class RBPhysics2D
 			
 			DebugDrawColliders (hits);
 		}
-		
+
 		DebugDrawBox (cornerA, cornerB, drawColor);
 	}
 	#endregion
@@ -145,11 +145,17 @@ public class RBPhysics2D
 			DebugDrawCircle ((Vector2)circleCollider.transform.position + circleCollider.offset, circleCollider.radius, HitColliderColor);
 		} else if (collider.GetType () == typeof(BoxCollider2D)) {
 			BoxCollider2D boxCollider = collider as BoxCollider2D;
-			Vector2 cornerA = (Vector2)boxCollider.transform.position + boxCollider.offset;
-			Vector2 cornerB = cornerA;
-			cornerA -= (boxCollider.size * 0.5f);
-			cornerB += (boxCollider.size * 0.5f);
-			DebugDrawBox (cornerA, cornerB, HitColliderColor);
+
+			// Define the corners about the origin
+			Vector2 halfSize = boxCollider.size * 0.5f;
+			Vector2 cornerTL = new Vector2 (-halfSize.x, halfSize.y);
+			Vector2 cornerBR = new Vector2 (halfSize.x, -halfSize.y);
+
+			// Offset corners by collider's offset
+			cornerTL += boxCollider.offset;
+			cornerBR += boxCollider.offset;
+
+			DebugDrawBox (boxCollider.transform.position, cornerTL, cornerBR, boxCollider.transform.rotation, HitColliderColor);
 		} else if (collider.GetType () == typeof(PolygonCollider2D)) {
 			PolygonCollider2D polyCollider = collider as PolygonCollider2D;
 			if (polyCollider.pathCount >= 1) {
@@ -158,24 +164,44 @@ public class RBPhysics2D
 				Vector3[] rotatedPath = new Vector3[path.Length];
 				Quaternion rotation = polyCollider.transform.rotation;
 				for (int i = 0; i < path.Length; i++) {
-					var offsetPoint = path[i] + polyCollider.offset;
-					var rotatedPoint = rotation * new Vector3 (offsetPoint.x, offsetPoint.y, 0.0f);
-					rotatedPath[i] = rotatedPoint;
+					// First offset points by polygon collider's offset
+					Vector3 offsetPoint = path [i] + polyCollider.offset;
+					Vector3 rotatedPoint = rotation * new Vector3 (offsetPoint.x, offsetPoint.y, 0.0f);
+					rotatedPath [i] = rotatedPoint;
 				}
+				// render polygon at transform's position
 				DebugDrawPolygon (polyCollider.transform.position, rotatedPath, HitColliderColor);
 			}
 		}
 	}
-
-	static void DebugDrawBox (Vector2 cornerA, Vector2 cornerB, Color color, float duration = 0.01f)
+	
+	static void DebugDrawBox (Vector2 worldTopLeft, Vector2 worldBottomRight, Color color, float duration = 0.01f)
 	{
-		Vector2 cornerAB = new Vector2 (cornerA.x, cornerB.y);
-		Vector2 cornerBA = new Vector2 (cornerB.x, cornerA.y);
+		// Convert corners to local offsets and position
+		Vector2 center = (worldTopLeft + worldBottomRight) / 2.0f;
+		Vector2 localTopLeft = worldTopLeft - center;
+		Vector2 localBottomRight = worldBottomRight - center;
+		DebugDrawBox (center, localTopLeft, localBottomRight, Quaternion.identity, color, duration);
+	}
 
-		Debug.DrawLine (cornerA, cornerAB, color, duration);
-		Debug.DrawLine (cornerAB, cornerB, color, duration);
-		Debug.DrawLine (cornerB, cornerBA, color, duration);
-		Debug.DrawLine (cornerBA, cornerA, color, duration);
+	static void DebugDrawBox (Vector2 center, Vector2 localTopLeft, Vector2 localBottomRight, Quaternion rotation, Color color, float duration = 0.01f)
+	{
+		// Rotate all corners
+		Vector3 rotatedTopLeft = rotation * localTopLeft;
+		Vector3 rotatedTopRight = rotation * new Vector2 (localBottomRight.x, localTopLeft.y);
+		Vector3 rotatedBottomRight = rotation * localBottomRight;
+		Vector3 rotatedBottomLeft = rotation * new Vector2 (localTopLeft.x, localBottomRight.y);
+
+		// Shift the corners to the center position
+		rotatedTopLeft += (Vector3)center;
+		rotatedTopRight += (Vector3)center;
+		rotatedBottomRight += (Vector3)center;
+		rotatedBottomLeft += (Vector3)center;
+
+		Debug.DrawLine (rotatedTopLeft, rotatedBottomLeft, color, duration);
+		Debug.DrawLine (rotatedBottomLeft, rotatedBottomRight, color, duration);
+		Debug.DrawLine (rotatedBottomRight, rotatedTopRight, color, duration);
+		Debug.DrawLine (rotatedTopRight, rotatedTopLeft, color, duration);
 	}
 
 	static void DebugDrawCircle (Vector2 center, float radius, Color color, float numSegments = 40, float duration = 0.01f)
@@ -190,14 +216,17 @@ public class RBPhysics2D
 		float sinTheta = Mathf.Sin (radiansPerCast);
 
 		// Build rotation matrix
-		Vector2[] rotation = new Vector2[] {new Vector2 (cosTheta, -sinTheta), new Vector2 (sinTheta, cosTheta)};
+		Vector2[] rotation = new Vector2[] {
+			new Vector2 (cosTheta, -sinTheta),
+			new Vector2 (sinTheta, cosTheta)
+		};
 		float startingRadians = 0.0f;
 		Vector2 vertexStart = new Vector2 (Mathf.Cos (startingRadians), Mathf.Sin (startingRadians));
 		vertexStart *= radius;
 
 		for (int i = 0; i < numSegments; i++) {
-			Vector2 rotatedPoint = new Vector2 (Vector2.Dot (vertexStart, rotation[0]), 
-			                               Vector2.Dot (vertexStart, rotation[1]));
+			Vector2 rotatedPoint = new Vector2 (Vector2.Dot (vertexStart, rotation [0]), 
+			                               Vector2.Dot (vertexStart, rotation [1]));
 			// Draw the segment, shifted by the center
 			Debug.DrawLine (center + vertexStart, center + rotatedPoint, color, duration);
 			
