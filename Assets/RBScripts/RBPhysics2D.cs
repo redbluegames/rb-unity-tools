@@ -59,7 +59,7 @@ public class RBPhysics2D
 		// Draw the normal at the hit location, or a circle for hits from rays originating inside collider
 		bool isRayOriginatingFromInside = Mathf.Approximately (hit.fraction, 0.0f);
 		if (isRayOriginatingFromInside) {
-			DebugDrawCircle (hit.point, 0.2f, HitNormalsColor);
+			DebugDrawCircle (hit.point, 0.2f, HitNormalsColor, 20);
 		} else {
 			Debug.DrawRay (hit.point, hit.normal, HitNormalsColor, 0.01f);
 		}
@@ -169,35 +169,30 @@ public class RBPhysics2D
 		Debug.DrawLine (cornerBA, cornerA, color, duration);
 	}
 
-	static void DebugDrawCircle (Vector2 center, float radius, Color color, float duration = 0.01f)
+	static void DebugDrawCircle (Vector2 center, float radius, Color color, float numSegments = 40, float duration = 0.01f)
 	{
 		if (!ShowCasts) {
 			return;
 		}
 
+		// Precompute values based on segments
+		float radiansPerCast = (2 * Mathf.PI) / numSegments;
+		float cosTheta = Mathf.Cos (radiansPerCast);
+		float sinTheta = Mathf.Sin (radiansPerCast);
+
+		// Build rotation matrix
+		Vector2[] rotation = new Vector2[] {new Vector2 (cosTheta, -sinTheta), new Vector2 (sinTheta, cosTheta)};
 		float startingRadians = 0.0f;
-		float segmentsInCircle = 40;
-		float radiansPerCast = (1.0f / segmentsInCircle) * 2 * Mathf.PI;
+		Vector2 vertexStart = new Vector2 (Mathf.Cos (startingRadians), Mathf.Sin (startingRadians));
+		vertexStart *= radius;
 
-		Vector2 startPoint = new Vector2 (Mathf.Cos (startingRadians), Mathf.Sin (startingRadians));
-		startPoint *= radius;
-		startPoint += center;
-
-		float currentDrawingAngle = 0.0f;
-		while (currentDrawingAngle < (startingRadians + 2 * Mathf.PI)) {
-			// Calculate end point
-			float nextAngle = currentDrawingAngle + radiansPerCast;
-			float nextX = Mathf.Cos (nextAngle);
-			float nextY = Mathf.Sin (nextAngle);
-			Vector2 nextPoint = new Vector2 (nextX, nextY);
-			nextPoint *= radius; // Scale to radius
-			nextPoint += center; // Offset to center
-
-			Debug.DrawLine (startPoint, nextPoint, color, duration);
-
-			startPoint = nextPoint;
-
-			currentDrawingAngle = nextAngle;
+		for (int i = 0; i < numSegments; i++) {
+			Vector2 rotatedPoint = new Vector2 (Vector2.Dot (vertexStart, rotation[0]), 
+			                               Vector2.Dot (vertexStart, rotation[1]));
+			// Draw the segment, shifted by the center
+			Debug.DrawLine (center + vertexStart, center + rotatedPoint, color, duration);
+			
+			vertexStart = rotatedPoint;
 		}
 	}
 
