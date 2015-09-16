@@ -153,7 +153,16 @@ public class RBPhysics2D
 		} else if (collider.GetType () == typeof(PolygonCollider2D)) {
 			PolygonCollider2D polyCollider = collider as PolygonCollider2D;
 			if (polyCollider.pathCount >= 1) {
-				DebugDrawPolygon ((Vector2)polyCollider.transform.position + polyCollider.offset, polyCollider.GetPath(0), HitColliderColor);
+				Vector2[] path = polyCollider.GetPath (0);
+				// Apply transform's rotation to points
+				Vector3[] rotatedPath = new Vector3[path.Length];
+				Quaternion rotation = polyCollider.transform.rotation;
+				for (int i = 0; i < path.Length; i++) {
+					var offsetPoint = path[i] + polyCollider.offset;
+					var rotatedPoint = rotation * new Vector3 (offsetPoint.x, offsetPoint.y, 0.0f);
+					rotatedPath[i] = rotatedPoint;
+				}
+				DebugDrawPolygon (polyCollider.transform.position, rotatedPath, HitColliderColor);
 			}
 		}
 	}
@@ -196,16 +205,16 @@ public class RBPhysics2D
 		}
 	}
 
-	public static void DebugDrawPolygon (Vector2 offset, Vector2[] points, Color color, float duration = 0.01f)
+	public static void DebugDrawPolygon (Vector3 center, Vector3[] points, Color color, float duration = 0.01f)
 	{
 		for (int i = 0; i < points.Length - 1; i++) {
-			Vector2 nextPoint = points [i + 1] + offset;
-			Vector2 currentPoint = points [i] + offset;
+			Vector3 nextPoint = points [i + 1] + center;
+			Vector3 currentPoint = points [i] + center;
 			Debug.DrawLine (currentPoint, nextPoint, color, duration);
 		}
 		// Connect back to start
 		if (points.Length > 1) {
-			Debug.DrawLine (points [points.Length - 1] + offset, points [0] + offset, color, duration);
+			Debug.DrawLine (points [points.Length - 1] + center, points [0] + center, color, duration);
 		}
 	}
 
