@@ -156,7 +156,7 @@ public class RBPhysics2D
 		// Radius scaling mimics how Unity scales the collider
 		float scaledRadius = Mathf.Max (Mathf.Abs (scale.x), Mathf.Abs (scale.y)) * circleCollider.radius;
 
-		// Apply Transform's Scale to Offset
+		// Apply Transform to Offset
 		Vector2 transformedOffset = circleCollider.transform.TransformVector (circleCollider.offset);
 
 		DebugDrawCircle ((Vector2)circleCollider.transform.position + transformedOffset, scaledRadius, HitColliderColor);
@@ -168,33 +168,45 @@ public class RBPhysics2D
 		Vector2 halfSize = boxCollider.size * 0.5f;
 		Vector2 cornerTL = new Vector2 (-halfSize.x, halfSize.y);
 		Vector2 cornerBR = new Vector2 (halfSize.x, -halfSize.y);
-
 		Vector2 cornerTR = new Vector2 (halfSize.x, halfSize.y);
 		Vector2 cornerBL = new Vector2 (-halfSize.x, -halfSize.y);
 
-		cornerTL = boxCollider.transform.TransformVector (cornerTL);
-		cornerBR = boxCollider.transform.TransformVector (cornerBR);
-		cornerBL = boxCollider.transform.TransformVector (cornerBL);
-		cornerTR = boxCollider.transform.TransformVector (cornerTR);
+		// Transform the corners
+		Transform boxcolliderTransform = boxCollider.transform;
+		cornerTL = boxcolliderTransform.TransformVector (cornerTL);
+		cornerBR = boxcolliderTransform.TransformVector (cornerBR);
+		cornerBL = boxcolliderTransform.TransformVector (cornerBL);
+		cornerTR = boxcolliderTransform.TransformVector (cornerTR);
+		
+		// Get offset transformed
+		Vector2 offset = boxcolliderTransform.TransformVector (boxCollider.offset);
+		Vector2 position = boxcolliderTransform.position;
+		cornerTL += position + offset;
+		cornerBR += position + offset;
+		cornerBL += position + offset;
+		cornerTR += position + offset;
 
-		Vector2 offset = boxCollider.transform.TransformVector (boxCollider.offset);
-
-		DebugDrawPolygon ((Vector2) boxCollider.transform.position + offset, new Vector2[] {cornerTL, cornerTR, cornerBR, cornerBL}, HitColliderColor);
+		DebugDrawPolygon (new Vector2[] {cornerTL, cornerTR, cornerBR, cornerBL}, HitColliderColor);
 	}
 
 	static void DebugDrawPolygonCollider2D (PolygonCollider2D polyCollider)
 	{
 		if (polyCollider.pathCount >= 1) {
 			Transform colliderTransform = polyCollider.transform;
+			Vector2 position = colliderTransform.position;
 			Vector2[] path = polyCollider.GetPath (0);
 			Vector2[] transformedPath = new Vector2[path.Length];
+
+			// Get transformed Offset
 			Vector3 transformedOffset = colliderTransform.TransformVector (polyCollider.offset);
+
+			// Transform the points in the path
 			for (int i = 0; i < path.Length; i++) {
-				Vector2 transformedPoint = colliderTransform.TransformVector (path[i]);
-				transformedPath [i] = transformedPoint + (Vector2) transformedOffset;
+				transformedPath [i] = colliderTransform.TransformVector (path[i]);
+				transformedPath [i] += position + (Vector2) transformedOffset;
 			}
-			// render polygon at transform's position
-			DebugDrawPolygon (polyCollider.transform.position, transformedPath, HitColliderColor);
+
+			DebugDrawPolygon (transformedPath, HitColliderColor);
 		}
 	}
 	#endregion
@@ -215,44 +227,26 @@ public class RBPhysics2D
 		
 	static void DebugDrawBox (Vector2 worldTopLeft, Vector2 worldBottomRight, Color color, float duration = 0.01f)
 	{
-		// Convert corners to local offsets and position
-		Vector2 center = (worldTopLeft + worldBottomRight) / 2.0f;
-		Vector2 localTopLeft = worldTopLeft - center;
-		Vector2 localBottomRight = worldBottomRight - center;
-		DebugDrawBox (center, localTopLeft, localBottomRight, Quaternion.identity, color, duration);
+		Vector2 worldTopRight = new Vector2 (worldBottomRight.x, worldTopLeft.y);
+		Vector2 worldBottomLeft = new Vector2 (worldTopLeft.x, worldBottomRight.y);
+		
+		Debug.DrawLine (worldTopLeft, worldBottomLeft, color, duration);
+		Debug.DrawLine (worldBottomLeft, worldBottomRight, color, duration);
+		Debug.DrawLine (worldBottomRight, worldTopRight, color, duration);
+		Debug.DrawLine (worldTopRight, worldTopLeft, color, duration);
 	}
 
-	static void DebugDrawBox (Vector2 center, Vector2 localTopLeft, Vector2 localBottomRight, Quaternion rotation, Color color, float duration = 0.01f)
-	{
-		// Rotate all corners
-		Vector3 rotatedTopLeft = rotation * localTopLeft;
-		Vector3 rotatedTopRight = rotation * new Vector2 (localBottomRight.x, localTopLeft.y);
-		Vector3 rotatedBottomRight = rotation * localBottomRight;
-		Vector3 rotatedBottomLeft = rotation * new Vector2 (localTopLeft.x, localBottomRight.y);
-
-		// Shift the corners to the center position
-		rotatedTopLeft += (Vector3)center;
-		rotatedTopRight += (Vector3)center;
-		rotatedBottomRight += (Vector3)center;
-		rotatedBottomLeft += (Vector3)center;
-
-		Debug.DrawLine (rotatedTopLeft, rotatedBottomLeft, color, duration);
-		Debug.DrawLine (rotatedBottomLeft, rotatedBottomRight, color, duration);
-		Debug.DrawLine (rotatedBottomRight, rotatedTopRight, color, duration);
-		Debug.DrawLine (rotatedTopRight, rotatedTopLeft, color, duration);
-	}
-
-	public static void DebugDrawPolygon (Vector2 center, Vector2[] points, Color color, float duration = 0.01f)
+	public static void DebugDrawPolygon (Vector2[] worldPoints, Color color, float duration = 0.01f)
 	{
 		// Draw each segment except the last
-		for (int i = 0; i < points.Length - 1; i++) {
-			Vector3 nextPoint = points [i + 1] + center;
-			Vector3 currentPoint = points [i] + center;
+		for (int i = 0; i < worldPoints.Length - 1; i++) {
+			Vector3 nextPoint = worldPoints [i + 1];
+			Vector3 currentPoint = worldPoints [i];
 			Debug.DrawLine (currentPoint, nextPoint, color, duration);
 		}
 		// Draw the last segment by connecting it back to the start
-		if (points.Length > 1) {
-			Debug.DrawLine (points [points.Length - 1] + center, points [0] + center, color, duration);
+		if (worldPoints.Length > 1) {
+			Debug.DrawLine (worldPoints [worldPoints.Length - 1], worldPoints [0], color, duration);
 		}
 	}
 
