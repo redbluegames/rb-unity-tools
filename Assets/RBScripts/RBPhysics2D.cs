@@ -151,15 +151,13 @@ public class RBPhysics2D
 
 	static void DebugDrawCircleCollider2D (CircleCollider2D circleCollider)
 	{
-		Vector3 circleTransformScale = circleCollider.transform.localScale;
+		Vector3 scale = circleCollider.transform.localScale;
 
 		// Radius scaling mimics how Unity scales the collider
-		float scaledRadius = Mathf.Max (Mathf.Abs (circleTransformScale.x), Mathf.Abs (circleTransformScale.y)) * circleCollider.radius;
+		float scaledRadius = Mathf.Max (Mathf.Abs (scale.x), Mathf.Abs (scale.y)) * circleCollider.radius;
 
-		// Apply Scale to Offset
-		Vector2 scaledOffset = new Vector2 (circleTransformScale.x * circleCollider.offset.x, circleTransformScale.y * circleCollider.offset.y);
-		// Apply rotation to Offset
-		Vector2 transformedOffset = circleCollider.transform.rotation * scaledOffset;
+		// Apply Transform's Scale to Offset
+		Vector2 transformedOffset = circleCollider.transform.TransformVector (circleCollider.offset);
 
 		DebugDrawCircle ((Vector2)circleCollider.transform.position + transformedOffset, scaledRadius, HitColliderColor);
 	}
@@ -170,31 +168,30 @@ public class RBPhysics2D
 		Vector2 halfSize = boxCollider.size * 0.5f;
 		Vector2 cornerTL = new Vector2 (-halfSize.x, halfSize.y);
 		Vector2 cornerBR = new Vector2 (halfSize.x, -halfSize.y);
-		
-		// Offset corners by collider's offset
-		cornerTL += boxCollider.offset;
-		cornerBR += boxCollider.offset;
 
-		// Scale corners
-		Vector3 boxTransformScale = boxCollider.transform.localScale;
-		cornerTL = new Vector2 (cornerTL.x * boxTransformScale.x, cornerTL.y * boxTransformScale.y);
-		cornerBR = new Vector2 (cornerBR.x * boxTransformScale.x, cornerBR.y * boxTransformScale.y);
-		
-		DebugDrawBox (boxCollider.transform.position, cornerTL, cornerBR, boxCollider.transform.rotation, HitColliderColor);
+		Vector2 cornerTR = new Vector2 (halfSize.x, halfSize.y);
+		Vector2 cornerBL = new Vector2 (-halfSize.x, -halfSize.y);
+
+		cornerTL = boxCollider.transform.TransformVector (cornerTL);
+		cornerBR = boxCollider.transform.TransformVector (cornerBR);
+		cornerBL = boxCollider.transform.TransformVector (cornerBL);
+		cornerTR = boxCollider.transform.TransformVector (cornerTR);
+
+		Vector2 offset = boxCollider.transform.TransformVector (boxCollider.offset);
+
+		DebugDrawPolygon ((Vector2) boxCollider.transform.position + offset, new Vector2[] {cornerTL, cornerTR, cornerBR, cornerBL}, HitColliderColor);
 	}
 
 	static void DebugDrawPolygonCollider2D (PolygonCollider2D polyCollider)
 	{
 		if (polyCollider.pathCount >= 1) {
+			Transform colliderTransform = polyCollider.transform;
 			Vector2[] path = polyCollider.GetPath (0);
 			Vector2[] transformedPath = new Vector2[path.Length];
-			Quaternion rotation = polyCollider.transform.rotation;
-			Vector3 scale = polyCollider.transform.localScale;
+			Vector3 transformedOffset = colliderTransform.TransformVector (polyCollider.offset);
 			for (int i = 0; i < path.Length; i++) {
-				// First offset points by polygon collider's offset
-				Vector3 offsetPoint = path [i] + polyCollider.offset;
-				Vector2 scaledPoint = new Vector2 (offsetPoint.x * scale.x, offsetPoint.y * scale.y);
-				transformedPath [i] = rotation * scaledPoint;
+				Vector2 transformedPoint = colliderTransform.TransformVector (path[i]);
+				transformedPath [i] = transformedPoint + (Vector2) transformedOffset;
 			}
 			// render polygon at transform's position
 			DebugDrawPolygon (polyCollider.transform.position, transformedPath, HitColliderColor);
