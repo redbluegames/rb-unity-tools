@@ -10,6 +10,22 @@ public class RBPhysics2D
 	public static Color HitNormalsColor = Color.magenta;
 	
 	#region RayCast Wrapper
+	public static RaycastHit2D LineCast (Vector2 start, Vector2 end, int layerMask = Physics2D.DefaultRaycastLayers, 
+	                                     float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+	{
+		RaycastHit2D hit = Physics2D.Linecast (start, end, layerMask, minDepth, maxDepth);
+		DrawLineAndHits (new RaycastHit2D[] {hit}, start, end);
+		return hit;
+	}
+
+	public static RaycastHit2D[] LineCastAll (Vector2 start, Vector2 end, int layerMask = Physics2D.DefaultRaycastLayers, 
+	                                     float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+	{
+		RaycastHit2D[] hits = Physics2D.LinecastAll (start, end, layerMask, minDepth, maxDepth);
+		DrawLineAndHits (hits, start, end);
+		return hits;
+	}
+
 	public static RaycastHit2D RayCast (Vector2 origin, Vector2 direction, float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers,
 	                                    float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
 	{
@@ -145,7 +161,7 @@ public class RBPhysics2D
 		} else if (collider.GetType () == typeof(PolygonCollider2D)) {
 			DebugDrawPolygonCollider2D ((PolygonCollider2D)collider);
 		} else {
-			throw new System.NotImplementedException ("Tried to DebugDraw a collider of unrecognized type. Type: " + collider.GetType ());
+			//throw new System.NotImplementedException ("Tried to DebugDraw a collider of unrecognized type. Type: " + collider.GetType ());
 		}
 	}
 
