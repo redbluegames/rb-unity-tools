@@ -56,7 +56,7 @@ public class RBPhysics2D
 		}
 
 		// Draw the normal at the hit location, or a circle for hits from rays originating inside collider
-		bool isRayOriginatingFromInside = Mathf.Approximately (hit.fraction, 0.0f);
+		bool isRayOriginatingFromInside = Mathf.Approximately (hit.fraction, 0.0f) && hit.collider != null;
 		if (isRayOriginatingFromInside) {
 			DebugDrawCircle (hit.point, 0.2f, HitNormalsColor, 20);
 		} else {
