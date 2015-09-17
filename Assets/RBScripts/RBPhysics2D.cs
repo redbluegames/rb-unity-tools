@@ -161,7 +161,7 @@ public class RBPhysics2D
 		} else if (collider.GetType () == typeof(PolygonCollider2D)) {
 			DebugDrawPolygonCollider2D ((PolygonCollider2D)collider);
 		} else {
-			//throw new System.NotImplementedException ("Tried to DebugDraw a collider of unrecognized type. Type: " + collider.GetType ());
+			throw new System.NotImplementedException ("Tried to DebugDraw a collider of unrecognized type. Type: " + collider.GetType ());
 		}
 	}
 
