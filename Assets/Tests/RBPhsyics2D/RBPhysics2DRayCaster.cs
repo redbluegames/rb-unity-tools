@@ -14,7 +14,7 @@ public class RBPhysics2DRayCaster : MonoBehaviour {
 	public float Distance;
 	public LayerMask castLayers;
 	
-	void OnRenderObject ()
+	void Update ()
 	{
 		if (CastAll) {
 			RBPhysics2D.RayCastAll (transform.position, transform.up, Distance, castLayers);

@@ -8,8 +8,7 @@ public class RBPhysics2D
 	public static Color CastColor = Color.green;
 	public static Color HitCastColor = Color.red;
 	public static Color HitNormalsColor = Color.magenta;
-
-
+	
 	#region RayCast Wrapper
 	public static RaycastHit2D RayCast (Vector2 origin, Vector2 direction, float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers,
 	                                    float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
@@ -152,7 +151,17 @@ public class RBPhysics2D
 
 	static void DebugDrawCircleCollider2D (CircleCollider2D circleCollider)
 	{
-		DebugDrawCircle ((Vector2)circleCollider.transform.position + circleCollider.offset, circleCollider.radius, HitColliderColor);
+		Vector3 circleTransformScale = circleCollider.transform.localScale;
+
+		// Radius scaling mimics how Unity scales the collider
+		float scaledRadius = Mathf.Max (Mathf.Abs (circleTransformScale.x), Mathf.Abs (circleTransformScale.y)) * circleCollider.radius;
+
+		// Apply Scale to Offset
+		Vector2 scaledOffset = new Vector2 (circleTransformScale.x * circleCollider.offset.x, circleTransformScale.y * circleCollider.offset.y);
+		// Apply rotation to Offset
+		Vector2 transformedOffset = circleCollider.transform.rotation * scaledOffset;
+
+		DebugDrawCircle ((Vector2)circleCollider.transform.position + transformedOffset, scaledRadius, HitColliderColor);
 	}
 
 	static void DebugDrawBoxCollider2D (BoxCollider2D boxCollider)
@@ -165,6 +174,11 @@ public class RBPhysics2D
 		// Offset corners by collider's offset
 		cornerTL += boxCollider.offset;
 		cornerBR += boxCollider.offset;
+
+		// Scale corners
+		Vector3 boxTransformScale = boxCollider.transform.localScale;
+		cornerTL = new Vector2 (cornerTL.x * boxTransformScale.x, cornerTL.y * boxTransformScale.y);
+		cornerBR = new Vector2 (cornerBR.x * boxTransformScale.x, cornerBR.y * boxTransformScale.y);
 		
 		DebugDrawBox (boxCollider.transform.position, cornerTL, cornerBR, boxCollider.transform.rotation, HitColliderColor);
 	}
@@ -173,17 +187,17 @@ public class RBPhysics2D
 	{
 		if (polyCollider.pathCount >= 1) {
 			Vector2[] path = polyCollider.GetPath (0);
-			// Apply transform's rotation to points
-			Vector2[] rotatedPath = new Vector2[path.Length];
+			Vector2[] transformedPath = new Vector2[path.Length];
 			Quaternion rotation = polyCollider.transform.rotation;
+			Vector3 scale = polyCollider.transform.localScale;
 			for (int i = 0; i < path.Length; i++) {
 				// First offset points by polygon collider's offset
 				Vector3 offsetPoint = path [i] + polyCollider.offset;
-				Vector3 rotatedPoint = rotation * new Vector3 (offsetPoint.x, offsetPoint.y, 0.0f);
-				rotatedPath [i] = (Vector2)rotatedPoint;
+				Vector2 scaledPoint = new Vector2 (offsetPoint.x * scale.x, offsetPoint.y * scale.y);
+				transformedPath [i] = rotation * scaledPoint;
 			}
 			// render polygon at transform's position
-			DebugDrawPolygon (polyCollider.transform.position, rotatedPath, HitColliderColor);
+			DebugDrawPolygon (polyCollider.transform.position, transformedPath, HitColliderColor);
 		}
 	}
 	#endregion

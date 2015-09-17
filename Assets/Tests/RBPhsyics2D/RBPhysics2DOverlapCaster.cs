@@ -17,7 +17,7 @@ public class RBPhysics2DOverlapCaster : MonoBehaviour {
 	public Vector2 CornerBOffset;
 	public LayerMask castLayers;
 
-	void OnRenderObject ()
+	void Update ()
 	{
 		switch (Cast) {
 		case CastType.OverlapCircle : 
