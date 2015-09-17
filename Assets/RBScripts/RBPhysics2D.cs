@@ -160,7 +160,10 @@ public class RBPhysics2D
 			DebugDrawBoxCollider2D ((BoxCollider2D)collider);
 		} else if (collider.GetType () == typeof(PolygonCollider2D)) {
 			DebugDrawPolygonCollider2D ((PolygonCollider2D)collider);
-		} else {
+		} else if (collider.GetType () == typeof (EdgeCollider2D)) {
+			DebugDrawEdgeCollider2D ((EdgeCollider2D) collider);
+		}
+		else {
 			throw new System.NotImplementedException ("Tried to DebugDraw a collider of unrecognized type. Type: " + collider.GetType ());
 		}
 	}
@@ -225,6 +228,26 @@ public class RBPhysics2D
 			DebugDrawPolygon (transformedPath, HitColliderColor);
 		}
 	}
+
+	static void DebugDrawEdgeCollider2D (EdgeCollider2D edgeCollider)
+	{
+		if (edgeCollider.pointCount >= 1) {
+			Transform colliderTransform = edgeCollider.transform;
+			Vector2 position = colliderTransform.position;
+			Vector2[] transformedPath = new Vector2[edgeCollider.points.Length];
+			
+			// Get transformed Offset
+			Vector3 transformedOffset = colliderTransform.TransformVector (edgeCollider.offset);
+			
+			// Transform the points in the path
+			for (int i = 0; i < edgeCollider.points.Length; i++) {
+				transformedPath [i] = colliderTransform.TransformVector (edgeCollider.points[i]);
+				transformedPath [i] += position + (Vector2) transformedOffset;
+			}
+			
+			DebugDrawEdges (transformedPath, HitColliderColor);
+		}
+	}
 	#endregion
 
 	#region Primitive Drawing
@@ -252,7 +275,7 @@ public class RBPhysics2D
 		Debug.DrawLine (worldTopRight, worldTopLeft, color, duration);
 	}
 
-	public static void DebugDrawPolygon (Vector2[] worldPoints, Color color, float duration = 0.01f)
+	public static void DebugDrawEdges (Vector2[] worldPoints, Color color, float duration = 0.01f)
 	{
 		// Draw each segment except the last
 		for (int i = 0; i < worldPoints.Length - 1; i++) {
@@ -260,7 +283,12 @@ public class RBPhysics2D
 			Vector3 currentPoint = worldPoints [i];
 			Debug.DrawLine (currentPoint, nextPoint, color, duration);
 		}
-		// Draw the last segment by connecting it back to the start
+	}
+	
+	public static void DebugDrawPolygon (Vector2[] worldPoints, Color color, float duration = 0.01f)
+	{
+		DebugDrawEdges (worldPoints, color, duration);
+		// Polygons are just edges with the first and last points connected
 		if (worldPoints.Length > 1) {
 			Debug.DrawLine (worldPoints [worldPoints.Length - 1], worldPoints [0], color, duration);
 		}
