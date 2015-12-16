@@ -196,4 +196,103 @@ public class RBVector2ExtensionTests
 		Assert.True (diagonalRotatedBy45 == expectedVector, 
 		             string.Format ("Vectors are not equal. Expected {0}, but was {1}", expectedVector, diagonalRotatedBy45));
 	}
+
+	[Test]
+	public void BiasToCardinals_ZeroVector_RemainsZero ()
+	{
+		Vector2 biasedZero = Vector2.zero.BiasToCardinals (360.0f);
+
+		Assert.True (Vector2.zero == biasedZero, "Zero vector biased to cardinals is not zero. BiasedVector: " + biasedZero);
+	}
+
+	[Test]
+	public void BiasToCardinals_NegativeBias_ReturnsVector ()
+	{
+		float threshold = -90.0f;
+		Vector2 mostlyUp = new Vector2 (0.01f, 0.5f);
+		Vector2 biasedMostlyUp = mostlyUp.BiasToCardinals (threshold);
+		Vector2 expectBiasedUp = mostlyUp;
+
+		Vector2 mostlyDown = new Vector2 (0.01f, -0.6f);
+		Vector2 biasedMostlyDown = mostlyDown.BiasToCardinals (threshold);
+		Vector2 expectBiasedDown = mostlyDown;
+		
+		Assert.True (biasedMostlyUp == expectBiasedUp, string.Format ("Vectors are not equal. Expected {0}, but was {1}", expectBiasedUp, biasedMostlyUp));
+		Assert.True (biasedMostlyDown == expectBiasedDown, string.Format ("Vectors are not equal. Expected {0}, but was {1}", expectBiasedDown, biasedMostlyDown));
+	}
+	
+	[Test]
+	public void BiasToCardinals_GreaterThanNintyBias_ReturnsCardinals ()
+	{
+		float threshold = 360.0f;
+		Vector2 mostlyUp = new Vector2 (0.01f, 0.5f);
+		Vector2 biasedMostlyUp = mostlyUp.BiasToCardinals (threshold);
+		Vector2 expectBiasedUp = Vector2.up * biasedMostlyUp.magnitude;
+
+		Vector2 mostlyDown = new Vector2 (0.01f, -0.6f);
+		Vector2 biasedMostlyDown = mostlyDown.BiasToCardinals (threshold);
+		Vector2 expectBiasedDown = -Vector2.up * biasedMostlyDown.magnitude;
+		
+		Assert.True (biasedMostlyUp == expectBiasedUp, string.Format ("Vectors are not equal. Expected {0}, but was {1}", expectBiasedUp, biasedMostlyUp));
+		Assert.True (biasedMostlyDown == expectBiasedDown, string.Format ("Vectors are not equal. Expected {0}, but was {1}", expectBiasedDown, biasedMostlyDown));
+	}
+
+	[Test]
+	public void BiasToCardinals_WithinBias_ReturnsCardinals ()
+	{
+		Vector2[] angles = new Vector2[]
+		{
+			new Vector2 (1.0f, 0.01f), // RIGHT-ISH
+			new Vector2 (1.0f, -0.01f),
+			new Vector2 (0.01f, 1.0f), // UP-ISH
+			new Vector2 (-0.01f, 1.0f),
+			new Vector2 (-1.0f, 0.01f), // LEFT-ISH
+			new Vector2 (-1.0f, -0.01f),
+			new Vector2 (0.01f, -1.0f), // DOWN-ISH
+			new Vector2 (-0.01f, -1.0f),
+		};
+		Vector2[] expectedAngle = new Vector2[]
+		{
+			Vector2.right,
+			Vector2.right,
+			Vector2.up,
+			Vector2.up,
+			Vector2.left,
+			Vector2.left,
+			Vector2.down,
+			Vector2.down
+		};
+		
+		float threshold = 30.0f;
+		for (int i = 0; i < angles.Length; i++) {
+			Vector2 testVector = angles[i];
+			Vector2 biasedVector = testVector.BiasToCardinals (threshold);
+			Vector2 expectedVector = expectedAngle[i] * testVector.magnitude;
+			Assert.True (biasedVector == expectedVector, string.Format ("Vectors are not equal. Expected {0}, but was {1}", expectedVector, biasedVector));
+		}
+	}
+
+	[Test]
+	public void BiasToCardinals_NotWithinBias_ReturnsOriginal ()
+	{
+		Vector2[] angles = new Vector2[]
+		{
+			new Vector2 (1.0f, 0.5f), // RIGHT-ISH
+			new Vector2 (1.0f, -0.3f),
+			new Vector2 (0.5f, 1.0f), // UP-ISH
+			new Vector2 (-0.3f, 1.0f),
+			new Vector2 (-1.0f, 0.5f), // LEFT-ISH
+			new Vector2 (-1.0f, -0.3f),
+			new Vector2 (0.5f, -1.0f), // DOWN-ISH
+			new Vector2 (-0.3f, -1.0f),
+		};
+		
+		float threshold = 30.0f;
+		for (int i = 0; i < angles.Length; i++) {
+			Vector2 testVector = angles[i];
+			Vector2 biasedVector = testVector.BiasToCardinals (threshold);
+			Vector2 expectedVector = testVector;
+			Assert.True (biasedVector == expectedVector, string.Format ("Vectors are not equal. Expected {0}, but was {1}", expectedVector, biasedVector));
+		}
+	}
 }
