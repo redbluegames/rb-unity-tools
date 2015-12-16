@@ -11,7 +11,7 @@ namespace UnityTest
     public partial class UnitTestView : EditorWindow, IHasCustomMenu
     {
         private static UnitTestView s_Instance;
-        private static readonly IUnitTestEngine k_TestEngine = new NUnitTestEngine();
+        private IUnitTestEngine k_TestEngine = new NUnitTestEngine();
 
         [SerializeField] private List<UnitTestResult> m_ResultList = new List<UnitTestResult>();
         [SerializeField] private List<string> m_FoldMarkers = new List<string>();
@@ -36,6 +36,7 @@ namespace UnityTest
         private readonly GUIContent m_GUIShowDetailsBelowTests = new GUIContent("Show details below tests", "Show run details below test list");
         private readonly GUIContent m_GUIRunTestsOnNewScene = new GUIContent("Run tests on a new scene", "Run tests on a new scene");
         private readonly GUIContent m_GUIAutoSaveSceneBeforeRun = new GUIContent("Autosave scene", "The runner will automatically save the current scene changes before it starts");
+		private readonly GUIContent m_GUIReloadTestData = new GUIContent("Reload test list", "Reloads the test list. Useful with external data sources.");
         #endregion
 
         public UnitTestView()
@@ -198,6 +199,14 @@ namespace UnityTest
             else
                 menu.AddItem(m_GUIAutoSaveSceneBeforeRun, m_Settings.autoSaveSceneBeforeRun, m_Settings.ToggleAutoSaveSceneBeforeRun);
             menu.AddItem(m_GUIShowDetailsBelowTests, m_Settings.horizontalSplit, m_Settings.ToggleHorizontalSplit);
+            menu.AddSeparator("");
+            menu.AddItem(m_GUIReloadTestData, false, ReloadTestList);
+        }
+
+        private void ReloadTestList()
+        {
+            k_TestEngine = new NUnitTestEngine();
+            RefreshTests();
         }
 
         private void RefreshTests()

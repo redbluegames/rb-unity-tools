@@ -12,34 +12,38 @@ namespace UnityTest
     public static partial class Batch
     {
         private const string k_TestScenesParam = "-testscenes=";
+        private const string k_OtherBuildScenesParam = "-includeBuildScenes=";
         const string k_TargetPlatformParam = "-targetPlatform=";
         const string k_ResultFileDirParam = "-resultsFileDirectory=";
 
         public static void RunIntegrationTests()
         {
             var targetPlatform = GetTargetPlatform();
-            var sceneList = GetTestScenesList();
-            if (sceneList.Count == 0)
-                sceneList = FindTestScenesInProject();
-            RunIntegrationTests(targetPlatform, sceneList);
-        }
+            var otherBuildScenes = GetSceneListFromParam (k_OtherBuildScenesParam);
 
+            var testScenes = GetSceneListFromParam(k_TestScenesParam);
+            if (testScenes.Count == 0)
+                testScenes = FindTestScenesInProject();
+
+            RunIntegrationTests(targetPlatform, testScenes, otherBuildScenes);
+        }
+        
         public static void RunIntegrationTests(BuildTarget ? targetPlatform)
         {
             var sceneList = FindTestScenesInProject();
-            RunIntegrationTests(targetPlatform, sceneList);
+            RunIntegrationTests(targetPlatform, sceneList, new List<string>());
         }
 
 
-        public static void RunIntegrationTests(BuildTarget? targetPlatform, List<string> sceneList)
+        public static void RunIntegrationTests(BuildTarget? targetPlatform, List<string> testScenes, List<string> otherBuildScenes)
         {
             if (targetPlatform.HasValue)
-                BuildAndRun(targetPlatform.Value, sceneList);
+                BuildAndRun(targetPlatform.Value, testScenes, otherBuildScenes);
             else
-                RunInEditor(sceneList);
+                RunInEditor(testScenes,  otherBuildScenes);
         }
-
-        private static void BuildAndRun(BuildTarget target, List<string> sceneList)
+        
+        private static void BuildAndRun(BuildTarget target, List<string> testScenes, List<string> otherBuildScenes)
         {
             var resultFilePath = GetParameterArgument(k_ResultFileDirParam);
 
@@ -49,7 +53,8 @@ namespace UnityTest
             var config = new PlatformRunnerConfiguration
             {
                 buildTarget = target,
-                scenes = sceneList.ToArray(),
+                buildScenes = otherBuildScenes,
+                testScenes = testScenes,
                 projectName = "IntegrationTests",
                 resultsDir = resultFilePath,
                 sendResultsOverNetwork = InternalEditorUtility.inBatchMode,
@@ -67,19 +72,19 @@ namespace UnityTest
             PlatformRunner.BuildAndRunInPlayer(config);
         }
 
-        private static void RunInEditor(List<string> sceneList)
+        private static void RunInEditor(List<string> testScenes, List<string> otherBuildScenes)
         {
             CheckActiveBuildTarget();
 
             NetworkResultsReceiver.StopReceiver();
-            if (sceneList == null || sceneList.Count == 0)
+            if (testScenes == null || testScenes.Count == 0)
             {
-                Debug.Log("No scenes on the list");
+                Debug.Log("No test scenes on the list");
                 EditorApplication.Exit(returnCodeRunError);
                 return;
             }
-            EditorBuildSettings.scenes = sceneList.Select(s => new EditorBuildSettingsScene(s, true)).ToArray();
-            EditorApplication.OpenScene(sceneList.First());
+            EditorBuildSettings.scenes = (testScenes.Concat(otherBuildScenes).ToList()).Select(s => new EditorBuildSettingsScene(s, true)).ToArray();
+            EditorApplication.OpenScene(testScenes.First());
             GuiHelper.SetConsoleErrorPause(false);
 
             var config = new PlatformRunnerConfiguration
@@ -87,7 +92,7 @@ namespace UnityTest
                 resultsDir = GetParameterArgument(k_ResultFileDirParam),
                 ipList = TestRunnerConfigurator.GetAvailableNetworkIPs(),
                 port = PlatformRunnerConfiguration.TryToGetFreePort(),
-                runInEditor = true,
+                runInEditor = true
             };
 
             var settings = new PlayerSettingConfigurator(true);
@@ -139,14 +144,14 @@ namespace UnityTest
             return Directory.GetFiles("Assets", integrationTestScenePattern, SearchOption.AllDirectories).ToList();
         }
 
-        private static List<string> GetTestScenesList()
+        private static List<string> GetSceneListFromParam(string param)
         {
             var sceneList = new List<string>();
             foreach (var arg in Environment.GetCommandLineArgs())
             {
-                if (arg.ToLower().StartsWith(k_TestScenesParam))
+                if (arg.ToLower().StartsWith(param.ToLower()))
                 {
-                    var scenesFromParam = arg.Substring(k_TestScenesParam.Length).Split(',');
+                    var scenesFromParam = arg.Substring(param.Length).Split(',');
                     foreach (var scene in scenesFromParam)
                     {
                         var sceneName = scene;

@@ -17,6 +17,7 @@ namespace UnityTest
         private readonly string m_ResultId;
         private readonly IList<string> m_Categories;
 		private readonly int m_maxLineLenght = 15000;
+		private UnitTestResult resultCache = null;
         
         private GUIContent m_Content;
 
@@ -43,7 +44,12 @@ namespace UnityTest
 
         public UnitTestResult result
         {
-            get { return GetUnitTestResult(m_ResultId); }
+            get 
+			{ 
+				if(resultCache == null)
+					resultCache = GetUnitTestResult(m_ResultId);
+				return resultCache; 
+			}
         }
 
         public int CompareTo(TestLine other)
