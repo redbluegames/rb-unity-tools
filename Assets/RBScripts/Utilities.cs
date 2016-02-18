@@ -32,7 +32,7 @@ namespace RedBlueTools
 		public static void CopyStringToBuffer(string copyString)
 		{
 			TextEditor te = new TextEditor();
-			te.content = new GUIContent(copyString);
+			te.text = copyString;
 			te.SelectAll();
 			te.Copy();
 		}
