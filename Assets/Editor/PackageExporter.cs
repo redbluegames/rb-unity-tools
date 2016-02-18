@@ -4,7 +4,7 @@ using System.Collections;
 
 public class PackageExporter : UnityEditor.EditorWindow {
 
-	static string assetPathName = "Assets/RBScripts";
+	static string assetPathName = "Assets/RedBlueGames";
 
 	[MenuItem ("PackageExporter/Export as Package")]
 	public static void ExportPRBScripts ()
