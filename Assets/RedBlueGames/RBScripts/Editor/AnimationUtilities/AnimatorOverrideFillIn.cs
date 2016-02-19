@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public class AnimatorOverrideFillIn : MonoBehaviour
 	{

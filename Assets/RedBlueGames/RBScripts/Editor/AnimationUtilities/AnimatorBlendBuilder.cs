@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditor.Animations;
 using System.Collections;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public class AnimatorBlendBuilder
 	{

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public static class Vector2Extensions
 	{

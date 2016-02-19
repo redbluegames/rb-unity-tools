@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
-using RedBlue;
+using RedBlueGames;
 
-namespace RedBlue.Tests
+namespace RedBlueGames.Tools.Tests
 {
 	[TestFixture]
 	public class RBFlagsHelperTests

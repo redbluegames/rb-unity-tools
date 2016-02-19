@@ -4,7 +4,7 @@ using System.Collections;
 using UnityEditor;
 #endif
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public class RBPhysics2D
 	{

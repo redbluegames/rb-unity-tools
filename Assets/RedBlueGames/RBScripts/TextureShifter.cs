@@ -17,7 +17,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public class TextureShifter : MonoBehaviour
 	{

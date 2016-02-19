@@ -18,7 +18,7 @@
 
 using UnityEngine;
 
-namespace RedBlueTools
+namespace RedBlueGames.Tools
 {
 	[System.Serializable]
 	public class RBAchievement

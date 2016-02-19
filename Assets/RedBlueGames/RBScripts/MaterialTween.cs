@@ -17,7 +17,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	/// <summary>
 	/// MaterialTween is a RedBlueTool used to swap between materials on a gameobject.

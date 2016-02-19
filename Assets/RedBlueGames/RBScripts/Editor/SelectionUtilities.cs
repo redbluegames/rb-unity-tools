@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.Collections;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public static class SelectionUtilities
 	{

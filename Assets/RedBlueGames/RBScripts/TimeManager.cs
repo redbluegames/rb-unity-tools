@@ -16,7 +16,7 @@
  ****************************************************************************/
 using UnityEngine;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public static class TimeManager
 	{

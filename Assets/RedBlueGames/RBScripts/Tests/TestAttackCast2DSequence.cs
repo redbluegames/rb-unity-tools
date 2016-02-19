@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using RedBlue;
+using RedBlueGames.Tools;
 
 public class TestAttackCast2DSequence : MonoBehaviour
 {

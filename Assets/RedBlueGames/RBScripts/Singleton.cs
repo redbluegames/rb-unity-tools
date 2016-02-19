@@ -23,7 +23,7 @@ using UnityEngine;
  * To prevent that, add `protected T () {}` to your singleton class.
  * As a note, this is made as MonoBehaviour because we need Coroutines.
  */ 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 	{

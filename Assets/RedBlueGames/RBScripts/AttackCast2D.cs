@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using RedBlue;
+using RedBlueGames.Tools;
 
 /// <summary>
 /// Handles casting between this object and its position in the previous frame. 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace RedBlueGames
+namespace RedBlueGames.Tools
 {
     [System.Serializable]
     public struct SpriteSlicingOptions

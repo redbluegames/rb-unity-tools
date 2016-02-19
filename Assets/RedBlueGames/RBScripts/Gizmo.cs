@@ -17,7 +17,7 @@
  ****************************************************************************/
 using UnityEngine;
 
-namespace RedBlueTools
+namespace RedBlueGames.Tools
 {
 	public class Gizmo : MonoBehaviour
 	{

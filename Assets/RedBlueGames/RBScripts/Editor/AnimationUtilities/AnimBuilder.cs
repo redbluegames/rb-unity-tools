@@ -4,8 +4,7 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using RedBlue;
-using RedBlueGames;
+using RedBlueGames.Tools;
 
 public class AnimBuilder : ScriptableObject
 {

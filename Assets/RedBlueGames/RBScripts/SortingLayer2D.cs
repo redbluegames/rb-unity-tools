@@ -16,7 +16,7 @@
  ****************************************************************************/
 using UnityEngine;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public class SortingLayer2D : MonoBehaviour
 	{

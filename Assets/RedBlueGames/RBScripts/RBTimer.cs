@@ -17,7 +17,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 /* Timer adapted from Adam Winkels (Lovers in a Dangerous Spacetime
  * https://gist.githubusercontent.com/winkels/779ef0bdba4f88edeceb/raw/CoroutineTimer.cs

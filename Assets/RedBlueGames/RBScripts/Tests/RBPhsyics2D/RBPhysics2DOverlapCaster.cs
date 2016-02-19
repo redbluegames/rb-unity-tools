@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace RedBlue.Tests
+namespace RedBlueGames.Tools.Tests
 {
 	[ExecuteInEditMode]
 	public class RBPhysics2DOverlapCaster : MonoBehaviour

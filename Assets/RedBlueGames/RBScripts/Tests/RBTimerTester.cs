@@ -16,9 +16,9 @@
  ****************************************************************************/
 using UnityEngine;
 using System.Collections;
-using RedBlue;
+using RedBlueGames;
 
-namespace RedBlue.Tests
+namespace RedBlueGames.Tools.Tests
 {
 	public class RBTimerTester : MonoBehaviour
 	{

@@ -19,7 +19,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	// Class suggestion taken from user Dan Tao on StackOverflow: http://stackoverflow.com/questions/3261451/using-a-bitmask-in-c-sharp
 	public static class RBFlagsHelper

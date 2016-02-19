@@ -16,7 +16,7 @@
  ****************************************************************************/
 using UnityEngine;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 /*
  * Simple timer that does NOT update itself. The classes using

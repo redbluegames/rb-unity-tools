@@ -2,7 +2,7 @@
 using System.Collections;
 using System.IO;
 
-namespace RedBlueTools
+namespace RedBlueGames.Tools
 {
 	/// <summary>
 	/// Ideal for static methods that could be called anywhere.

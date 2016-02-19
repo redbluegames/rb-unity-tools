@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using NUnit.Framework;
-using RedBlueTools;
-using RedBlueGames;
-using RedBlue;
+using RedBlueGames.Tools;
 
 [TestFixture]
 public class UtilitiesTests {

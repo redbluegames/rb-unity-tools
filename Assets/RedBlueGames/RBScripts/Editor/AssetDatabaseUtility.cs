@@ -5,7 +5,7 @@ using UnityEditor;
 using System.Collections;
 using System.IO;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public static class AssetDatabaseUtility
 	{

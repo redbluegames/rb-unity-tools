@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
-namespace RedBlue
+namespace RedBlueGames.Tools
 {
 	public class RenameSpritesheet : EditorWindow
 	{

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace RedBlue.NotNull.Tests
+namespace RedBlueGames.Tools.NotNull.Tests
 {
 	public class MockMBReflection : MonoBehaviour
 	{

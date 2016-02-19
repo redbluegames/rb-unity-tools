@@ -1,9 +1,9 @@
 using NUnit.Framework;
 using System;
-using RedBlue;
+using RedBlueGames;
 using UnityEngine;
 
-namespace RedBlue.Tests
+namespace RedBlueGames.Tools.Tests
 {
 	[TestFixture]
 	public class RBVector2ExtensionTests
