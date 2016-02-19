@@ -8,7 +8,7 @@ namespace RedBlueGames.Tools
 	{
 		GameObject prefabObject;
 
-		[MenuItem ("Tools/Replace Selection with Prefab")]
+		[MenuItem ("GameObject/Replace Selection with Prefab")]
 		public static void ReplaceSelectionWithPrefab ()
 		{
 			EditorWindow.GetWindow (typeof(ReplaceWithPrefab));

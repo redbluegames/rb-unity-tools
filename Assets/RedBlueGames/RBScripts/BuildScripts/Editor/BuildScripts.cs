@@ -68,7 +68,7 @@ namespace RedBlueGames.Tools
 			}
 		}
 
-		[MenuItem ("Build/ExportBuild")]
+		[MenuItem ("Window/BuildScripts/ExportBuild")]
 		public static void ExportBuild ()
 		{
 			EditorWindow.GetWindow<BuildScripts> ("Export Builds");

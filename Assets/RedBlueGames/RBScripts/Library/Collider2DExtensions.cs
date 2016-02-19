@@ -19,7 +19,7 @@ namespace RedBlueGames.Tools
 				throw new System.NotImplementedException ("Tried to DebugDraw a collider of unrecognized type. Type: " + collider.GetType ());
 			}
 		}
-	
+
 		public static void DebugDraw (this CircleCollider2D circleCollider, Color color)
 		{
 			Vector3 scale = circleCollider.transform.localScale;
@@ -32,7 +32,7 @@ namespace RedBlueGames.Tools
 		
 			DebugUtilities.DrawCircle ((Vector2)circleCollider.transform.position + transformedOffset, scaledRadius, color);
 		}
-	
+
 		public static void DebugDraw (this BoxCollider2D boxCollider, Color color)
 		{
 			// Define the corners about the origin
@@ -64,7 +64,7 @@ namespace RedBlueGames.Tools
 				cornerBL
 			}, color);
 		}
-	
+
 		public static void DebugDraw (this PolygonCollider2D polyCollider, Color color)
 		{
 			if (polyCollider.pathCount >= 1) {
@@ -85,7 +85,7 @@ namespace RedBlueGames.Tools
 				DebugUtilities.DrawPolygon (transformedPath, color);
 			}
 		}
-	
+
 		public static void DebugDraw (this EdgeCollider2D edgeCollider, Color color)
 		{
 			if (edgeCollider.pointCount >= 1) {

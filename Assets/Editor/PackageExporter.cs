@@ -3,31 +3,34 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PackageExporter : UnityEditor.EditorWindow {
+public class PackageExporter : UnityEditor.EditorWindow
+{
 
 	static string assetPathName = "Assets/RedBlueGames";
 
 	static string Filename
 	{
-		get {
+		get
+		{
 			return "RBScripts.unitypackage";
 		}
 	}
 
 	static string FilenameWithTests
 	{
-		get {
+		get
+		{
 			return "RBScriptsWithTests.unitypackage";
 		}
 	}
 
-	[MenuItem ("PackageExporter/Export with Tests")]
+	[MenuItem ("Assets/PackageExporter/Export with Tests", false, 111)]
 	public static void ExportRBScriptsWithTests ()
 	{
 		ExportRBScripts (false);
 	}
 
-	[MenuItem ("PackageExporter/Export")]
+	[MenuItem ("Assets/PackageExporter/Export", false, 100)]
 	public static void ExportRBScripts ()
 	{
 		ExportRBScripts (true);
@@ -36,7 +39,7 @@ public class PackageExporter : UnityEditor.EditorWindow {
 	static void ExportRBScripts (bool excludeTests)
 	{
 		var subDirectories = System.IO.Directory.GetDirectories (assetPathName, "*", 
-			System.IO.SearchOption.AllDirectories);
+			                     System.IO.SearchOption.AllDirectories);
 		var directoriesToExport = new List<string> (subDirectories);
 
 		var testDirectories = GetTestDirectories (subDirectories);
