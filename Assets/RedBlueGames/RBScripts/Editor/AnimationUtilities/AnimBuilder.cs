@@ -6,44 +6,46 @@ using System.Collections.Generic;
 using System.IO;
 using RedBlueGames.Tools;
 
-public class AnimBuilder : ScriptableObject
+namespace RedBlueGames.Tools
 {
-	[Header ("Source Texture")]
-	public Texture2D TextureWithAnims;
+	public class AnimBuilder : ScriptableObject
+	{
+		[Header ("Source Texture")]
+		public Texture2D TextureWithAnims;
 
-	[Header ("Animations")]
-	public int SamplesPerSecond;
-	public string PathToSpriteRenderer;
-	public List<SpriteAnimClip> Clips;
+		[Header ("Animations")]
+		public int SamplesPerSecond;
+		public string PathToSpriteRenderer;
+		public List<SpriteAnimClip> Clips;
 
-	public string SavePath {
-		get {
-			return AssetDatabaseUtility.GetAssetDirectory (this);
+		public string SavePath {
+			get {
+				return AssetDatabaseUtility.GetAssetDirectory (this);
+			}
 		}
-	}
 
-	#region Initialization
-	public void Initialize ()
-	{
-		Clips = new List<SpriteAnimClip> ();
-		SamplesPerSecond = 12;
-		PathToSpriteRenderer = ""; // For now just assume sprite render is on root.
-	}
-	
-	public void InitializeForCharacter ()
-	{
-		AddEightBlendToClips ("Idle");
-		AddEightBlendToClips ("Move");
-		AddEightBlendToClips ("Attack");
-		AddEightBlendToClips ("AttackH");
-		AddEightBlendToClips ("AttackH_Warmup");
-		AddEightBlendToClips ("Dodge");
-	}
+		#region Initialization
 
-	public void AddEightBlendToClips (string blendStateName)
-	{
-		string[] directionSuffixes = 
+		public void Initialize ()
 		{
+			Clips = new List<SpriteAnimClip> ();
+			SamplesPerSecond = 12;
+			PathToSpriteRenderer = ""; // For now just assume sprite render is on root.
+		}
+
+		public void InitializeForCharacter ()
+		{
+			AddEightBlendToClips ("Idle");
+			AddEightBlendToClips ("Move");
+			AddEightBlendToClips ("Attack");
+			AddEightBlendToClips ("AttackH");
+			AddEightBlendToClips ("AttackH_Warmup");
+			AddEightBlendToClips ("Dodge");
+		}
+
+		public void AddEightBlendToClips (string blendStateName)
+		{
+			string[] directionSuffixes = {
 			"U",
 			"UR",
 			"R",
@@ -352,3 +354,4 @@ public class AnimBuilderInspector : UnityEditor.Editor
 	}
 }
 #endif
+}

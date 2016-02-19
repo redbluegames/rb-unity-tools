@@ -2,25 +2,28 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public static class ArrayExtensions
+namespace RedBlueGames.Tools
 {
-	/// <summary>
-	/// Returns the last element in the array
-	/// </summary>
-	/// <param name="array">Array.</param>
-	/// <typeparam name="T">The 1st type parameter.</typeparam>
-	public static T Last<T> (this T[] array)
+	public static class ArrayExtensions
 	{
-		return array [array.Length - 1];
-	}
+		/// <summary>
+		/// Returns the last element in the array
+		/// </summary>
+		/// <param name="array">Array.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static T Last<T> (this T[] array)
+		{
+			return array [array.Length - 1];
+		}
 
-	/// <summary>
-	/// Returns the last element in the list
-	/// </summary>
-	/// <param name="list">List.</param>
-	/// <typeparam name="T">The 1st type parameter.</typeparam>
-	public static T Last<T> (this List<T> list)
-	{
-		return list [list.Count - 1];
+		/// <summary>
+		/// Returns the last element in the list
+		/// </summary>
+		/// <param name="list">List.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static T Last<T> (this List<T> list)
+		{
+			return list [list.Count - 1];
+		}
 	}
 }

@@ -3,18 +3,22 @@ using System.Collections;
 using NUnit.Framework;
 using RedBlueGames.Tools;
 
-[TestFixture]
-public class UtilitiesTests {
-
-	[Test]
-	public void CopyText ()
+namespace RedBlueGames.Tools.Tests
+{
+	[TestFixture]
+	public class UtilitiesTests
 	{
-		var copyString = "TestStrrrring";
-		var expectedString = copyString;
-		Utilities.CopyStringToBuffer (copyString);
 
-		var editor = new TextEditor ();
-		editor.Paste ();
-		Assert.AreEqual (expectedString, editor.text);
+		[Test]
+		public void CopyText ()
+		{
+			var copyString = "TestStrrrring";
+			var expectedString = copyString;
+			Utilities.CopyStringToBuffer (copyString);
+
+			var editor = new TextEditor ();
+			editor.Paste ();
+			Assert.AreEqual (expectedString, editor.text);
+		}
 	}
 }
