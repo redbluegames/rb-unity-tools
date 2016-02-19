@@ -29,7 +29,7 @@ namespace RedBlueGames.Tools
 			aggregatedOffset = Vector2.zero;
 			textureToShift = GetComponent<Renderer> ().material;
 		}
-	
+
 		/// <summary>
 		/// Ensure this is called last after any other scripts calling ShiftTexture
 		/// </summary>

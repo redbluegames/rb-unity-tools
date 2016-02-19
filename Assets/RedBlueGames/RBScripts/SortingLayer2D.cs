@@ -24,7 +24,7 @@ namespace RedBlueGames.Tools
 
 		void Start ()
 		{
-			GetComponent<Renderer>().sortingLayerName = sortLayer;
+			GetComponent<Renderer> ().sortingLayerName = sortLayer;
 		}
 	}
 }

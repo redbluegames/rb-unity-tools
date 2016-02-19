@@ -19,7 +19,7 @@ using System.Collections;
 
 namespace RedBlueGames.Tools
 {
-/* Timer adapted from Adam Winkels (Lovers in a Dangerous Spacetime
+	/* Timer adapted from Adam Winkels (Lovers in a Dangerous Spacetime
  * https://gist.githubusercontent.com/winkels/779ef0bdba4f88edeceb/raw/CoroutineTimer.cs
  */
 	[System.Serializable]
@@ -51,10 +51,10 @@ namespace RedBlueGames.Tools
 			this.Duration = timerDuration;
 			this.Repeats = repeats;
 		}
-		
+
 		public void Start (MonoBehaviour targetMonobehaviour, System.Action timerFinishedAction = null)
 		{	
-			if(IsUnset()) {
+			if (IsUnset ()) {
 				throw new System.InvalidOperationException ("Trying to start a timer without setting its duration.");
 			}
 
@@ -71,9 +71,9 @@ namespace RedBlueGames.Tools
 
 		public bool IsUnset ()
 		{
-			return float.IsNaN(Duration);
+			return float.IsNaN (Duration);
 		}
-		
+
 		void DoStart ()
 		{
 			if (Duration <= 0.0f) {
@@ -84,7 +84,7 @@ namespace RedBlueGames.Tools
 
 			_isRunning = true;
 		}
-		
+
 		void TimerFinished ()
 		{	
 			_isRunning = false;
@@ -105,12 +105,12 @@ namespace RedBlueGames.Tools
 		{
 			return TimeRemaining;
 		}
-		
+
 		public void Stop ()
 		{
 			_isRunning = false;
 			
-			if(timerCoroutine != null) {
+			if (timerCoroutine != null) {
 				StopTimerCoroutine ();
 			}
 
@@ -121,12 +121,13 @@ namespace RedBlueGames.Tools
 		}
 
 		#region TimerCoroutine
+
 		void StartTimerCoroutine (float waitSeconds)
 		{
 			timerCoroutine = CountdownForDuration (waitSeconds);
 			targetMonobehaviour.StartCoroutine (timerCoroutine);
 		}
-		
+
 		IEnumerator CountdownForDuration (float desiredDuration)
 		{
 			/* Note: If we use a ton of timers, we may need to use this simpler version (shown)
@@ -136,7 +137,7 @@ namespace RedBlueGames.Tools
 			while (true) {
 				// yield at the start of the loop to always wait at least one frame.
 				// Only a <= 0 second timer would finish immediately, and that's not allowed.
-				if(UsesFixedUpdate) {
+				if (UsesFixedUpdate) {
 					// FixedUpdate timers are used to guarantee precision on physics objects like projectiles.
 					yield return new WaitForFixedUpdate ();
 				} else {
@@ -151,12 +152,13 @@ namespace RedBlueGames.Tools
 			
 			TimerFinished ();
 		}
-		
+
 		void StopTimerCoroutine ()
 		{
 			targetMonobehaviour.StopCoroutine (timerCoroutine);
 			timerCoroutine = null;
 		}
+
 		#endregion
 	}
 }

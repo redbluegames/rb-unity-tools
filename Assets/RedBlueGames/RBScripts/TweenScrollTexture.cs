@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace RedBlueGames.Tools
 {
-	[RequireComponent (typeof (TextureShifter))]
+	[RequireComponent (typeof(TextureShifter))]
 	/// <summary>
 	/// Move a texture across a plane at a given linear speed.
 	/// </summary>
@@ -30,24 +30,24 @@ namespace RedBlueGames.Tools
 		Vector2 currentOffset;
 		public bool MoveAsSinWave;
 		public int SinCycleSeconds = 60;
-	
+
 		void Awake ()
 		{
 			currentOffset = Vector2.zero;
-			textureShifter = GetComponent<TextureShifter>();
+			textureShifter = GetComponent<TextureShifter> ();
 		}
-	
+
 		void Update ()
 		{
 			if (!IsPaused) {
 				float xOffset = (Time.deltaTime * speed.x);
 				float yOffset = (Time.deltaTime * speed.y);
 				if (MoveAsSinWave) {
-					float sinBasedOffset = Mathf.Sin((Time.timeSinceLevelLoad * Mathf.PI * 2) / SinCycleSeconds);
+					float sinBasedOffset = Mathf.Sin ((Time.timeSinceLevelLoad * Mathf.PI * 2) / SinCycleSeconds);
 					yOffset = sinBasedOffset * (Time.deltaTime * speed.y);
 				}
-				currentOffset = new Vector2( (currentOffset.x + xOffset) % 1, (currentOffset.y + yOffset) % 1);
-				textureShifter.ShiftTexture(currentOffset);
+				currentOffset = new Vector2 ((currentOffset.x + xOffset) % 1, (currentOffset.y + yOffset) % 1);
+				textureShifter.ShiftTexture (currentOffset);
 			}
 		}
 	}

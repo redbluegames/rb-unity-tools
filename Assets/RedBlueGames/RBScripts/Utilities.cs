@@ -15,7 +15,7 @@ namespace RedBlueGames.Tools
 		/// </summary>
 		/// <param name="url">URL.</param>
 		/// <param name="windowTitle">Window title.</param>
-		public static void OpenURL(string url)
+		public static void OpenURL (string url)
 		{
 			if (Application.isWebPlayer) {
 				string evalString = string.Format ("window.open('{0}')", url);
@@ -29,14 +29,14 @@ namespace RedBlueGames.Tools
 		/// Copies the string to the OS buffer.
 		/// </summary>
 		/// <param name="copyString">String to copy.</param>
-		public static void CopyStringToBuffer(string copyString)
+		public static void CopyStringToBuffer (string copyString)
 		{
-			TextEditor te = new TextEditor();
+			TextEditor te = new TextEditor ();
 			te.text = copyString;
-			te.SelectAll();
-			te.Copy();
+			te.SelectAll ();
+			te.Copy ();
 		}
-		
+
 		public static Texture2D ConvertFileToTexture2D (string path)
 		{
 			Texture2D texture = new Texture2D (0, 0, TextureFormat.ARGB32, false);
@@ -53,13 +53,13 @@ namespace RedBlueGames.Tools
 
 		public static void WriteTextureToDisk (Texture2D texture, string outputDirectory, string filename)
 		{
-			byte[] bytes = texture.EncodeToPNG();
+			byte[] bytes = texture.EncodeToPNG ();
 			string path = outputDirectory + filename;
 			Debug.LogWarning ("Writing file to disk: " + path);
 			try {
-				System.IO.File.WriteAllBytes(path, bytes);
+				System.IO.File.WriteAllBytes (path, bytes);
 			} catch (System.Exception e) {
-				Debug.LogWarning("Failed to write. Reason: " + e.Message);
+				Debug.LogWarning ("Failed to write. Reason: " + e.Message);
 			}
 		}
 	}

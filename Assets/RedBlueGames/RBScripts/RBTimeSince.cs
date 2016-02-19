@@ -18,7 +18,7 @@ using UnityEngine;
 
 namespace RedBlueGames.Tools
 {
-/*
+	/*
  * Simple timer that does NOT update itself. The classes using
  * this need to check back periodically to see how much time
  * has gone by.
@@ -27,15 +27,16 @@ namespace RedBlueGames.Tools
 	public class RBTimeSince
 	{
 		float timeStarted;
-		public bool IsRunning {get; private set;}
+
+		public bool IsRunning { get; private set; }
+
 		const float UNSET = float.NaN;
 
 		/// <summary>
 		/// The amount of time in seconds the timer has been running.
 		/// </summary>
 		/// <value>The elapsed.</value>
-		public float Elapsed
-		{
+		public float Elapsed {
 			get {
 				WarnIfUnSet ();
 				return Time.time - timeStarted;
@@ -58,7 +59,7 @@ namespace RedBlueGames.Tools
 			timeStarted = Time.time;
 			IsRunning = true;
 		}
-	
+
 		/// <summary>
 		/// Stop tracking time and clear the timestamps
 		/// </summary>
@@ -67,7 +68,7 @@ namespace RedBlueGames.Tools
 			timeStarted = UNSET;
 			IsRunning = false;
 		}
-	
+
 		/// <summary>
 		/// Warns to tell coder they called a method that needs duration set.
 		/// </summary>

@@ -9,7 +9,7 @@ namespace RedBlueGames.Tools
 	public static class ReflectionUtilities
 	{
 		public static List<FieldInfo> GetFieldsWithAttributeFromType<T> (Type classToInspect, 
-	                                                                      BindingFlags reflectionFlags = BindingFlags.Default)
+		                                                                 BindingFlags reflectionFlags = BindingFlags.Default)
 		{
 			List<FieldInfo> fieldsWithAttribute = new List<FieldInfo> ();
 			FieldInfo[] allFields;

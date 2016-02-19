@@ -17,7 +17,7 @@ namespace RedBlueGames.Tools
 		/// <param name="vector">Source Direction Vector</param>
 		/// <param name="arcBisector">Arc bisector</param>
 		/// <param name="arcAngle">Arc angle</param>
-		public static bool IsDirectionWithinArc(this Vector2 vector, Vector2 arcBisector, float arcAngle)
+		public static bool IsDirectionWithinArc (this Vector2 vector, Vector2 arcBisector, float arcAngle)
 		{
 			// Can't compare if source vector has no direction
 			if (vector == Vector2.zero) {
@@ -45,39 +45,39 @@ namespace RedBlueGames.Tools
 		/// <param name="vector">The vector to convert.</param>
 		/// <param name="numArcs">The number of arcs to divide the circle into.</param>
 		/// <param name="rotationDegrees">Optional rotation of arcs</param>
-		public static Vector2 RoundToNearestArc(this Vector2 vector, int numArcs, float rotationDegrees = 0.0f)
+		public static Vector2 RoundToNearestArc (this Vector2 vector, int numArcs, float rotationDegrees = 0.0f)
 		{
-			int arc = vector.GetNearestArc(numArcs, rotationDegrees);
-			Vector2 arcBisector = vector.GetBisectorForArc(arc, numArcs, rotationDegrees);
+			int arc = vector.GetNearestArc (numArcs, rotationDegrees);
+			Vector2 arcBisector = vector.GetBisectorForArc (arc, numArcs, rotationDegrees);
 
 			// Reapply the original vector's magnitude
 			return arcBisector * vector.magnitude;
 		}
 
-		static int GetNearestArc(this Vector2 vector, int numArcs, float rotationDegrees = 0.0f)
+		static int GetNearestArc (this Vector2 vector, int numArcs, float rotationDegrees = 0.0f)
 		{
 			float angleRotated = Mathf.Atan2 (vector.y, vector.x) - (rotationDegrees * Mathf.Deg2Rad);
 			float angleAsFractionOfCircle = angleRotated / (2 * Mathf.PI);
 			float angleInArcs = (numArcs * angleAsFractionOfCircle);
 			// Add a full circle and mod to handle -180 degree / 180 degree wraparound
-			int arc = Mathf.RoundToInt((angleInArcs + numArcs) % numArcs);
+			int arc = Mathf.RoundToInt ((angleInArcs + numArcs) % numArcs);
 
 			return arc;
 		}
-		
-		static Vector2 GetBisectorForArc(this Vector2 vector, int arc, int numArcs, float rotationDegrees = 0.0f)
+
+		static Vector2 GetBisectorForArc (this Vector2 vector, int arc, int numArcs, float rotationDegrees = 0.0f)
 		{
 			float arcsToRadians = (2 * Mathf.PI) / numArcs;
 			float arcAngleRotated = (arc * arcsToRadians) + (rotationDegrees * Mathf.Deg2Rad);
-			Vector2 arcBisector = new Vector2(Mathf.Cos (arcAngleRotated), Mathf.Sin (arcAngleRotated));
+			Vector2 arcBisector = new Vector2 (Mathf.Cos (arcAngleRotated), Mathf.Sin (arcAngleRotated));
 			
 			// Workaround - for some reason, Mathf.Sin and Cos return values too big to be considered
 			// zero by Mathf.Epsilon for cardinal angles.
 			float customEpsilon = 0.000001f;
-			if(arcBisector.x > -customEpsilon && arcBisector.x < customEpsilon) {
+			if (arcBisector.x > -customEpsilon && arcBisector.x < customEpsilon) {
 				arcBisector.x = 0.0f;
 			}
-			if(arcBisector.y > -customEpsilon && arcBisector.y < customEpsilon) {
+			if (arcBisector.y > -customEpsilon && arcBisector.y < customEpsilon) {
 				arcBisector.y = 0.0f;
 			}
 
@@ -89,9 +89,9 @@ namespace RedBlueGames.Tools
 		/// </summary>
 		/// <returns>The nearest cardinal direction</returns>
 		/// <param name="vector">Vector to round.</param>
-		public static Vector2 RoundToCardinals(this Vector2 vectorToRound)
+		public static Vector2 RoundToCardinals (this Vector2 vectorToRound)
 		{
-			return vectorToRound.RoundToNearestArc(4);
+			return vectorToRound.RoundToNearestArc (4);
 		}
 
 		/// <summary>
@@ -105,15 +105,14 @@ namespace RedBlueGames.Tools
 		{
 			Vector2 biasedVector = vectorToBias;
 			float assistAngle = biasAngle;
-			Vector2[] angles = new Vector2[]
-			{
+			Vector2[] angles = new Vector2[] {
 				Vector2.right,
 				Vector2.up,
 				-Vector2.right,
 				-Vector2.up
 			};
-			foreach(Vector2 angle in angles) {
-				if(vectorToBias.IsDirectionWithinArc(angle, assistAngle)) {
+			foreach (Vector2 angle in angles) {
+				if (vectorToBias.IsDirectionWithinArc (angle, assistAngle)) {
 					biasedVector = angle;
 				}
 			}
@@ -142,13 +141,13 @@ namespace RedBlueGames.Tools
 		/// <returns></returns>
 		/// <param name="fromVector"></param>
 		/// <param name="toVector"></param>
-		public static float GetDegreesBetweenVectorsCCW( Vector2 fromVector, Vector2 toVector )
+		public static float GetDegreesBetweenVectorsCCW (Vector2 fromVector, Vector2 toVector)
 		{
 			// This is 2D short-hand for calculating just the z-component of the cross-product of 'from' and 'to':
 			//    sign = -Mathf.Sign( ( Vector3.Cross( fromVector, toVector ) ).z );
-			float sign = -Mathf.Sign( ( fromVector.x * toVector.y ) - ( fromVector.y * toVector.x ) );
+			float sign = -Mathf.Sign ((fromVector.x * toVector.y) - (fromVector.y * toVector.x));
 
-			return ( Vector2.Angle( fromVector, toVector ) * sign );
+			return (Vector2.Angle (fromVector, toVector) * sign);
 		}
 	}
 }

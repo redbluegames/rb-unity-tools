@@ -23,11 +23,11 @@ namespace RedBlueGames.Tools
 		// Time and Pause handling members
 		static int pauseRequests;
 		static int lowLevelPauseRequests;
-	
+
 		public static bool IsPaused { get; private set; }
-	
+
 		public static bool IsLowLevelPaused { get; private set; }
-	
+
 		/// <summary>
 		/// Pauses the game, or increments the pause counter if it's already paused.
 		/// </summary>
@@ -37,7 +37,7 @@ namespace RedBlueGames.Tools
 			IsPaused = true;
 			ResolveTimeScale ();
 		}
-	
+
 		/// <summary>
 		/// Attempts to unpause the game. Once all requests to pause have been unwound, the game
 		/// unpauses.
@@ -50,14 +50,14 @@ namespace RedBlueGames.Tools
 			}
 			ResolveTimeScale ();
 		}
-	
+
 		public static void RequestLowLevelPause ()
 		{
 			lowLevelPauseRequests++;
 			IsLowLevelPaused = true;
 			ResolveTimeScale ();
 		}
-	
+
 		public static void RequestLowLevelUnpause ()
 		{
 			lowLevelPauseRequests--;
@@ -66,7 +66,7 @@ namespace RedBlueGames.Tools
 			}
 			ResolveTimeScale ();
 		}
-	
+
 		static void ResolveTimeScale ()
 		{
 			if (IsPaused || IsLowLevelPaused) {

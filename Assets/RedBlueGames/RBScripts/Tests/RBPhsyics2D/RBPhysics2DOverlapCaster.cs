@@ -8,6 +8,7 @@ namespace RedBlueGames.Tools.Tests
 	{
 
 		public CastType Cast;
+
 		public enum CastType
 		{
 			OverlapCircle,

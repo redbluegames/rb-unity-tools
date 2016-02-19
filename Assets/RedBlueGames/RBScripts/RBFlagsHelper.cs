@@ -31,7 +31,7 @@ namespace RedBlueGames.Tools
 		/// <param name="flags">Flags.</param>
 		/// <param name="flag">Specific flag</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static bool IsSet<T>(T flags, T flag) where T : struct
+		public static bool IsSet<T> (T flags, T flag) where T : struct
 		{
 			int flagsValue = (int)(object)flags;
 			int flagValue = (int)(object)flag;
@@ -45,7 +45,7 @@ namespace RedBlueGames.Tools
 		/// <param name="flags">Flags.</param>
 		/// <param name="flag">Flag to set.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static void Set<T>(ref T flags, T flag) where T : struct
+		public static void Set<T> (ref T flags, T flag) where T : struct
 		{
 			int flagsValue = (int)(object)flags;
 			int flagValue = (int)(object)flag;
@@ -59,7 +59,7 @@ namespace RedBlueGames.Tools
 		/// <param name="flags">Flags.</param>
 		/// <param name="flag">Flag to clear.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static void Unset<T>(ref T flags, T flag) where T : struct
+		public static void Unset<T> (ref T flags, T flag) where T : struct
 		{
 			int flagsValue = (int)(object)flags;
 			int flagValue = (int)(object)flag;
@@ -73,10 +73,10 @@ namespace RedBlueGames.Tools
 		/// <param name="flags">Flags.</param>
 		/// <param name="numShifts">Number of shifts.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static void ShiftLeftCircular<T>(ref T flags, int numShifts) where T : struct
+		public static void ShiftLeftCircular<T> (ref T flags, int numShifts) where T : struct
 		{
-			ShiftCircular(ref flags, numShifts, true);
-			StripLeadingBits(ref flags);
+			ShiftCircular (ref flags, numShifts, true);
+			StripLeadingBits (ref flags);
 		}
 
 		/// <summary>
@@ -85,10 +85,10 @@ namespace RedBlueGames.Tools
 		/// <param name="flags">Flags.</param>
 		/// <param name="numShifts">Number of shifts.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static void ShiftRightCircular<T>(ref T flags, int numShifts) where T : struct
+		public static void ShiftRightCircular<T> (ref T flags, int numShifts) where T : struct
 		{
-			ShiftCircular(ref flags, numShifts, false);
-			StripLeadingBits(ref flags);
+			ShiftCircular (ref flags, numShifts, false);
+			StripLeadingBits (ref flags);
 		}
 
 		/// <summary>
@@ -97,19 +97,19 @@ namespace RedBlueGames.Tools
 		/// <param name="flags">Flags.</param>
 		/// <param name="numShifts">Number of shifts.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		static void ShiftCircular<T>(ref T flags, int numShifts, bool isLeft) where T : struct
+		static void ShiftCircular<T> (ref T flags, int numShifts, bool isLeft) where T : struct
 		{
 			int flagsValue = (int)(object)flags;
 			int numBits = Enum.GetValues (typeof(T)).Length;
 			int leftShift, rightShift;
-			if(isLeft) {
+			if (isLeft) {
 				leftShift = numShifts;
 				rightShift = numBits - numShifts;
 			} else {
 				leftShift = numBits - numShifts;
 				rightShift = numShifts;
 			}
-			flags = (T) (object) (flagsValue << leftShift | flagsValue >> rightShift);
+			flags = (T)(object)(flagsValue << leftShift | flagsValue >> rightShift);
 		}
 
 		/// <summary>
@@ -117,12 +117,13 @@ namespace RedBlueGames.Tools
 		/// </summary>
 		/// <param name="flags">Flags.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		static void StripLeadingBits<T> (ref T flags) where T : struct {
+		static void StripLeadingBits<T> (ref T flags) where T : struct
+		{
 			// Strip extra "1's"
 			int flagsValue = (int)(object)flags;
 			int numBits = Enum.GetValues (typeof(T)).Length;
-			int takeBits = FlagNBits(numBits);
-			flags = (T) (object) (flagsValue & takeBits);
+			int takeBits = FlagNBits (numBits);
+			flags = (T)(object)(flagsValue & takeBits);
 		}
 
 		/// <summary>
@@ -130,7 +131,7 @@ namespace RedBlueGames.Tools
 		/// </summary>
 		/// <param name="flags">Flags.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static void FlagAll<T>(ref T flags) where T : struct
+		public static void FlagAll<T> (ref T flags) where T : struct
 		{
 			int numBits = 0;
 			try {
@@ -138,12 +139,12 @@ namespace RedBlueGames.Tools
 			} catch (Exception ex) {
 				throw new ArgumentException (
 					string.Format (
-					"FlagsHelper Error: Can't set all bits in non-enum type '{0}'.",
-					typeof(T).Name
+						"FlagsHelper Error: Can't set all bits in non-enum type '{0}'.",
+						typeof(T).Name
 					), ex);
 			}
-			int flaggedBits = FlagNBits(numBits);
-			flags = (T) (object) (flaggedBits);
+			int flaggedBits = FlagNBits (numBits);
+			flags = (T)(object)(flaggedBits);
 		}
 
 		/// <summary>
@@ -151,10 +152,10 @@ namespace RedBlueGames.Tools
 		/// </summary>
 		/// <returns>Number of bits to flag</returns>
 		/// <param name="numBits">Number bits.</param>
-		static int FlagNBits(int numBits)
+		static int FlagNBits (int numBits)
 		{
 			int flags = 1;
-			for(int i = 0; i < numBits - 1; i++ ) {
+			for (int i = 0; i < numBits - 1; i++) {
 				flags = (flags << 1) | flags;
 			}
 			return flags;
@@ -166,18 +167,18 @@ namespace RedBlueGames.Tools
 		/// <returns>The flags in binary as a String.</returns>
 		/// <param name="flags">Flags.</param>
 		/// <typeparam name="T">The 1st type parameter.</typeparam>
-		public static string ToStringInBinary<T> (T flags) where T : struct 
+		public static string ToStringInBinary<T> (T flags) where T : struct
 		{
 			int flagValues = (int)(object)flags;
 			string output = "";
 			// Build the string in reverse order (highest order bit first)
-			for (int i = Enum.GetValues(typeof(T)).Length - 1; i >= 0; i--) {
-				int valueAtFlag = (int) (object) Enum.GetValues (typeof(T)).GetValue (i);
+			for (int i = Enum.GetValues (typeof(T)).Length - 1; i >= 0; i--) {
+				int valueAtFlag = (int)(object)Enum.GetValues (typeof(T)).GetValue (i);
 				if ((flagValues & valueAtFlag) != 0) {
 					output += "1";
 				} else {
 					output += "0";
-					}
+				}
 			}
 
 			return output;
@@ -185,19 +186,19 @@ namespace RedBlueGames.Tools
 
 		public static void SwapBits<T> (ref T flags, T flagA, T flagB) where T : struct
 		{
-			int flagsValue = (int) (object) flags;
-			int flagAValue = (int) (object) flagA;
-			int flagBValue = (int) (object) flagB;
+			int flagsValue = (int)(object)flags;
+			int flagAValue = (int)(object)flagA;
+			int flagBValue = (int)(object)flagB;
 			bool flagAIsSet = IsSet (flags, flagA);
 			bool flagBIsSet = IsSet (flags, flagB);
 			// If they are the same, no need to swap
 			// 1010
-			if(flagAIsSet == flagBIsSet) {
-				flags = (T) (object) (flagsValue);
+			if (flagAIsSet == flagBIsSet) {
+				flags = (T)(object)(flagsValue);
 				return;
 			}
 			
-			if(flagAIsSet && !flagBIsSet) {
+			if (flagAIsSet && !flagBIsSet) {
 				// 1000 -> 0010
 				flagsValue = flagsValue & ~flagAValue;
 				flagsValue = flagsValue | flagBValue;
@@ -207,7 +208,7 @@ namespace RedBlueGames.Tools
 				flagsValue = flagsValue & ~flagBValue;
 			}
 			
-			flags = (T) (object) (flagsValue);
+			flags = (T)(object)(flagsValue);
 			return;
 		}
 	}

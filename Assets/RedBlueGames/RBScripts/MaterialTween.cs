@@ -40,7 +40,7 @@ namespace RedBlueGames.Tools
 
 		void Awake ()
 		{
-			if(TweenOnAwake) {
+			if (TweenOnAwake) {
 				BeginTweening ();
 			}
 		}
@@ -48,26 +48,26 @@ namespace RedBlueGames.Tools
 		public void BeginTweening ()
 		{
 			if (tweenMaterials == null || tweenMaterials.Length <= 0) {
-				Debug.LogError ("No textures assigned to Material Tween on GameObject: " + gameObject.name 
-				                + "\nMust have at least one texture.");
+				Debug.LogError ("No textures assigned to Material Tween on GameObject: " + gameObject.name
+				+ "\nMust have at least one texture.");
 				enabled = false;
 				return;
 			}
 
-			if(Mathf.Approximately(duration, 0.0f)) {
-				Debug.LogWarning("Trying to begin a material tween with no duration. Please assign a duration.");
+			if (Mathf.Approximately (duration, 0.0f)) {
+				Debug.LogWarning ("Trying to begin a material tween with no duration. Please assign a duration.");
 				enabled = false;
 				return;
 			}
 
 			// If told to tween while already tweening, reset duration.
-			if(IsTweening) {
+			if (IsTweening) {
 				timeTweening = 0.0f;
 				return;
 			}
 			
-			tweenCoroutine = TweenForDuration();
-			StartCoroutine(tweenCoroutine);
+			tweenCoroutine = TweenForDuration ();
+			StartCoroutine (tweenCoroutine);
 		}
 
 		IEnumerator TweenForDuration ()
@@ -75,8 +75,8 @@ namespace RedBlueGames.Tools
 			IsTweening = true;
 
 			currentIndex = 0;
-			originalMaterial = GetComponent<Renderer>().material;
-			GetComponent<Renderer>().material = tweenMaterials [currentIndex];
+			originalMaterial = GetComponent<Renderer> ().material;
+			GetComponent<Renderer> ().material = tweenMaterials [currentIndex];
 
 			float timeUntilSwap = swapInterval;
 			timeTweening = 0.0f;
@@ -91,9 +91,9 @@ namespace RedBlueGames.Tools
 				}
 
 				// Check if duration time has elapsed
-				if(duration > 0.0f) {
+				if (duration > 0.0f) {
 					timeTweening += Time.deltaTime;
-					if(timeTweening >= duration) {
+					if (timeTweening >= duration) {
 						break;
 					}
 				}
@@ -103,6 +103,7 @@ namespace RedBlueGames.Tools
 
 			FinishTween ();
 		}
+
 		void IncrementMaterial ()
 		{
 			currentIndex = currentIndex + 1;
@@ -111,9 +112,9 @@ namespace RedBlueGames.Tools
 				currentIndex = 0;
 			}
 
-			GetComponent<Renderer>().material = tweenMaterials [currentIndex];
+			GetComponent<Renderer> ().material = tweenMaterials [currentIndex];
 		}
-		
+
 		void FinishTween ()
 		{
 			StopTweening ();
@@ -124,9 +125,9 @@ namespace RedBlueGames.Tools
 			IsTweening = false;
 
 			// Restore original material
-			GetComponent<Renderer>().material = originalMaterial;
+			GetComponent<Renderer> ().material = originalMaterial;
 
-			StopCoroutine(tweenCoroutine);
+			StopCoroutine (tweenCoroutine);
 			tweenCoroutine = null;
 		}
 	}

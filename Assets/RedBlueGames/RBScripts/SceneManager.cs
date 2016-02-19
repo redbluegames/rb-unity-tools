@@ -32,7 +32,7 @@ namespace RedBlueGames.Tools
 			UnityEngine.SceneManagement.SceneManager.LoadScene ((int)sceneKey);
 		}
 
-    
+
 		public static string GetSceneName (SceneKey sceneKey)
 		{
 			return buildScenes [sceneKey].DisplayName;
@@ -50,7 +50,7 @@ namespace RedBlueGames.Tools
 			foreach (var key in buildScenes) {
 				paths [i++] = key.Value.Path;
 			}
-        
+
 			return paths;
 		}
 	}
