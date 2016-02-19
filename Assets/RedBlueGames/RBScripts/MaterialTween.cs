@@ -1,5 +1,5 @@
 ﻿/*****************************************************************************
- *  Copyright (C) 2014 Red Blue Games, LLC
+ *  Copyright (C) 2014-2015 Red Blue Games, LLC
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace RedBlueTools
+namespace RedBlue
 {
 	/// <summary>
 	/// MaterialTween is a RedBlueTool used to swap between materials on a gameobject.
@@ -28,7 +28,6 @@ namespace RedBlueTools
 		public float swapInterval;
 		public float duration;
 		public bool TweenOnAwake;
-		[SerializeField] [ReadOnlyAttribute]
 		bool IsTweening;
 		float timeTweening;
 		public static float INFINITE_DURATION = -1.0f;

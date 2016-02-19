@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
-namespace RedBlueTools
+namespace RedBlue
 {
 	public static class Vector2Extensions
 	{
@@ -11,13 +11,13 @@ namespace RedBlueTools
 		}
 
 		/// <summary>
-		/// Determines if the vector is within the arc specified by a direction bisecting an angle.
+		/// Determines if the direction vector is within the arc specified by a direction bisecting an angle.
 		/// </summary>
 		/// <returns><c>true</c> if the vector is within the arc the arc; otherwise, <c>false</c>.</returns>
-		/// <param name="vector">Source Vector</param>
+		/// <param name="vector">Source Direction Vector</param>
 		/// <param name="arcBisector">Arc bisector</param>
 		/// <param name="arcAngle">Arc angle</param>
-		public static bool IsWithinArc(this Vector2 vector, Vector2 arcBisector, float arcAngle)
+		public static bool IsDirectionWithinArc(this Vector2 vector, Vector2 arcBisector, float arcAngle)
 		{
 			// Can't compare if source vector has no direction
 			if (vector == Vector2.zero) {
@@ -113,10 +113,13 @@ namespace RedBlueTools
 				-Vector2.up
 			};
 			foreach(Vector2 angle in angles) {
-				if(vectorToBias.IsWithinArc(angle, assistAngle)) {
+				if(vectorToBias.IsDirectionWithinArc(angle, assistAngle)) {
 					biasedVector = angle;
 				}
 			}
+
+			// Reapply magnitude of original vector
+			biasedVector *= vectorToBias.magnitude;
 
 			return biasedVector;
 		}
@@ -127,13 +130,25 @@ namespace RedBlueTools
 		/// <returns>The rotated vector.</returns>
 		/// <param name="vector">Vector to rotate.</param>
 		/// <param name="angle">Angle in radians</param>
-		public static Vector2 RotateByRadians (this Vector2 vector, float angle)
+		public static Vector2 RotateClockwiseByRadians (this Vector2 vector, float angle)
 		{
-			float vectorAsAngle = Mathf.Atan2 (vector.y, vector.x);
-			float combinedAngle = vectorAsAngle - angle;
-			Vector2 rotatedVector = new Vector2 (Mathf.Cos (combinedAngle), Mathf.Sin (combinedAngle));
-			rotatedVector *= vector.magnitude;
-			return rotatedVector;
+			Quaternion rotation = Quaternion.AngleAxis (angle * Mathf.Rad2Deg, Vector3.back);
+			return rotation * vector;
+		}
+
+		/// <summary>
+		/// Returns the angle in degrees from one Vector2 to another.  Degrees are signed, with CCW being positive.
+		/// </summary>
+		/// <returns></returns>
+		/// <param name="fromVector"></param>
+		/// <param name="toVector"></param>
+		public static float GetDegreesBetweenVectorsCCW( Vector2 fromVector, Vector2 toVector )
+		{
+			// This is 2D short-hand for calculating just the z-component of the cross-product of 'from' and 'to':
+			//    sign = -Mathf.Sign( ( Vector3.Cross( fromVector, toVector ) ).z );
+			float sign = -Mathf.Sign( ( fromVector.x * toVector.y ) - ( fromVector.y * toVector.x ) );
+
+			return ( Vector2.Angle( fromVector, toVector ) * sign );
 		}
 	}
 }

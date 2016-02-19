@@ -1,6 +1,5 @@
 ﻿/*****************************************************************************
- *  Red Blue Tools are Unity Editor utilities. Some utilities require 3rd party tools.
- *  Copyright (C) 2014 Red Blue Games, LLC
+ *  Copyright (C) 2014-2015 Red Blue Games, LLC
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,7 +14,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-
 using UnityEngine;
  
 /* Code grabbed from http://wiki.unity3d.com/index.php/Singleton
@@ -25,7 +23,7 @@ using UnityEngine;
  * To prevent that, add `protected T () {}` to your singleton class.
  * As a note, this is made as MonoBehaviour because we need Coroutines.
  */ 
-namespace RedBlueTools
+namespace RedBlue
 {
 	public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 	{
@@ -82,15 +80,15 @@ namespace RedBlueTools
 		}
 
 		/*
-	 * When Unity quits, it destroys objects in a random order.
-	 * In principle, a Singleton is only destroyed when application quits.
-	 * 
-	 * If any script calls Instance after it have been destroyed, 
-	 * it will create a buggy ghost object that will stay on the Editor scene
-	 * even after stopping playing the Application. Really bad!
-	 * So, this was made to be sure we're not creating that buggy ghost object.
-	 */
-		public void OnDestroy ()
+		 * When Unity quits, it destroys objects in a random order.
+		 * In principle, a Singleton is only destroyed when application quits.
+		 * 
+		 * If any script calls Instance after it have been destroyed, 
+		 * it will create a buggy ghost object that will stay on the Editor scene
+		 * even after stopping playing the Application. Really bad!
+		 * So, this was made to be sure we're not creating that buggy ghost object.
+		 */
+		public virtual void OnApplicationQuit ()
 		{
 			applicationIsQuitting = true;
 		}

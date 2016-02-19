@@ -1,6 +1,5 @@
 ﻿/*****************************************************************************
- *  Red Blue Tools are Unity Editor utilities. Some utilities require 3rd party tools.
- *  Copyright (C) 2014 Red Blue Games, LLC
+ *  Copyright (C) 2014-2015 Red Blue Games, LLC
  *  
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -18,7 +17,7 @@
 using UnityEngine;
 using System.Collections;
 
-namespace RedBlueTools
+namespace RedBlue
 {
 /* Timer adapted from Adam Winkels (Lovers in a Dangerous Spacetime
  * https://gist.githubusercontent.com/winkels/779ef0bdba4f88edeceb/raw/CoroutineTimer.cs
@@ -32,9 +31,7 @@ namespace RedBlueTools
 		public bool UsesFixedUpdate;
 
 		//private fields
-		[SerializeField] [ReadOnly]
 		float TimeRemaining;
-		[SerializeField] [ReadOnly]
 		bool _isRunning;
 
 		public bool IsRunning { get { return _isRunning; } }
@@ -103,6 +100,11 @@ namespace RedBlueTools
 				Stop ();
 			}
 		}
+
+		public float GetTimeRemaining ()
+		{
+			return TimeRemaining;
+		}
 		
 		public void Stop ()
 		{
@@ -130,7 +132,7 @@ namespace RedBlueTools
 			/* Note: If we use a ton of timers, we may need to use this simpler version (shown)
 			 * But for now, let's use a version that we can see how much time is remaining.
 			 * yield return new WaitForSeconds (waitSeconds); */
-			TimeRemaining = desiredDuration;
+			TimeRemaining += desiredDuration;
 			while (true) {
 				// yield at the start of the loop to always wait at least one frame.
 				// Only a <= 0 second timer would finish immediately, and that's not allowed.

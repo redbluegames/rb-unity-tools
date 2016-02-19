@@ -2,6 +2,8 @@
 using System.Collections;
 using NUnit.Framework;
 using RedBlueTools;
+using RedBlueGames;
+using RedBlue;
 
 [TestFixture]
 public class UtilitiesTests {
