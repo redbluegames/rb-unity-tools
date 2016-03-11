@@ -18,13 +18,13 @@ using UnityEngine;
 
 namespace RedBlueGames.Tools
 {
-	public class SortingLayer2D : MonoBehaviour
-	{
-		public string sortLayer;
+    public class SortingLayer2D : MonoBehaviour
+    {
+        public string sortLayer;
 
-		void Start ()
-		{
-			GetComponent<Renderer> ().sortingLayerName = sortLayer;
-		}
-	}
+        void Start()
+        {
+            GetComponent<Renderer>().sortingLayerName = sortLayer;
+        }
+    }
 }

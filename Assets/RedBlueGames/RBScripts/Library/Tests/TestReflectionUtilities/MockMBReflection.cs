@@ -3,39 +3,43 @@ using System.Collections;
 
 namespace RedBlueGames.Tools.NotNull.Tests
 {
-	public class MockMBReflection : MonoBehaviour
-	{
-		#region int field test
-		int noAttriuteIntPrivate;
-		public int noAttributeIntegar;
-		[SerializeField]
-		int
-			intPrivate;
-		[SerializeField]
-		public int
-			IntPublic;
+    public class MockMBReflection : MonoBehaviour
+    {
+        #region int field test
+
+        int noAttriuteIntPrivate;
+        public int noAttributeIntegar;
+        [SerializeField]
+        int
+            intPrivate;
+        [SerializeField]
+        public int
+            IntPublic;
 		
-		[SerializeField]
-		[Header ("Header Attribute")]
-		public int IntMultipleFieldsPublic;
-		#endregion
+        [SerializeField]
+        [Header("Header Attribute")]
+        public int IntMultipleFieldsPublic;
 
-		#region Custom Class field test
-		CustomClass noAttributeCustomClassPrivate;
-		public CustomClass noAttributeCustomClassPublic;
-		[SerializeField]
-		CustomClass customClassPrivate;
-		[SerializeField]
-		public CustomClass CustomClassPublic;
-		#endregion
+        #endregion
 
-		public void PublicMethodNoAttribute ()
-		{
-		}
+        #region Custom Class field test
 
-		public class CustomClass
-		{
-			int x;
-		}
-	}
+        CustomClass noAttributeCustomClassPrivate;
+        public CustomClass noAttributeCustomClassPublic;
+        [SerializeField]
+        CustomClass customClassPrivate;
+        [SerializeField]
+        public CustomClass CustomClassPublic;
+
+        #endregion
+
+        public void PublicMethodNoAttribute()
+        {
+        }
+
+        public class CustomClass
+        {
+            int x;
+        }
+    }
 }

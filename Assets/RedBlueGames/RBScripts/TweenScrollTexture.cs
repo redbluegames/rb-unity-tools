@@ -18,37 +18,39 @@ using UnityEngine;
 
 namespace RedBlueGames.Tools
 {
-	[RequireComponent (typeof(TextureShifter))]
-	/// <summary>
+    [RequireComponent(typeof(TextureShifter))]
+    /// <summary>
 	/// Move a texture across a plane at a given linear speed.
 	/// </summary>
 	public class TweenScrollTexture : MonoBehaviour
-	{
-		public Vector2 speed;
-		public bool IsPaused;
-		TextureShifter textureShifter;
-		Vector2 currentOffset;
-		public bool MoveAsSinWave;
-		public int SinCycleSeconds = 60;
+    {
+        public Vector2 speed;
+        public bool IsPaused;
+        TextureShifter textureShifter;
+        Vector2 currentOffset;
+        public bool MoveAsSinWave;
+        public int SinCycleSeconds = 60;
 
-		void Awake ()
-		{
-			currentOffset = Vector2.zero;
-			textureShifter = GetComponent<TextureShifter> ();
-		}
+        void Awake()
+        {
+            currentOffset = Vector2.zero;
+            textureShifter = GetComponent<TextureShifter>();
+        }
 
-		void Update ()
-		{
-			if (!IsPaused) {
-				float xOffset = (Time.deltaTime * speed.x);
-				float yOffset = (Time.deltaTime * speed.y);
-				if (MoveAsSinWave) {
-					float sinBasedOffset = Mathf.Sin ((Time.timeSinceLevelLoad * Mathf.PI * 2) / SinCycleSeconds);
-					yOffset = sinBasedOffset * (Time.deltaTime * speed.y);
-				}
-				currentOffset = new Vector2 ((currentOffset.x + xOffset) % 1, (currentOffset.y + yOffset) % 1);
-				textureShifter.ShiftTexture (currentOffset);
-			}
-		}
-	}
+        void Update()
+        {
+            if (!IsPaused)
+            {
+                float xOffset = (Time.deltaTime * speed.x);
+                float yOffset = (Time.deltaTime * speed.y);
+                if (MoveAsSinWave)
+                {
+                    float sinBasedOffset = Mathf.Sin((Time.timeSinceLevelLoad * Mathf.PI * 2) / SinCycleSeconds);
+                    yOffset = sinBasedOffset * (Time.deltaTime * speed.y);
+                }
+                currentOffset = new Vector2((currentOffset.x + xOffset) % 1, (currentOffset.y + yOffset) % 1);
+                textureShifter.ShiftTexture(currentOffset);
+            }
+        }
+    }
 }

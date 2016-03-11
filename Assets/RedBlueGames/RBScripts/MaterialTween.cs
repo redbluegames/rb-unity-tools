@@ -19,116 +19,125 @@ using System.Collections;
 
 namespace RedBlueGames.Tools
 {
-	/// <summary>
-	/// MaterialTween is a RedBlueTool used to swap between materials on a gameobject.
-	/// </summary>
-	public class MaterialTween : MonoBehaviour
-	{
-		public Material[] tweenMaterials;
-		public float swapInterval;
-		public float duration;
-		public bool TweenOnAwake;
-		bool IsTweening;
-		float timeTweening;
-		public static float INFINITE_DURATION = -1.0f;
+    /// <summary>
+    /// MaterialTween is a RedBlueTool used to swap between materials on a gameobject.
+    /// </summary>
+    public class MaterialTween : MonoBehaviour
+    {
+        public Material[] tweenMaterials;
+        public float swapInterval;
+        public float duration;
+        public bool TweenOnAwake;
+        bool IsTweening;
+        float timeTweening;
+        public static float INFINITE_DURATION = -1.0f;
 	
-		// State tracking members
-		Material originalMaterial;
-		int currentIndex = 0;
+        // State tracking members
+        Material originalMaterial;
+        int currentIndex = 0;
 
-		IEnumerator tweenCoroutine;
+        IEnumerator tweenCoroutine;
 
-		void Awake ()
-		{
-			if (TweenOnAwake) {
-				BeginTweening ();
-			}
-		}
+        void Awake()
+        {
+            if (TweenOnAwake)
+            {
+                BeginTweening();
+            }
+        }
 
-		public void BeginTweening ()
-		{
-			if (tweenMaterials == null || tweenMaterials.Length <= 0) {
-				Debug.LogError ("No textures assigned to Material Tween on GameObject: " + gameObject.name
-				+ "\nMust have at least one texture.");
-				enabled = false;
-				return;
-			}
+        public void BeginTweening()
+        {
+            if (tweenMaterials == null || tweenMaterials.Length <= 0)
+            {
+                Debug.LogError("No textures assigned to Material Tween on GameObject: " + gameObject.name
+                    + "\nMust have at least one texture.");
+                enabled = false;
+                return;
+            }
 
-			if (Mathf.Approximately (duration, 0.0f)) {
-				Debug.LogWarning ("Trying to begin a material tween with no duration. Please assign a duration.");
-				enabled = false;
-				return;
-			}
+            if (Mathf.Approximately(duration, 0.0f))
+            {
+                Debug.LogWarning("Trying to begin a material tween with no duration. Please assign a duration.");
+                enabled = false;
+                return;
+            }
 
-			// If told to tween while already tweening, reset duration.
-			if (IsTweening) {
-				timeTweening = 0.0f;
-				return;
-			}
+            // If told to tween while already tweening, reset duration.
+            if (IsTweening)
+            {
+                timeTweening = 0.0f;
+                return;
+            }
 			
-			tweenCoroutine = TweenForDuration ();
-			StartCoroutine (tweenCoroutine);
-		}
+            tweenCoroutine = TweenForDuration();
+            StartCoroutine(tweenCoroutine);
+        }
 
-		IEnumerator TweenForDuration ()
-		{
-			IsTweening = true;
+        IEnumerator TweenForDuration()
+        {
+            IsTweening = true;
 
-			currentIndex = 0;
-			originalMaterial = GetComponent<Renderer> ().material;
-			GetComponent<Renderer> ().material = tweenMaterials [currentIndex];
+            currentIndex = 0;
+            originalMaterial = GetComponent<Renderer>().material;
+            GetComponent<Renderer>().material = tweenMaterials[currentIndex];
 
-			float timeUntilSwap = swapInterval;
-			timeTweening = 0.0f;
-			while (true) {
+            float timeUntilSwap = swapInterval;
+            timeTweening = 0.0f;
+            while (true)
+            {
 
-				timeUntilSwap -= Time.deltaTime;
-				// Every swap interval, go to the next Material
-				if (timeUntilSwap <= 0.0f) {
-					IncrementMaterial ();
-					// Reset timer, carrying over extra deltaTime
-					timeUntilSwap += swapInterval;
-				}
+                timeUntilSwap -= Time.deltaTime;
+                // Every swap interval, go to the next Material
+                if (timeUntilSwap <= 0.0f)
+                {
+                    IncrementMaterial();
+                    // Reset timer, carrying over extra deltaTime
+                    timeUntilSwap += swapInterval;
+                }
 
-				// Check if duration time has elapsed
-				if (duration > 0.0f) {
-					timeTweening += Time.deltaTime;
-					if (timeTweening >= duration) {
-						break;
-					}
-				}
+                // Check if duration time has elapsed
+                if (duration > 0.0f)
+                {
+                    timeTweening += Time.deltaTime;
+                    if (timeTweening >= duration)
+                    {
+                        break;
+                    }
+                }
 
-				yield return null;
-			}
+                yield return null;
+            }
 
-			FinishTween ();
-		}
+            FinishTween();
+        }
 
-		void IncrementMaterial ()
-		{
-			currentIndex = currentIndex + 1;
-			// Wrap back around when done looping through materials.
-			if (currentIndex >= tweenMaterials.Length) {
-				currentIndex = 0;
-			}
+        void IncrementMaterial()
+        {
+            currentIndex = currentIndex + 1;
+            // Wrap back around when done looping through materials.
+            if (currentIndex >= tweenMaterials.Length)
+            {
+                currentIndex = 0;
+            }
 
-			GetComponent<Renderer> ().material = tweenMaterials [currentIndex];
-		}
+            GetComponent<Renderer>().material = tweenMaterials[currentIndex];
+        }
 
-		void FinishTween ()
-		{
-			StopTweening ();
-		}
+        void FinishTween()
+        {
+            StopTweening();
+        }
 
-		public void StopTweening ()
-		{
-			IsTweening = false;
+        public void StopTweening()
+        {
+            IsTweening = false;
 
-			// Restore original material
-			GetComponent<Renderer> ().material = originalMaterial;
+            // Restore original material
+            GetComponent<Renderer>().material = originalMaterial;
 
-			StopCoroutine (tweenCoroutine);
-			tweenCoroutine = null;
-		}
-	}
+            StopCoroutine(tweenCoroutine);
+            tweenCoroutine = null;
+        }
+    }
 }

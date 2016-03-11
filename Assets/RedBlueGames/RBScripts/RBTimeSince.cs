@@ -18,65 +18,68 @@ using UnityEngine;
 
 namespace RedBlueGames.Tools
 {
-	/*
+    /*
  * Simple timer that does NOT update itself. The classes using
  * this need to check back periodically to see how much time
  * has gone by.
  */
-	[System.Serializable]
-	public class RBTimeSince
-	{
-		float timeStarted;
+    [System.Serializable]
+    public class RBTimeSince
+    {
+        float timeStarted;
 
-		public bool IsRunning { get; private set; }
+        public bool IsRunning { get; private set; }
 
-		const float UNSET = float.NaN;
+        const float UNSET = float.NaN;
 
-		/// <summary>
-		/// The amount of time in seconds the timer has been running.
-		/// </summary>
-		/// <value>The elapsed.</value>
-		public float Elapsed {
-			get {
-				WarnIfUnSet ();
-				return Time.time - timeStarted;
-			}
-		}
+        /// <summary>
+        /// The amount of time in seconds the timer has been running.
+        /// </summary>
+        /// <value>The elapsed.</value>
+        public float Elapsed
+        {
+            get
+            {
+                WarnIfUnSet();
+                return Time.time - timeStarted;
+            }
+        }
 
-		/// <summary>
-		/// Null constructor. Set our duration to a known invalid value.
-		/// </summary>
-		public RBTimeSince ()
-		{
-			Stop ();
-		}
+        /// <summary>
+        /// Null constructor. Set our duration to a known invalid value.
+        /// </summary>
+        public RBTimeSince()
+        {
+            Stop();
+        }
 
-		/// <summary>
-		/// Starts the timesince
-		/// </summary>
-		public void Start ()
-		{
-			timeStarted = Time.time;
-			IsRunning = true;
-		}
+        /// <summary>
+        /// Starts the timesince
+        /// </summary>
+        public void Start()
+        {
+            timeStarted = Time.time;
+            IsRunning = true;
+        }
 
-		/// <summary>
-		/// Stop tracking time and clear the timestamps
-		/// </summary>
-		public void Stop ()
-		{
-			timeStarted = UNSET;
-			IsRunning = false;
-		}
+        /// <summary>
+        /// Stop tracking time and clear the timestamps
+        /// </summary>
+        public void Stop()
+        {
+            timeStarted = UNSET;
+            IsRunning = false;
+        }
 
-		/// <summary>
-		/// Warns to tell coder they called a method that needs duration set.
-		/// </summary>
-		void WarnIfUnSet ()
-		{
-			if (!IsRunning || timeStarted == UNSET) {
-				Debug.LogWarning ("Tried to check time left on stopped or unset timesince.");
-			}
-		}
-	}
+        /// <summary>
+        /// Warns to tell coder they called a method that needs duration set.
+        /// </summary>
+        void WarnIfUnSet()
+        {
+            if (!IsRunning || timeStarted == UNSET)
+            {
+                Debug.LogWarning("Tried to check time left on stopped or unset timesince.");
+            }
+        }
+    }
 }
