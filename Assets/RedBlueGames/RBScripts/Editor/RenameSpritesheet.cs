@@ -1,14 +1,14 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using UnityEngine;
+    using UnityEditor;
+
     public class RenameSpritesheet : EditorWindow
     {
-        string oldSpritePrefix;
-        string newSpritePrefix;
+        private string oldSpritePrefix;
+        private string newSpritePrefix;
 
-        static Object selectedObject
+        private static Object selectedObject
         {
             get
             {
@@ -18,6 +18,7 @@ namespace RedBlueGames.Tools
                     Debug.LogError("Selected object not found in Asset Database.");
                     return null;
                 }
+
                 return selectedObject;
             }
         }
@@ -35,16 +36,16 @@ namespace RedBlueGames.Tools
             {
                 return false;
             }
-		
+
             if (Selection.objects.Length > 1)
             {
                 return false;
             }
-		
+
             return Selection.activeObject.GetType() == typeof(Texture2D);
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             oldSpritePrefix = System.IO.Path.GetFileNameWithoutExtension(selectedObject.name);
             newSpritePrefix = oldSpritePrefix;

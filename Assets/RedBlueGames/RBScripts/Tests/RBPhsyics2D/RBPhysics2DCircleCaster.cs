@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
-using RedBlueGames;
-
-namespace RedBlueGames.Tools.Tests
+﻿namespace RedBlueGames.Tools.Tests
 {
+    using System.Collections;
+    using RedBlueGames;
+    using UnityEngine;
+
     [ExecuteInEditMode]
     public class RBPhysics2DCircleCaster : MonoBehaviour
     {

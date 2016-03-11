@@ -1,10 +1,10 @@
-﻿using UnityEditor;
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEditor;
+    using UnityEngine;
+
     public class AnimatorOverrideFillIn : MonoBehaviour
     {
         [MenuItem("Assets/Animator Override Utility/Fill Clips from Directory")]
@@ -25,13 +25,14 @@ namespace RedBlueGames.Tools
             }
 
             AnimatorOverrideController overrideController = (AnimatorOverrideController)Selection.activeObject;
-			    
+
             // Replace clips if they match
             foreach (AnimationClip clip in clipsForAnimator)
             {
                 // Get just the clip name
                 string clipAnimName = ExtractAnimNameFromClipName(clip.name);
                 Debug.Log("Searching for matches for clip: " + clipAnimName);
+
                 // Find the corresponding clip to replace
                 for (int i = 0; i < overrideController.clips.Length; i++)
                 {
@@ -58,7 +59,7 @@ namespace RedBlueGames.Tools
                 }
             }
 
-            return "";
+            return string.Empty;
         }
 
         [MenuItem("Assets/Animator Override Utility/Fill Clips from Directory", true)]
@@ -66,7 +67,5 @@ namespace RedBlueGames.Tools
         {
             return SelectionUtilities.IsActiveObjectOfType<AnimatorOverrideController>();
         }
-
     }
-
 }

@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+
     public static class ArrayExtensions
     {
         /// <summary>

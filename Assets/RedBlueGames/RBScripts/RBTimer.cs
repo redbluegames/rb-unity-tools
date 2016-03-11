@@ -14,31 +14,37 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
-using System.Collections;
-
 namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using UnityEngine;
+
     /* Timer adapted from Adam Winkels (Lovers in a Dangerous Spacetime
  * https://gist.githubusercontent.com/winkels/779ef0bdba4f88edeceb/raw/CoroutineTimer.cs
  */
     [System.Serializable]
     public class RBTimer
     {
-        //public fields
+        ///public fields
         public float Duration;
         public bool Repeats;
         public bool UsesFixedUpdate;
 
-        //private fields
-        float TimeRemaining;
-        bool _isRunning;
+        ///private fields
+        private float TimeRemaining;
+        private bool _isRunning;
 
-        public bool IsRunning { get { return _isRunning; } }
+        private IEnumerator timerCoroutine;
+        private MonoBehaviour targetMonobehaviour;
+        private System.Action timerFinishedAction;
 
-        IEnumerator timerCoroutine;
-        MonoBehaviour targetMonobehaviour;
-        System.Action timerFinishedAction;
+        public bool IsRunning
+        {
+            get
+            {
+                return _isRunning;
+            }
+        }
 
         public RBTimer()
         {
@@ -53,7 +59,7 @@ namespace RedBlueGames.Tools
         }
 
         public void Start(MonoBehaviour targetMonobehaviour, System.Action timerFinishedAction = null)
-        {	
+        {
             if (IsUnset())
             {
                 throw new System.InvalidOperationException("Trying to start a timer without setting its duration.");
@@ -64,10 +70,10 @@ namespace RedBlueGames.Tools
                 throw new System.InvalidOperationException(
                     "This timer has already been started. If you are trying to Start it during timerAction use Repeats flag.");
             }
-		
+
             this.timerFinishedAction = timerFinishedAction;
             this.targetMonobehaviour = targetMonobehaviour;
-			
+
             DoStart();
         }
 
@@ -89,14 +95,14 @@ namespace RedBlueGames.Tools
         }
 
         void TimerFinished()
-        {	
+        {
             _isRunning = false;
             // Fire time finished event
             if (timerFinishedAction != null)
             {
                 timerFinishedAction();
             }
-			
+
             //null check to make sure the timer has not been stopped in the timerFinishedDelegate
             if (Repeats && timerCoroutine != null)
             {
@@ -116,7 +122,7 @@ namespace RedBlueGames.Tools
         public void Stop()
         {
             _isRunning = false;
-			
+
             if (timerCoroutine != null)
             {
                 StopTimerCoroutine();
@@ -130,13 +136,13 @@ namespace RedBlueGames.Tools
 
         #region TimerCoroutine
 
-        void StartTimerCoroutine(float waitSeconds)
+        private void StartTimerCoroutine(float waitSeconds)
         {
             timerCoroutine = CountdownForDuration(waitSeconds);
             targetMonobehaviour.StartCoroutine(timerCoroutine);
         }
 
-        IEnumerator CountdownForDuration(float desiredDuration)
+        private IEnumerator CountdownForDuration(float desiredDuration)
         {
             /* Note: If we use a ton of timers, we may need to use this simpler version (shown)
 			 * But for now, let's use a version that we can see how much time is remaining.
@@ -155,18 +161,18 @@ namespace RedBlueGames.Tools
                 {
                     yield return null;
                 }
-				
+
                 TimeRemaining -= Time.deltaTime;
                 if (TimeRemaining <= 0.0f)
                 {
                     break;
                 }
             }
-			
+
             TimerFinished();
         }
 
-        void StopTimerCoroutine()
+        private void StopTimerCoroutine()
         {
             targetMonobehaviour.StopCoroutine(timerCoroutine);
             timerCoroutine = null;

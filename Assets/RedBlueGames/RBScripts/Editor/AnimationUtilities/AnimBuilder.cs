@@ -1,13 +1,13 @@
-﻿using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEditor;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using RedBlueGames.Tools;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.IO;
+    using RedBlueGames.Tools;
+    using UnityEditor;
+    using UnityEngine;
+    using UnityEngine.Serialization;
+
     public class AnimBuilder : ScriptableObject
     {
         [Header("Source Texture")]
@@ -49,15 +49,15 @@ namespace RedBlueGames.Tools
         {
             string[] directionSuffixes =
                 {
-                "U",
-                "UR",
-                "R",
-                "DR",
-                "D",
-                "DL",
-                "L",
-                "UL",
-            };
+                    "U",
+                    "UR",
+                    "R",
+                    "DR",
+                    "D",
+                    "DL",
+                    "L",
+                    "UL",
+                };
 
             for (int i = 0; i < directionSuffixes.Length; i++)
             {
@@ -79,6 +79,7 @@ namespace RedBlueGames.Tools
                 Debug.LogError("No texture provided.");
                 return;
             }
+
             foreach (SpriteAnimClip clip in Clips)
             {
                 clip.SourceTexture = TextureWithAnims;
@@ -86,6 +87,7 @@ namespace RedBlueGames.Tools
                 clip.Samples = SamplesPerSecond;
                 clip.GenerateClip(SavePath, TextureWithAnims.name);
             }
+
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
@@ -100,12 +102,10 @@ namespace RedBlueGames.Tools
             public KeyframeRange[] AnimationKeyframes;
             public AnimationClip SavedClip;
             [HideInInspector]
-            public string
-                PathToSpriteRenderer;
+            public string PathToSpriteRenderer;
             [HideInInspector]
-            public Texture2D 
-                SourceTexture;
-            int _samples;
+            public Texture2D SourceTexture;
+            private int _samples;
 
             public int Samples
             {
@@ -113,6 +113,7 @@ namespace RedBlueGames.Tools
                 {
                     return _samples;
                 }
+
                 set
                 {
                     int defaultSamples = 12;
@@ -185,17 +186,16 @@ namespace RedBlueGames.Tools
                         break;
                     }
                 }
-			
+
                 // Initialize the curve property
                 EditorCurveBinding curveBinding = new EditorCurveBinding();
                 curveBinding.propertyName = "m_Sprite";
                 curveBinding.path = PathToSpriteRenderer;
                 curveBinding.type = typeof(SpriteRenderer);
-			
+
                 // Build keyframes for the property
                 Sprite[] sprites = SpriteSlicer.GetSortedSpritesInTexture(SourceTexture);
-                ObjectReferenceKeyframe[] keys = CreateKeysForKeyframeRanges 
-				(sprites, AnimationKeyframes, Samples);
+                ObjectReferenceKeyframe[] keys = CreateKeysForKeyframeRanges(sprites, AnimationKeyframes, Samples);
 
                 // Build the clip if valid
                 if (keys != null && keys.Length > 0)
@@ -212,7 +212,7 @@ namespace RedBlueGames.Tools
                     builtClip.SetCurve(PathToSpriteRenderer, typeof(Transform), "localScale.x", xCurve);
                     builtClip.SetCurve(PathToSpriteRenderer, typeof(Transform), "localScale.y", yCurve);
                     builtClip.SetCurve(PathToSpriteRenderer, typeof(Transform), "localScale.z", normalCurve);
-			
+
                     // Create or replace the file
                     string filenameSansExtension = filenamePrefix + "_" + ClipName;
                     if (clipIsNew)
@@ -224,6 +224,7 @@ namespace RedBlueGames.Tools
                     else
                     {
                         string pathToAsset = AssetDatabase.GetAssetPath(SavedClip);
+
                         // renaming file doesn't expect extension for some reason
                         AssetDatabase.RenameAsset(pathToAsset, filenameSansExtension);
                     }
@@ -244,7 +245,7 @@ namespace RedBlueGames.Tools
                 }
             }
 
-            ObjectReferenceKeyframe[] CreateKeysForKeyframeRanges(Sprite[] sprites, KeyframeRange[] keyframeRanges, int samplesPerSecond)
+            private ObjectReferenceKeyframe[] CreateKeysForKeyframeRanges(Sprite[] sprites, KeyframeRange[] keyframeRanges, int samplesPerSecond)
             {
                 List<ObjectReferenceKeyframe> keys = new List<ObjectReferenceKeyframe>();
                 float timePerFrame = 1.0f / samplesPerSecond;
@@ -270,6 +271,7 @@ namespace RedBlueGames.Tools
                                 " for clip: " + ClipName + ". RangeIndex: " + rangeIndex);
                             return null;
                         }
+
                         ObjectReferenceKeyframe keyframe = new ObjectReferenceKeyframe();
                         keyframe.time = currentTime;
                         keyframe.value = sprites[spriteIndex];
@@ -279,12 +281,13 @@ namespace RedBlueGames.Tools
                         currentKeyIndex++;
                     }
                 }
+
                 // If the last KeyframeRange is longer than one frame we need to add a keyframe at the end of the interval
                 // to keep anim from ending early
                 if (keyframeRanges.Last().IsValid() && keyframeRanges.Last().SamplesPerFrame > 1)
                 {
                     ObjectReferenceKeyframe keyframe = new ObjectReferenceKeyframe();
-                    keyframe.time = (currentTime - timePerFrame);
+                    keyframe.time = currentTime - timePerFrame;
                     keyframe.value = sprites[keyframeRanges.Last().LastFrame];
                     keys.Add(keyframe);
                 }
@@ -353,7 +356,7 @@ namespace RedBlueGames.Tools
             AnimBuilder animBuilder = ScriptableObject.CreateInstance<AnimBuilder>();
             animBuilder.Initialize();
             animBuilder.InitializeForCharacter();
-		
+
             string currentPath = AssetDatabaseUtility.GetDirectoryOfSelection();
             string path = AssetDatabaseUtility.GetDirectoryOfSelection();
             string uniqueAssetPath = AssetDatabase.GenerateUniqueAssetPath(path + defaultName);
@@ -370,7 +373,7 @@ namespace RedBlueGames.Tools
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-		
+
             if (GUILayout.Button("Generate Clips"))
             {
                 AnimBuilder animBuilder = (AnimBuilder)target;

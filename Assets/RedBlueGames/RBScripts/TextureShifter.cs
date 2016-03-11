@@ -14,17 +14,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
-using System.Collections;
-
 namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using UnityEngine;
+
     public class TextureShifter : MonoBehaviour
     {
-        Material textureToShift;
-        Vector2 aggregatedOffset;
+        private Material textureToShift;
+        private Vector2 aggregatedOffset;
 
-        void Awake()
+        private void Awake()
         {
             aggregatedOffset = Vector2.zero;
             textureToShift = GetComponent<Renderer>().material;
@@ -33,7 +33,7 @@ namespace RedBlueGames.Tools
         /// <summary>
         /// Ensure this is called last after any other scripts calling ShiftTexture
         /// </summary>
-        void LateUpdate()
+        private void LateUpdate()
         {
             textureToShift.mainTextureOffset = aggregatedOffset;
             aggregatedOffset = Vector2.zero;

@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using UnityEngine;
+
     public static class DebugUtilities
     {
         public static void DrawCircle(Vector2 center, float radius, Color color, float numSegments = 40, float duration = 0.01f)
-        {	
+        {
             Quaternion rotQuaternion = Quaternion.AngleAxis(360.0f / numSegments, Vector3.forward);
             Vector2 vertexStart = new Vector2(radius, 0.0f);
             for (int i = 0; i < numSegments; i++)
@@ -14,7 +14,7 @@ namespace RedBlueGames.Tools
                 Vector2 rotatedPoint = rotQuaternion * vertexStart;
                 // Draw the segment, shifted by the center
                 Debug.DrawLine(center + vertexStart, center + rotatedPoint, color, duration);
-			
+
                 vertexStart = rotatedPoint;
             }
         }
@@ -23,7 +23,7 @@ namespace RedBlueGames.Tools
         {
             Vector2 worldTopRight = new Vector2(worldBottomRight.x, worldTopLeft.y);
             Vector2 worldBottomLeft = new Vector2(worldTopLeft.x, worldBottomRight.y);
-		
+
             Debug.DrawLine(worldTopLeft, worldBottomLeft, color, duration);
             Debug.DrawLine(worldBottomLeft, worldBottomRight, color, duration);
             Debug.DrawLine(worldBottomRight, worldTopRight, color, duration);
@@ -44,6 +44,7 @@ namespace RedBlueGames.Tools
         public static void DrawPolygon(Vector2[] worldPoints, Color color, float duration = 0.01f)
         {
             DrawEdges(worldPoints, color, duration);
+
             // Polygons are just edges with the first and last points connected
             if (worldPoints.Length > 1)
             {
@@ -55,7 +56,7 @@ namespace RedBlueGames.Tools
         {
             // Draw the line that makes up the body of the arrow
             Debug.DrawLine(origin, endpoint, color, 0.01f);
-		
+
             // Draw arrowhead so we can see direction
             Vector2 arrowDirection = (endpoint - origin);
             DebugDrawArrowhead(endpoint, arrowDirection.normalized, GetArrowSizeForLine(arrowDirection), color, duration);
@@ -71,11 +72,11 @@ namespace RedBlueGames.Tools
         {
             // Theta angle is the acute angle of the arrow, so flip direction or else arrow will be pointing "backwards"
             Vector2 arrowheadHandle = -direction * size;
-		
+
             Quaternion arrowRotationR = Quaternion.AngleAxis(theta, Vector3.forward);
             Vector2 arrowheadR = arrowRotationR * arrowheadHandle;
             Debug.DrawLine(origin, origin + arrowheadR, color, duration);
-		
+
             Quaternion arrowRotationL = Quaternion.AngleAxis(-theta, Vector3.forward);
             Vector2 arrowheadL = arrowRotationL * arrowheadHandle;
             Debug.DrawLine(origin, origin + arrowheadL, color, duration);

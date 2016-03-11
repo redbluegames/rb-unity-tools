@@ -14,11 +14,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
-using System.Collections;
 
 namespace RedBlueGames.Tools
 {
+    using UnityEngine;
+    using System.Collections;
+
     /// <summary>
     /// MaterialTween is a RedBlueTool used to swap between materials on a gameobject.
     /// </summary>
@@ -31,14 +32,14 @@ namespace RedBlueGames.Tools
         bool IsTweening;
         float timeTweening;
         public static float INFINITE_DURATION = -1.0f;
-	
+
         // State tracking members
-        Material originalMaterial;
-        int currentIndex = 0;
+        private Material originalMaterial;
+        private int currentIndex = 0;
 
-        IEnumerator tweenCoroutine;
+        private IEnumerator tweenCoroutine;
 
-        void Awake()
+        private void Awake()
         {
             if (TweenOnAwake)
             {
@@ -69,12 +70,12 @@ namespace RedBlueGames.Tools
                 timeTweening = 0.0f;
                 return;
             }
-			
+
             tweenCoroutine = TweenForDuration();
             StartCoroutine(tweenCoroutine);
         }
 
-        IEnumerator TweenForDuration()
+        private IEnumerator TweenForDuration()
         {
             IsTweening = true;
 
@@ -86,12 +87,13 @@ namespace RedBlueGames.Tools
             timeTweening = 0.0f;
             while (true)
             {
-
                 timeUntilSwap -= Time.deltaTime;
+
                 // Every swap interval, go to the next Material
                 if (timeUntilSwap <= 0.0f)
                 {
                     IncrementMaterial();
+
                     // Reset timer, carrying over extra deltaTime
                     timeUntilSwap += swapInterval;
                 }
@@ -112,9 +114,10 @@ namespace RedBlueGames.Tools
             FinishTween();
         }
 
-        void IncrementMaterial()
+        private void IncrementMaterial()
         {
             currentIndex = currentIndex + 1;
+
             // Wrap back around when done looping through materials.
             if (currentIndex >= tweenMaterials.Length)
             {
@@ -124,7 +127,7 @@ namespace RedBlueGames.Tools
             GetComponent<Renderer>().material = tweenMaterials[currentIndex];
         }
 
-        void FinishTween()
+        private void FinishTween()
         {
             StopTweening();
         }

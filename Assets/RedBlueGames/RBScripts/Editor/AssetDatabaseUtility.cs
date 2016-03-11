@@ -1,13 +1,13 @@
-﻿using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-using System.Collections;
-using System.IO;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using System.IO;
+
+    #if UNITY_EDITOR
+    using UnityEditor;
+    #endif
+    using UnityEngine;
+
     public static class AssetDatabaseUtility
     {
         public static string GetDirectoryOfSelection()
@@ -21,8 +21,10 @@ namespace RedBlueGames.Tools
                 {
                     path = Path.GetDirectoryName(path);
                 }
+
                 break;
             }
+
             path += Path.DirectorySeparatorChar;
             return path;
         }
@@ -36,7 +38,7 @@ namespace RedBlueGames.Tools
         public static Object SaveObject(Object objectToSave, string path, string filename)
         {
             string fullpath = path + filename;
-		
+
             AssetDatabase.CreateAsset(objectToSave, fullpath);
             AssetDatabase.SaveAssets();
 
@@ -47,7 +49,7 @@ namespace RedBlueGames.Tools
         {
             Object savedObject = SaveObject(objectToSave, path, filename);
             SelectObject(savedObject);
-		
+
             return savedObject;
         }
 

@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using UnityEditor;
+    using UnityEngine;
+
     public static class SelectionUtilities
     {
         public static bool IsActiveObjectOfType<T>()

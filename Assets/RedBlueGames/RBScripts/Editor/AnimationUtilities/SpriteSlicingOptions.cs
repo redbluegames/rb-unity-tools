@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using UnityEditor;
+    using UnityEngine;
+
     [System.Serializable]
     public struct SpriteSlicingOptions
     {
@@ -13,17 +13,16 @@ namespace RedBlueGames.Tools
         public Vector2 CustomPivot;
         public int Frames;
         public SpriteImportMode ImportMode;
-        const char delimeterChar = ',';
+        private const char delimeterChar = ',';
 
         public enum GridSlicingMethod
         {
             SliceAll = 0,
             Bogdan = 1,
-        };
+        }
 
         public string ToDisplayString()
         {
-            
             var displayString = "";
             if (ImportMode == SpriteImportMode.None)
             {
@@ -37,16 +36,31 @@ namespace RedBlueGames.Tools
             {
                 displayString = "Single Sprite";
             }
+
             return displayString;
         }
 
         public override string ToString()
         {
             string delimeterSpace = delimeterChar + " ";
-            string serialized = string.Concat(CellSize.x, delimeterSpace, CellSize.y, delimeterSpace, Frames,
-                                    delimeterSpace, (int)ImportMode, delimeterSpace, (int)GridSlicing, delimeterSpace,
-                                    OverridePivot, delimeterSpace, (int)Pivot, delimeterSpace, CustomPivot.x,
-                                    delimeterSpace, CustomPivot.y);
+            string serialized = string.Concat(
+                                    CellSize.x,
+                                    delimeterSpace,
+                                    CellSize.y,
+                                    delimeterSpace,
+                                    Frames,
+                                    delimeterSpace, 
+                                    (int)ImportMode, 
+                                    delimeterSpace, 
+                                    (int)GridSlicing, 
+                                    delimeterSpace,
+                                    OverridePivot,
+                                    delimeterSpace,
+                                    (int)Pivot,
+                                    delimeterSpace,
+                                    CustomPivot.x,
+                                    delimeterSpace,
+                                    CustomPivot.y);
             return serialized;
         }
 
@@ -57,6 +71,7 @@ namespace RedBlueGames.Tools
             
             // Default ImportMode to Multiple for versioned options
             options.ImportMode = UnityEditor.SpriteImportMode.Multiple;
+
             // Default GridSlicing to Bogdan method
             options.GridSlicing = GridSlicingMethod.Bogdan;
             

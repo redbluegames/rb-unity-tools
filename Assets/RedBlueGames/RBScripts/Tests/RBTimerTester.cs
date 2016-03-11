@@ -14,29 +14,29 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
-using System.Collections;
-using RedBlueGames;
-
 namespace RedBlueGames.Tools.Tests
 {
+    using System.Collections;
+    using RedBlueGames;
+    using UnityEngine;
+
     public class RBTimerTester : MonoBehaviour
     {
         public RBTimer myTimer1;
         public RBTimer myTimer2;
 
-        void onTimerExpires1()
+        private void onTimerExpires1()
         {
             Debug.Log("Done1");
         }
 
-        void onTimerExpires2()
+        private void onTimerExpires2()
         {
             Debug.Log("Done2");
         }
-	
+
         // Update is called once per frame
-        void Update()
+        private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
@@ -49,6 +49,7 @@ namespace RedBlueGames.Tools.Tests
                     myTimer1.Start(this, onTimerExpires1);
                 }
             }
+
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 if (myTimer2.IsRunning)
@@ -60,7 +61,7 @@ namespace RedBlueGames.Tools.Tests
                     myTimer2.Start(this, onTimerExpires2);
                 }
             }
-		
+
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 StopAllCoroutines();

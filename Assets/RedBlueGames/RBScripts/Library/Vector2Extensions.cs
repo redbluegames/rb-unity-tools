@@ -1,8 +1,8 @@
-using UnityEngine;
-using System.Collections;
-
 namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using UnityEngine;
+
     public static class Vector2Extensions
     {
         public static bool IsNormalized(this Vector2 vector)
@@ -62,6 +62,7 @@ namespace RedBlueGames.Tools
             float angleRotated = Mathf.Atan2(vector.y, vector.x) - (rotationDegrees * Mathf.Deg2Rad);
             float angleAsFractionOfCircle = angleRotated / (2 * Mathf.PI);
             float angleInArcs = (numArcs * angleAsFractionOfCircle);
+
             // Add a full circle and mod to handle -180 degree / 180 degree wraparound
             int arc = Mathf.RoundToInt((angleInArcs + numArcs) % numArcs);
 
@@ -73,7 +74,7 @@ namespace RedBlueGames.Tools
             float arcsToRadians = (2 * Mathf.PI) / numArcs;
             float arcAngleRotated = (arc * arcsToRadians) + (rotationDegrees * Mathf.Deg2Rad);
             Vector2 arcBisector = new Vector2(Mathf.Cos(arcAngleRotated), Mathf.Sin(arcAngleRotated));
-			
+
             // Workaround - for some reason, Mathf.Sin and Cos return values too big to be considered
             // zero by Mathf.Epsilon for cardinal angles.
             float customEpsilon = 0.000001f;

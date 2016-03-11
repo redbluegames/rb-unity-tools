@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
-using System;
-using RedBlueGames;
-
-namespace RedBlueGames.Tools.Tests
+﻿namespace RedBlueGames.Tools.Tests
 {
+    using System;
+    using NUnit.Framework;
+    using RedBlueGames;
+
     [TestFixture]
     public class RBFlagsHelperTests
     {
@@ -23,8 +23,7 @@ namespace RedBlueGames.Tools.Tests
             TestFlags secondSet = TestFlags.Second;
 
             // Act and Assert
-            Assert.True(RBFlagsHelper.IsSet(secondSet, TestFlags.Second), 
-                "IsSet failed. Bit is not set, expected set");
+            Assert.True(RBFlagsHelper.IsSet(secondSet, TestFlags.Second), "IsSet failed. Bit is not set, expected set");
         }
 
         [Test]
@@ -34,8 +33,7 @@ namespace RedBlueGames.Tools.Tests
             TestFlags secondAndThirdSet = TestFlags.Second | TestFlags.Third;
 
             // Act and Assert
-            Assert.False(RBFlagsHelper.IsSet(secondAndThirdSet, TestFlags.Fourth), 
-                "IsSet failed. Bit is set, expected unset");
+            Assert.False(RBFlagsHelper.IsSet(secondAndThirdSet, TestFlags.Fourth), "IsSet failed. Bit is set, expected unset");
         }
 
         [Test]

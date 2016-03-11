@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.IO;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using System.IO;
+    using UnityEngine;
+
     /// <summary>
     /// Ideal for static methods that could be called anywhere.
     /// </summary>
@@ -53,6 +53,7 @@ namespace RedBlueGames.Tools
                 Debug.LogError("Caught exception when trying to load texture from file: " + e.ToString());
                 return null;
             }
+
             texture.LoadImage(readBytes);
             return texture;
         }

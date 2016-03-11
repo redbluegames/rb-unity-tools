@@ -1,14 +1,13 @@
-﻿using UnityEngine;
-using System.Collections;
-using NUnit.Framework;
-using RedBlueGames.Tools;
-
-namespace RedBlueGames.Tools.Tests
+﻿namespace RedBlueGames.Tools.Tests
 {
+    using System.Collections;
+    using NUnit.Framework;
+    using RedBlueGames.Tools;
+    using UnityEngine;
+
     [TestFixture]
     public class UtilitiesTests
     {
-
         [Test]
         public void CopyText()
         {

@@ -1,12 +1,12 @@
-﻿using UnityEditor;
-using UnityEngine;
-using System.Collections.Generic;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections.Generic;
+    using UnityEditor;
+    using UnityEngine;
+
     public class ReplaceWithPrefab : EditorWindow
     {
-        GameObject prefabObject;
+        private GameObject prefabObject;
 
         [MenuItem("GameObject/Replace Selection with Prefab")]
         public static void ReplaceSelectionWithPrefab()
@@ -14,7 +14,7 @@ namespace RedBlueGames.Tools
             EditorWindow.GetWindow(typeof(ReplaceWithPrefab));
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
             EditorGUILayout.LabelField("This tool replaces the currently selected GameObjects with instances of the specified Prefab.", EditorStyles.centeredGreyMiniLabel);
             EditorGUILayout.Space();
@@ -61,7 +61,7 @@ namespace RedBlueGames.Tools
                             Debug.LogError("Supplied GameObject is of an unrecognized type.");
                             return;
                         }
-					
+
                         Undo.RegisterCreatedObjectUndo(instanceObj, "created prefab");
 
                         // Apply previous transform settings to the new one
@@ -89,7 +89,7 @@ namespace RedBlueGames.Tools
                     {
                         Undo.DestroyObjectImmediate(go);
                     }
-				
+
                     if (transformToSelect != null)
                     {
                         Selection.activeTransform = transformToSelect;

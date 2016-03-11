@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+
     public class ObjectPool : MonoBehaviour
     {
         // [NotNull]
@@ -11,9 +11,9 @@ namespace RedBlueGames.Tools
         public int PoolSize;
         public bool Grow;
 
-        List<GameObject> pool;
+        private List<GameObject> pool;
 
-        void Awake()
+        private void Awake()
         {
             pool = new List<GameObject>();
             for (int i = 0; i < PoolSize; i++)
@@ -42,7 +42,7 @@ namespace RedBlueGames.Tools
             }
         }
 
-        GameObject AddObjectToPool()
+        private GameObject AddObjectToPool()
         {
             GameObject obj = (GameObject)Instantiate(PooledObject);
             obj.SetActive(false);

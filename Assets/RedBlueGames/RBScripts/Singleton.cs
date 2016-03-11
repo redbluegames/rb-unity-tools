@@ -14,7 +14,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
 
 /* Code grabbed from http://wiki.unity3d.com/index.php/Singleton
  * 

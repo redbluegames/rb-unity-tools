@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using UnityEditor;
+    using UnityEngine;
+
     public class AnimClipBuilderTool
     {
         #region Menu Items
@@ -27,16 +27,17 @@ namespace RedBlueGames.Tools
             }
             catch (System.IO.IOException)
             {
-                if (EditorUtility.DisplayDialog("Warning: File Exists", 
-                        "This will overwrite the existing clip, " + filename +
-                        ". Are you sure you want to create the clip?", "Yes", "No"))
+                var errorMessage = string.Format(
+                                       "This will overwrite the existing clip, {0}. Are you sure you want to create the clip?",
+                                       filename);
+                if (EditorUtility.DisplayDialog("Warning: File Exists", errorMessage, "Yes", "No"))
                 {
                     SaveClip(clip, fullClipPath, true);
                 }
             }
         }
 
-        static Sprite[] GetSpritesFromTexture(Texture2D texture)
+        private static Sprite[] GetSpritesFromTexture(Texture2D texture)
         {
             string path = AssetDatabase.GetAssetPath(texture);
             if (string.IsNullOrEmpty(path))
@@ -59,7 +60,7 @@ namespace RedBlueGames.Tools
             return spriteList.ToArray();
         }
 
-        static string GetSavePathFromTexture(Texture2D selectedTexture, string filename)
+        private static string GetSavePathFromTexture(Texture2D selectedTexture, string filename)
         {
             string texturePath = AssetDatabase.GetAssetPath(selectedTexture);
             string textureDirectory = System.IO.Path.GetDirectoryName(texturePath) + System.IO.Path.DirectorySeparatorChar;
@@ -68,7 +69,7 @@ namespace RedBlueGames.Tools
             return fullClipPath;
         }
 
-        static void SaveClip(AnimationClip clip, string path, bool allowOverride)
+        private static void SaveClip(AnimationClip clip, string path, bool allowOverride)
         {
             if (!allowOverride && System.IO.File.Exists(path))
             {
@@ -85,7 +86,7 @@ namespace RedBlueGames.Tools
         #region Menu Item Validation
 
         [MenuItem("Assets/AnimationClipUtility/Create Clip from Sprites", true)]
-        static bool ValidateSelect()
+        private static bool ValidateSelect()
         {
             if (!IsSelectionValidTexture())
             {
@@ -100,7 +101,7 @@ namespace RedBlueGames.Tools
             return true;
         }
 
-        static bool IsSelectionValidTexture()
+        private static bool IsSelectionValidTexture()
         {
             if (Selection.activeObject == null)
             {

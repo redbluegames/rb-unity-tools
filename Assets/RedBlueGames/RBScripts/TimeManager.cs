@@ -14,15 +14,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
 
 namespace RedBlueGames.Tools
 {
+    using UnityEngine;
+
     public static class TimeManager
     {
         // Time and Pause handling members
-        static int pauseRequests;
-        static int lowLevelPauseRequests;
+        private static int pauseRequests;
+        private static int lowLevelPauseRequests;
 
         public static bool IsPaused { get; private set; }
 
@@ -49,6 +50,7 @@ namespace RedBlueGames.Tools
             {
                 IsPaused = false;
             }
+
             ResolveTimeScale();
         }
 
@@ -66,6 +68,7 @@ namespace RedBlueGames.Tools
             {
                 IsLowLevelPaused = false;
             }
+
             ResolveTimeScale();
         }
 

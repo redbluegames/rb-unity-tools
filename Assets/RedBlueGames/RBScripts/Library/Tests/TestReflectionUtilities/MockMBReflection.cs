@@ -1,21 +1,24 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace RedBlueGames.Tools.NotNull.Tests
+﻿namespace RedBlueGames.Tools.NotNull.Tests
 {
+    using System.Collections;
+    using UnityEngine;
+
+    /// <summary>
+    /// Test utitlity to Mock MB reflection.
+    /// </summary>
     public class MockMBReflection : MonoBehaviour
     {
         #region int field test
 
-        int noAttriuteIntPrivate;
+        private int noAttriuteIntPrivate;
         public int noAttributeIntegar;
         [SerializeField]
-        int
+        private int
             intPrivate;
         [SerializeField]
         public int
             IntPublic;
-		
+
         [SerializeField]
         [Header("Header Attribute")]
         public int IntMultipleFieldsPublic;
@@ -24,10 +27,10 @@ namespace RedBlueGames.Tools.NotNull.Tests
 
         #region Custom Class field test
 
-        CustomClass noAttributeCustomClassPrivate;
+        private CustomClass noAttributeCustomClassPrivate;
         public CustomClass noAttributeCustomClassPublic;
         [SerializeField]
-        CustomClass customClassPrivate;
+        private CustomClass customClassPrivate;
         [SerializeField]
         public CustomClass CustomClassPublic;
 
@@ -39,7 +42,7 @@ namespace RedBlueGames.Tools.NotNull.Tests
 
         public class CustomClass
         {
-            int x;
+            private int x;
         }
     }
 }

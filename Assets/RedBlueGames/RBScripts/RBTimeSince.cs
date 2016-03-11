@@ -14,10 +14,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
-
 namespace RedBlueGames.Tools
 {
+    using UnityEngine;
+
     /*
  * Simple timer that does NOT update itself. The classes using
  * this need to check back periodically to see how much time
@@ -26,11 +26,11 @@ namespace RedBlueGames.Tools
     [System.Serializable]
     public class RBTimeSince
     {
-        float timeStarted;
+        private float timeStarted;
 
         public bool IsRunning { get; private set; }
 
-        const float UNSET = float.NaN;
+        private const float UNSET = float.NaN;
 
         /// <summary>
         /// The amount of time in seconds the timer has been running.

@@ -1,10 +1,10 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+
     /// <summary>
     /// Handles casting between this object and its position in the previous frame. 
     /// It then sends a callback for each object hit.
@@ -29,18 +29,16 @@ namespace RedBlueGames.Tools
         public bool IsCasting { get; private set; }
 
         [Tooltip("Radius of the attack circle")]
-        public float
-            radius;
+        public float radius;
         [Tooltip("Layers the attack casts against")]
-        public LayerMask
-            hitLayer;
+        public LayerMask hitLayer;
         [Tooltip("The \"Originator\" of the cast who will be ignored by the attack.")]
-        public GameObject
-            Originator;
-        private     Vector3 lastFramePosition;
+        public GameObject Originator;
+        private Vector3 lastFramePosition;
+
         // Track last position of this game object
-        private     List<GameObject> ignoreObjects = new List<GameObject>();
         // A list of hit game objects so that we only report one OnHit per object
+        private List<GameObject> ignoreObjects = new List<GameObject>();
 
         #region Attack Casting
 
@@ -55,6 +53,7 @@ namespace RedBlueGames.Tools
                     "already in progress. Ignoring.");
                 return;
             }
+
             IsCasting = true;
 
             // Initialize previous position to the current attack position
@@ -83,11 +82,11 @@ namespace RedBlueGames.Tools
             ignoreObjects.Clear();
         }
 
-        IEnumerator CastForHits()
+        private IEnumerator CastForHits()
         {
             while (true)
             {
-                Vector3 direction = (transform.position - lastFramePosition);
+                Vector3 direction = transform.position - lastFramePosition;
                 float distance = direction.magnitude;
                 direction.Normalize();
                 RaycastHit2D[] hits;
@@ -109,7 +108,7 @@ namespace RedBlueGames.Tools
         /// Send Hits to hit objects, from a Raycast hit array.
         /// </summary>
         /// <param name="hits">Hits.</param>
-        void ReportHits(RaycastHit2D[] hits)
+        private void ReportHits(RaycastHit2D[] hits)
         {
             foreach (RaycastHit2D hit in hits)
             {
@@ -136,7 +135,7 @@ namespace RedBlueGames.Tools
             OnHit(new HitEventArgs(hit));
         }
 
-        GameObject GetHitObject(RaycastHit2D hit)
+        private GameObject GetHitObject(RaycastHit2D hit)
         {
             if (hit.collider == null)
             {
@@ -146,7 +145,7 @@ namespace RedBlueGames.Tools
             return hit.collider.gameObject;
         }
 
-        void OnHit(HitEventArgs args)
+        private void OnHit(HitEventArgs args)
         {
             if (Hit != null)
             {
@@ -158,13 +157,14 @@ namespace RedBlueGames.Tools
 
         #region Debugging
 
-        void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
             // Let the casting debug draw when casting
             if (IsCasting)
             {
                 return;
             }
+
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, radius);
         }

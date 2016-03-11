@@ -1,9 +1,9 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace RedBlueGames.Tools.Tests
+﻿namespace RedBlueGames.Tools.Tests
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+
     public class TestAttackCast2DSequence : MonoBehaviour
     {
         [Header("Expected Results")]
@@ -16,23 +16,23 @@ namespace RedBlueGames.Tools.Tests
         public List<GameObject> HitObjects;
         int currentPoint = 0;
 
-        void Awake()
+        private void Awake()
         {
             // Subscribe to attacks
             AttackCast.Hit += HandleHit;
         }
 
-        void HandleHit(object sender, AttackCast2D.HitEventArgs e)
+        private void HandleHit(object sender, AttackCast2D.HitEventArgs e)
         {
             HitObjects.Add(e.Hit.collider.gameObject);
         }
 
-        void OnDrawGizmos()
+        private void OnDrawGizmos()
         {
             DrawDebugInfo();
         }
 
-        void DrawDebugInfo()
+        private void DrawDebugInfo()
         {
             if (CastPositions != null && CastPositions.Count > 0)
             {

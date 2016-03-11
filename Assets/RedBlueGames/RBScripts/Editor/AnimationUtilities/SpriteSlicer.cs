@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using UnityEditor;
-using UnityEditorInternal;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using UnityEditor;
+    using UnityEditorInternal;
+    using UnityEngine;
+
     public static class SpriteSlicer
     {
         public static SpriteMetaData[] CreateSpriteSheetForTexture(Texture2D texture, SpriteSlicingOptions slicingOptions)
@@ -22,10 +22,11 @@ namespace RedBlueGames.Tools
                 spriteMetaData.name = texture.name + "_" + i;
                 sprites.Add(spriteMetaData);
             }
+
             return sprites.ToArray();
         }
 
-        static Rect[] GetAllSliceRectsForTexture(Texture2D texture, Vector2 cellSize)
+        private static Rect[] GetAllSliceRectsForTexture(Texture2D texture, Vector2 cellSize)
         {
             int numSpritesTall = Mathf.FloorToInt(texture.height / cellSize.y);
             int numSpritesWide = Mathf.FloorToInt(texture.width / cellSize.x);
@@ -56,8 +57,10 @@ namespace RedBlueGames.Tools
     
             // Add new sprite meta data to the end for all the newly parsed grid rects?
             if (importer.spritesheet != null)
+            {
                 spriteSheet = spriteSheet.Concat(new SpriteMetaData[Mathf.Max(0, gridRects.Length - importer.spritesheet.Length)]).ToArray();
-            
+            }
+
             for (var i = 0; i < spriteSheet.Length; i++)
             {
                 bool sliceExists = importer.spritesheet != null && i < importer.spritesheet.Length;
@@ -72,7 +75,9 @@ namespace RedBlueGames.Tools
             }
             
             if (slicingOptions.Frames > 0)
+            {
                 spriteSheet = spriteSheet.Take((int)slicingOptions.Frames).ToArray();
+            }
     
             return spriteSheet;
         }
@@ -85,6 +90,7 @@ namespace RedBlueGames.Tools
                 Debug.LogWarning("Can't find sprites from Texture at path: " + path);
                 return null;
             }
+
             Sprite[] spriteArray = AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().ToArray();
 
             List<Sprite> sortedSprites = new List<Sprite>(spriteArray);

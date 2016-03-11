@@ -15,10 +15,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
-
 namespace RedBlueGames.Tools
 {
+    using UnityEngine;
+
     public class Gizmo : MonoBehaviour
     {
         public float gizmoSize = 0.5f;
@@ -33,11 +33,10 @@ namespace RedBlueGames.Tools
             float lineSize = gizmoSize * 2;
             Vector3 position = transform.position + transform.TransformDirection(Vector3.forward * lineSize);
             Gizmos.DrawLine(transform.position, position);
+
             // Draw Z line
             position = transform.position + transform.TransformDirection(Vector3.right * lineSize);
             Gizmos.DrawLine(transform.position, position);
-
         }
     }
-
 }

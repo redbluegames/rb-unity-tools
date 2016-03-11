@@ -1,11 +1,11 @@
-﻿using UnityEngine;
-using System;
-using System.Reflection;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Reflection;
+    using UnityEngine;
+
     public static class ReflectionUtilities
     {
         public static List<FieldInfo> GetFieldsWithAttributeFromType<T>(Type classToInspect, 
@@ -21,6 +21,7 @@ namespace RedBlueGames.Tools
             {
                 allFields = classToInspect.GetFields(reflectionFlags);
             }
+
             foreach (FieldInfo fieldInfo in allFields)
             {
                 foreach (Attribute attribute in Attribute.GetCustomAttributes (fieldInfo))

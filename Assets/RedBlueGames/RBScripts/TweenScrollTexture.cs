@@ -14,30 +14,30 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
-
 namespace RedBlueGames.Tools
 {
+    using UnityEngine;
+
     [RequireComponent(typeof(TextureShifter))]
     /// <summary>
-	/// Move a texture across a plane at a given linear speed.
-	/// </summary>
-	public class TweenScrollTexture : MonoBehaviour
+    /// Move a texture across a plane at a given linear speed.
+    /// </summary>
+    public class TweenScrollTexture : MonoBehaviour
     {
         public Vector2 speed;
         public bool IsPaused;
-        TextureShifter textureShifter;
-        Vector2 currentOffset;
+        private TextureShifter textureShifter;
+        private Vector2 currentOffset;
         public bool MoveAsSinWave;
         public int SinCycleSeconds = 60;
 
-        void Awake()
+        private void Awake()
         {
             currentOffset = Vector2.zero;
             textureShifter = GetComponent<TextureShifter>();
         }
 
-        void Update()
+        private void Update()
         {
             if (!IsPaused)
             {
@@ -48,6 +48,7 @@ namespace RedBlueGames.Tools
                     float sinBasedOffset = Mathf.Sin((Time.timeSinceLevelLoad * Mathf.PI * 2) / SinCycleSeconds);
                     yOffset = sinBasedOffset * (Time.deltaTime * speed.y);
                 }
+
                 currentOffset = new Vector2((currentOffset.x + xOffset) % 1, (currentOffset.y + yOffset) % 1);
                 textureShifter.ShiftTexture(currentOffset);
             }

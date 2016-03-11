@@ -1,14 +1,13 @@
-using NUnit.Framework;
-using System;
-using RedBlueGames;
-using UnityEngine;
-
 namespace RedBlueGames.Tools.Tests
 {
+    using System;
+    using NUnit.Framework;
+    using RedBlueGames;
+    using UnityEngine;
+
     [TestFixture]
     public class RBVector2ExtensionTests
     {
-
         [Test]
         public void IsNormalized_ZeroVector_ReturnsFalse()
         {
@@ -37,6 +36,7 @@ namespace RedBlueGames.Tools.Tests
         }
 
         [Test]
+
         public void IsWithinArc_ZeroSourceVector_ReturnsFalse()
         {
             Vector2 zero = Vector2.zero;
@@ -183,7 +183,8 @@ namespace RedBlueGames.Tools.Tests
             Vector2 upVector = Vector2.up;
             Vector2 upVectorRotatedBy360 = upVector.RotateClockwiseByRadians(2 * Mathf.PI);
 
-            Assert.True(upVector == upVectorRotatedBy360,
+            Assert.True(
+                upVector == upVectorRotatedBy360,
                 string.Format("Vectors are not equal. Expected {0}, but was {1}", upVector, upVectorRotatedBy360));
         }
 
@@ -195,7 +196,8 @@ namespace RedBlueGames.Tools.Tests
 
             Vector2 diagonalRotatedBy45 = diagonal.RotateClockwiseByRadians(45 * Mathf.Deg2Rad);
 
-            Assert.True(diagonalRotatedBy45 == expectedVector,
+            Assert.True(
+                diagonalRotatedBy45 == expectedVector,
                 string.Format("Vectors are not equal. Expected {0}, but was {1}", expectedVector, diagonalRotatedBy45));
         }
     }

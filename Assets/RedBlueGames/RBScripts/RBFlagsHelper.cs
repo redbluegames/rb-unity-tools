@@ -15,12 +15,12 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-using UnityEngine;
-using System.Collections;
-using System;
-
 namespace RedBlueGames.Tools
 {
+    using System;
+    using System.Collections;
+    using UnityEngine;
+
     // Class suggestion taken from user Dan Tao on StackOverflow: http://stackoverflow.com/questions/3261451/using-a-bitmask-in-c-sharp
     public static class RBFlagsHelper
     {
@@ -35,7 +35,7 @@ namespace RedBlueGames.Tools
         {
             int flagsValue = (int)(object)flags;
             int flagValue = (int)(object)flag;
-			
+
             return (flagsValue & flagValue) != 0;
         }
 
@@ -49,7 +49,7 @@ namespace RedBlueGames.Tools
         {
             int flagsValue = (int)(object)flags;
             int flagValue = (int)(object)flag;
-			
+
             flags = (T)(object)(flagsValue | flagValue);
         }
 
@@ -63,7 +63,7 @@ namespace RedBlueGames.Tools
         {
             int flagsValue = (int)(object)flags;
             int flagValue = (int)(object)flag;
-			
+
             flags = (T)(object)(flagsValue & (~flagValue));
         }
 
@@ -97,7 +97,7 @@ namespace RedBlueGames.Tools
         /// <param name="flags">Flags.</param>
         /// <param name="numShifts">Number of shifts.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        static void ShiftCircular<T>(ref T flags, int numShifts, bool isLeft) where T : struct
+        private static void ShiftCircular<T>(ref T flags, int numShifts, bool isLeft) where T : struct
         {
             int flagsValue = (int)(object)flags;
             int numBits = Enum.GetValues(typeof(T)).Length;
@@ -112,6 +112,7 @@ namespace RedBlueGames.Tools
                 leftShift = numBits - numShifts;
                 rightShift = numShifts;
             }
+
             flags = (T)(object)(flagsValue << leftShift | flagsValue >> rightShift);
         }
 
@@ -120,7 +121,7 @@ namespace RedBlueGames.Tools
         /// </summary>
         /// <param name="flags">Flags.</param>
         /// <typeparam name="T">The 1st type parameter.</typeparam>
-        static void StripLeadingBits<T>(ref T flags) where T : struct
+        private static void StripLeadingBits<T>(ref T flags) where T : struct
         {
             // Strip extra "1's"
             int flagsValue = (int)(object)flags;
@@ -144,13 +145,12 @@ namespace RedBlueGames.Tools
             catch (Exception ex)
             {
                 throw new ArgumentException(
-                    string.Format(
-                        "FlagsHelper Error: Can't set all bits in non-enum type '{0}'.",
-                        typeof(T).Name
-                    ), ex);
+                    string.Format("FlagsHelper Error: Can't set all bits in non-enum type '{0}'.", typeof(T).Name),
+                    ex);
             }
+
             int flaggedBits = FlagNBits(numBits);
-            flags = (T)(object)(flaggedBits);
+            flags = (T)(object)flaggedBits;
         }
 
         /// <summary>
@@ -158,13 +158,14 @@ namespace RedBlueGames.Tools
         /// </summary>
         /// <returns>Number of bits to flag</returns>
         /// <param name="numBits">Number bits.</param>
-        static int FlagNBits(int numBits)
+        private static int FlagNBits(int numBits)
         {
             int flags = 1;
             for (int i = 0; i < numBits - 1; i++)
             {
                 flags = (flags << 1) | flags;
             }
+
             return flags;
         }
 
@@ -177,7 +178,8 @@ namespace RedBlueGames.Tools
         public static string ToStringInBinary<T>(T flags) where T : struct
         {
             int flagValues = (int)(object)flags;
-            string output = "";
+            string output = string.Empty;
+
             // Build the string in reverse order (highest order bit first)
             for (int i = Enum.GetValues(typeof(T)).Length - 1; i >= 0; i--)
             {
@@ -202,14 +204,15 @@ namespace RedBlueGames.Tools
             int flagBValue = (int)(object)flagB;
             bool flagAIsSet = IsSet(flags, flagA);
             bool flagBIsSet = IsSet(flags, flagB);
+
             // If they are the same, no need to swap
             // 1010
             if (flagAIsSet == flagBIsSet)
             {
-                flags = (T)(object)(flagsValue);
+                flags = (T)(object)flagsValue;
                 return;
             }
-			
+
             if (flagAIsSet && !flagBIsSet)
             {
                 // 1000 -> 0010
@@ -222,10 +225,9 @@ namespace RedBlueGames.Tools
                 flagsValue = flagsValue | flagAValue;
                 flagsValue = flagsValue & ~flagBValue;
             }
-			
-            flags = (T)(object)(flagsValue);
+
+            flags = (T)(object)flagsValue;
             return;
         }
     }
-
 }

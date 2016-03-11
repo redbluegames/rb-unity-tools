@@ -15,50 +15,49 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
-
-using UnityEngine;
-
 namespace RedBlueGames.Tools
 {
-	[System.Serializable]
-	public class RBAchievement
-	{
-		public string id { get; private set; }
+    using UnityEngine;
 
-		public Status status { get; private set; }
+    [System.Serializable]
+    public class RBAchievement
+    {
+        public string id { get; private set; }
 
-		public enum Status
-		{
-			Unearned = 0,
-			EarnedUnsent = 1,
-			EarnedSentOnce = 2,
-			EarnedSubmitted = 3
-		}
+        public Status status { get; private set; }
 
-		public RBAchievement (string id, int status)
-		{
-			this.id = id;
-			this.status = (Status)status;
-		}
+        public enum Status
+        {
+            Unearned = 0,
+            EarnedUnsent = 1,
+            EarnedSentOnce = 2,
+            EarnedSubmitted = 3
+        }
 
-		public void MarkAchievementEarned ()
-		{
-			status = Status.EarnedUnsent;
-		}
+        public RBAchievement(string id, int status)
+        {
+            this.id = id;
+            this.status = (Status)status;
+        }
 
-		public void MarkAchievementSubmitted ()
-		{
-			status = Status.EarnedSubmitted;
-		}
+        public void MarkAchievementEarned()
+        {
+            status = Status.EarnedUnsent;
+        }
 
-		public void MarkAchievementSent ()
-		{
-			status = Status.EarnedSentOnce;
-		}
+        public void MarkAchievementSubmitted()
+        {
+            status = Status.EarnedSubmitted;
+        }
 
-		public void SetStatus (Status newStatus)
-		{
-			status = newStatus;
-		}
-	}
+        public void MarkAchievementSent()
+        {
+            status = Status.EarnedSentOnce;
+        }
+
+        public void SetStatus(Status newStatus)
+        {
+            status = newStatus;
+        }
+    }
 }

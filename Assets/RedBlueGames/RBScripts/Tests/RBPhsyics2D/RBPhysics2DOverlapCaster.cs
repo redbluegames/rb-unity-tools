@@ -1,12 +1,11 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace RedBlueGames.Tools.Tests
+﻿namespace RedBlueGames.Tools.Tests
 {
+    using System.Collections;
+    using UnityEngine;
+
     [ExecuteInEditMode]
     public class RBPhysics2DOverlapCaster : MonoBehaviour
     {
-
         public CastType Cast;
 
         public enum CastType

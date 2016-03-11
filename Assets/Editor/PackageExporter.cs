@@ -1,14 +1,13 @@
-﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
 
 public class PackageExporter : UnityEditor.EditorWindow
 {
+    private static string assetPathName = "Assets/RedBlueGames";
 
-    static string assetPathName = "Assets/RedBlueGames";
-
-    static string Filename
+    private static string Filename
     {
         get
         {
@@ -16,7 +15,7 @@ public class PackageExporter : UnityEditor.EditorWindow
         }
     }
 
-    static string FilenameWithTests
+    private static string FilenameWithTests
     {
         get
         {
@@ -36,10 +35,9 @@ public class PackageExporter : UnityEditor.EditorWindow
         ExportRBScripts(true);
     }
 
-    static void ExportRBScripts(bool excludeTests)
+    private static void ExportRBScripts(bool excludeTests)
     {
-        var subDirectories = System.IO.Directory.GetDirectories(assetPathName, "*", 
-                                 System.IO.SearchOption.AllDirectories);
+        var subDirectories = System.IO.Directory.GetDirectories(assetPathName, "*", System.IO.SearchOption.AllDirectories);
         var directoriesToExport = new List<string>(subDirectories);
 
         var testDirectories = GetTestDirectories(subDirectories);
@@ -59,12 +57,13 @@ public class PackageExporter : UnityEditor.EditorWindow
         }
 
         string filename = excludeTests ? Filename : FilenameWithTests;
-        AssetDatabase.ExportPackage(allAssetPaths.ToArray(), filename,
-            ExportPackageOptions.IncludeDependencies |
-            ExportPackageOptions.Interactive);
+        AssetDatabase.ExportPackage(
+            allAssetPaths.ToArray(),
+            filename,
+            ExportPackageOptions.IncludeDependencies | ExportPackageOptions.Interactive);
     }
 
-    static List<string> GetTestDirectories(string[] directories)
+    private static List<string> GetTestDirectories(string[] directories)
     {
         var testDirectories = new List<string>();
         foreach (var directory in directories)
@@ -74,15 +73,17 @@ public class PackageExporter : UnityEditor.EditorWindow
                 testDirectories.Add(directory);
                 continue;
             }
+
             if (IsPathToTestDirectory(directory))
             {
                 testDirectories.Add(directory);
             }
         }
+
         return testDirectories;
     }
 
-    static bool IsPathSubdirectoryOfThesePaths(string path, List<string> possibleParentDirectories)
+    private static bool IsPathSubdirectoryOfThesePaths(string path, List<string> possibleParentDirectories)
     {
         foreach (var possibleParentDirectory in possibleParentDirectories)
         {
@@ -91,10 +92,11 @@ public class PackageExporter : UnityEditor.EditorWindow
                 return true;
             }
         }
+
         return false;
     }
 
-    static bool IsPathToTestDirectory(string path)
+    private static bool IsPathToTestDirectory(string path)
     {
         return System.IO.Path.GetFileName(path) == "Tests";
     }

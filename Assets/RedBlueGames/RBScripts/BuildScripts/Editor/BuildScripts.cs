@@ -1,29 +1,29 @@
-﻿using UnityEngine;
-using UnityEditor;
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using UnityEditor;
+    using UnityEngine;
+
     public class BuildScripts : EditorWindow
     {
-        const int NumDigitsPerVersionIteration = 2;
-        string companyDisplayName;
-        string filename;
-        string appName;
-        string bundleIdentifier;
-        bool isDevelopmentBuild;
-        string version = PlayerSettings.bundleVersion;
-        string savePath;
-        bool buildAndroid = true;
-        bool buildIOS;
-        bool iOSSimulationBuild = false;
-        string androidKeystorePath = PlayerSettings.Android.keystoreName;
-        string androidKeystorePassword;
-        string androidKeyAlias = PlayerSettings.Android.keyaliasName;
-        string androidKeyAliasPassword;
-        BuildType buildType;
+        private const int NumDigitsPerVersionIteration = 2;
+        private string companyDisplayName;
+        private string filename;
+        private string appName;
+        private string bundleIdentifier;
+        private bool isDevelopmentBuild;
+        private string version = PlayerSettings.bundleVersion;
+        private string savePath;
+        private bool buildAndroid = true;
+        private bool buildIOS;
+        private bool iOSSimulationBuild = false;
+        private string androidKeystorePath = PlayerSettings.Android.keystoreName;
+        private string androidKeystorePassword;
+        private string androidKeyAlias = PlayerSettings.Android.keyaliasName;
+        private string androidKeyAliasPassword;
+        private BuildType buildType;
 
-        BuildScriptSettings currentSettings;
-        bool isInitialized;
+        private BuildScriptSettings currentSettings;
+        private bool isInitialized;
 
         public enum BuildType
         {
@@ -31,12 +31,12 @@ namespace RedBlueGames.Tools
             Release
         }
 
-        void OnEnable()
+        private void OnEnable()
         {
             ImportBuildScriptSettings();
         }
 
-        void ImportBuildScriptSettings()
+        private void ImportBuildScriptSettings()
         {
             var assetPath = BuildScriptSettings.SavePath;
             currentSettings = AssetDatabase.LoadAssetAtPath<BuildScriptSettings>(assetPath);
@@ -56,7 +56,7 @@ namespace RedBlueGames.Tools
             }
         }
 
-        void ConfigureBuildOptionsForBuildType(BuildType type)
+        private void ConfigureBuildOptionsForBuildType(BuildType type)
         {
             switch (type)
             {
@@ -78,9 +78,8 @@ namespace RedBlueGames.Tools
             EditorWindow.GetWindow<BuildScripts>("Export Builds");
         }
 
-        void OnGUI()
+        private void OnGUI()
         {
-
             GUILayout.Label("BuildSettings", EditorStyles.boldLabel);
             if (!isInitialized)
             {
@@ -164,6 +163,7 @@ namespace RedBlueGames.Tools
                     Debug.LogError("Tried to do build without specifying a build target.");
                     return;
                 }
+
                 if (buildIOS)
                 {
                     ConfigureiOSBuildSettings();
@@ -172,6 +172,7 @@ namespace RedBlueGames.Tools
                         ExportiOSBuild();
                     }
                 }
+
                 if (buildAndroid)
                 {
                     ConfigureAndroidBuildSettings();
@@ -183,7 +184,7 @@ namespace RedBlueGames.Tools
             }
         }
 
-        void CreateSettings()
+        private void CreateSettings()
         {
             var assetPath = BuildScriptSettings.SavePath;
             var asset = ScriptableObject.CreateInstance<BuildScriptSettings>();
@@ -198,14 +199,14 @@ namespace RedBlueGames.Tools
 
         #region Field Validation
 
-        void ValidateAllEditorFields()
+        private void ValidateAllEditorFields()
         {
             ValidateStringAsFilename(filename);
             ValidateStringAsBundleIdentifier(bundleIdentifier);
             ValidateStringAsVersionNumber(version);
         }
 
-        void ValidateStringAsFilename(string inputString)
+        private void ValidateStringAsFilename(string inputString)
         {
             if (string.IsNullOrEmpty(inputString))
             {
@@ -213,7 +214,7 @@ namespace RedBlueGames.Tools
             }
         }
 
-        void ValidateStringAsBundleIdentifier(string inputString)
+        private void ValidateStringAsBundleIdentifier(string inputString)
         {
             if (string.IsNullOrEmpty(inputString))
             {
@@ -229,7 +230,7 @@ namespace RedBlueGames.Tools
             }
         }
 
-        void ValidateStringAsVersionNumber(string inputString)
+        private void ValidateStringAsVersionNumber(string inputString)
         {
             if (string.IsNullOrEmpty(inputString))
             {
@@ -255,22 +256,23 @@ namespace RedBlueGames.Tools
 
         #region Build Configuration
 
-        void PrepareUniversalBuild()
+        private void PrepareUniversalBuild()
         {
             ValidateAllEditorFields();
         }
 
-        string PromptUserForSaveLocation()
+        private string PromptUserForSaveLocation()
         {
             string path = EditorUtility.SaveFolderPanel("Choose location to save build(s)", "", "");
             if (string.IsNullOrEmpty(path))
             {
                 return string.Empty;
             }
+
             return path;
         }
 
-        void ConfigureUniversalBuildSettings()
+        private void ConfigureUniversalBuildSettings()
         {
             // Configure PlayerSettings that never change //
             PlayerSettings.companyName = companyDisplayName;
@@ -286,7 +288,7 @@ namespace RedBlueGames.Tools
             PlayerSettings.productName = appName;
         }
 
-        void ConfigureAndroidBuildSettings()
+        private void ConfigureAndroidBuildSettings()
         {
             PlayerSettings.Android.androidTVCompatibility = false;
 
@@ -299,7 +301,7 @@ namespace RedBlueGames.Tools
             PlayerSettings.Android.keyaliasPass = androidKeyAliasPassword;
         }
 
-        int ConvertVersionStringToVersionCode(string inputString)
+        private int ConvertVersionStringToVersionCode(string inputString)
         {
             // Version string must be the correct format
             // MAJOR_VERSION . MINOR_VERSION . BUILD
@@ -314,21 +316,24 @@ namespace RedBlueGames.Tools
                 versionOrder += iterationValue;
                 iteration++;
             }
+
             return versionOrder;
         }
 
-        void ConfigurePlatformDefinesForBuiltTarget(BuildTargetGroup targetGroup)
+        private void ConfigurePlatformDefinesForBuiltTarget(BuildTargetGroup targetGroup)
         {
             string defineSymbols = string.Empty;
+
             // Turn off Google Play Game Services for iOS
             if (targetGroup == BuildTargetGroup.iOS)
             {
                 defineSymbols = "NO_GPGS";
             }
+
             PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroup, defineSymbols);
         }
 
-        void ConfigureiOSBuildSettings()
+        private void ConfigureiOSBuildSettings()
         {
             if (iOSSimulationBuild)
             {
@@ -338,6 +343,7 @@ namespace RedBlueGames.Tools
             {
                 PlayerSettings.iOS.sdkVersion = iOSSdkVersion.DeviceSDK;
             }
+
             ConfigurePlatformDefinesForBuiltTarget(BuildTargetGroup.iOS);
         }
 
@@ -345,22 +351,22 @@ namespace RedBlueGames.Tools
 
         #region Export Functions
 
-        void ExportAndroidBuild()
+        private void ExportAndroidBuild()
         {
             BuildPipeline.BuildPlayer(GetLevelsForBuild(), savePath + "/" + filename + ".apk", BuildTarget.Android, GetBuildOptionsForBuild());
         }
 
-        void ExportiOSBuild()
+        private void ExportiOSBuild()
         {
             BuildPipeline.BuildPlayer(GetLevelsForBuild(), savePath + "/" + filename, BuildTarget.iOS, GetBuildOptionsForBuild());
         }
 
-        string[] GetLevelsForBuild()
+        private string[] GetLevelsForBuild()
         {
             return SceneManager.GetAllPaths();
         }
 
-        BuildOptions GetBuildOptionsForBuild()
+        private BuildOptions GetBuildOptionsForBuild()
         {
             BuildOptions buildOptions;
             if (isDevelopmentBuild)
@@ -371,6 +377,7 @@ namespace RedBlueGames.Tools
             {
                 buildOptions = BuildOptions.None;
             }
+
             return buildOptions;
         }
 

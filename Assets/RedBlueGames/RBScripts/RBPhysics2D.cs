@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
-
-namespace RedBlueGames.Tools
+﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
+
+    #if UNITY_EDITOR
+    using UnityEditor;
+    #endif
+    using UnityEngine;
+
     public class RBPhysics2D
     {
         public static Color HitColliderColor = Color.yellow;
@@ -16,49 +16,76 @@ namespace RedBlueGames.Tools
 
         #region RayCast Wrapper
 
-        public static RaycastHit2D LineCast(Vector2 start, Vector2 end, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                            float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static RaycastHit2D LineCast(
+            Vector2 start,
+            Vector2 end,
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = Mathf.NegativeInfinity,
+            float maxDepth = Mathf.Infinity)
         {
             RaycastHit2D hit = Physics2D.Linecast(start, end, layerMask, minDepth, maxDepth);
             DrawLineAndHits(new RaycastHit2D[] { hit }, start, end);
             return hit;
         }
 
-        public static RaycastHit2D[] LineCastAll(Vector2 start, Vector2 end, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                                 float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static RaycastHit2D[] LineCastAll(
+            Vector2 start,
+            Vector2 end,
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = Mathf.NegativeInfinity,
+            float maxDepth = Mathf.Infinity)
         {
             RaycastHit2D[] hits = Physics2D.LinecastAll(start, end, layerMask, minDepth, maxDepth);
             DrawLineAndHits(hits, start, end);
             return hits;
         }
 
-        public static void LineCastNonAlloc(Vector2 start, Vector2 end, RaycastHit2D[] results,
-                                            int layerMask = Physics2D.DefaultRaycastLayers, 
-                                            float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static void LineCastNonAlloc(
+            Vector2 start,
+            Vector2 end,
+            RaycastHit2D[] results,
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = Mathf.NegativeInfinity,
+            float maxDepth = Mathf.Infinity)
         {
             Physics2D.LinecastNonAlloc(start, end, results, layerMask, minDepth, maxDepth);
             DrawLineAndHits(results, start, end);
         }
 
-        public static RaycastHit2D RayCast(Vector2 origin, Vector2 direction, float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers,
-                                           float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static RaycastHit2D RayCast(
+            Vector2 origin,
+            Vector2 direction,
+            float distance = Mathf.Infinity,
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = Mathf.NegativeInfinity,
+            float maxDepth = Mathf.Infinity)
         {
             RaycastHit2D hit = Physics2D.Raycast(origin, direction, distance, layerMask, minDepth, maxDepth);
             DrawRayAndHits(new RaycastHit2D[] { hit }, origin, direction, distance);
             return hit;
         }
 
-        public static RaycastHit2D[] RayCastAll(Vector2 origin, Vector2 direction, float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers,
-                                                float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static RaycastHit2D[] RayCastAll(
+            Vector2 origin,
+            Vector2 direction,
+            float distance = Mathf.Infinity,
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = Mathf.NegativeInfinity,
+            float maxDepth = Mathf.Infinity)
         {
             RaycastHit2D[] hits = Physics2D.RaycastAll(origin, direction, distance, layerMask, minDepth, maxDepth);
             DrawRayAndHits(hits, origin, direction, distance);
             return hits;
         }
 
-        public static void RayCastNonAlloc(Vector2 origin, Vector2 direction, RaycastHit2D[] results,
-                                           float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers,
-                                           float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static void RayCastNonAlloc(
+            Vector2 origin,
+            Vector2 direction,
+            RaycastHit2D[] results,
+            float distance = Mathf.Infinity,
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = Mathf.NegativeInfinity,
+            float maxDepth = Mathf.Infinity)
         {
             Physics2D.RaycastNonAlloc(origin, direction, results, distance, layerMask, minDepth, maxDepth);
             DrawRayAndHits(results, origin, direction, distance);
@@ -79,7 +106,7 @@ namespace RedBlueGames.Tools
             DebugUtilities.DrawArrow(origin, endpoint, drawColor);
         }
 
-        static bool RaycastHitsContainHit(RaycastHit2D[] hits)
+        private static bool RaycastHitsContainHit(RaycastHit2D[] hits)
         {
             if (hits != null && hits.Length > 0)
             {
@@ -91,10 +118,11 @@ namespace RedBlueGames.Tools
                     }
                 }
             }
+
             return false;
         }
 
-        static void DrawHitsForRaycasts(RaycastHit2D[] hits)
+        private static void DrawHitsForRaycasts(RaycastHit2D[] hits)
         {
             if (hits != null && hits.Length > 0)
             {
@@ -106,14 +134,14 @@ namespace RedBlueGames.Tools
             }
         }
 
-        static void DrawRaycastHit2D(RaycastHit2D hit, float size = 1.0f)
+        private static void DrawRaycastHit2D(RaycastHit2D hit, float size = 1.0f)
         {
             // Draw the hit collider
             if (hit.collider != null)
             {
                 hit.collider.DebugDraw(HitColliderColor);
             }
-			
+
             // Draw the normal at the hit location, or a circle for hits from rays originating inside collider
             bool isRayOriginatingFromInside = Mathf.Approximately(hit.fraction, 0.0f) && hit.collider != null;
             if (isRayOriginatingFromInside)
@@ -130,34 +158,55 @@ namespace RedBlueGames.Tools
 
         #region CircleCast Wrapper
 
-        public static RaycastHit2D CircleCast(Vector2 origin, float radius, Vector2 direction, 
-                                              float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                              float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static RaycastHit2D CircleCast(
+            Vector2 origin,
+            float radius,
+            Vector2 direction,
+            float distance = Mathf.Infinity,
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = Mathf.NegativeInfinity,
+            float maxDepth = Mathf.Infinity)
         {
             RaycastHit2D hit = Physics2D.CircleCast(origin, radius, direction, distance, layerMask, minDepth, maxDepth);
             DrawCircleCastAndHits(new RaycastHit2D[] { hit }, origin, radius, direction, distance);
             return hit;
         }
 
-        public static RaycastHit2D[] CircleCastAll(Vector2 origin, float radius, Vector2 direction, 
-                                                   float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                                   float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static RaycastHit2D[] CircleCastAll(
+            Vector2 origin,
+            float radius,
+            Vector2 direction,
+            float distance = Mathf.Infinity, 
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = Mathf.NegativeInfinity, 
+            float maxDepth = Mathf.Infinity)
         {
             RaycastHit2D[] hits = Physics2D.CircleCastAll(origin, radius, direction, distance, layerMask, minDepth, maxDepth);
             DrawCircleCastAndHits(hits, origin, radius, direction, distance);
             return hits;
         }
 
-        public static void CircleCastNonAlloc(Vector2 origin, float radius, Vector2 direction,
-                                              RaycastHit2D[] results, float distance = Mathf.Infinity, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                              float minDepth = Mathf.NegativeInfinity, float maxDepth = Mathf.Infinity)
+        public static void CircleCastNonAlloc(
+            Vector2 origin,
+            float radius,
+            Vector2 direction,
+            RaycastHit2D[] results,
+            float distance = Mathf.Infinity,
+            int layerMask = Physics2D.DefaultRaycastLayers, 
+            float minDepth = Mathf.NegativeInfinity,
+            float maxDepth = Mathf.Infinity)
         {
             Physics2D.CircleCastNonAlloc(origin, radius, direction, results, distance, layerMask, minDepth, maxDepth);
             DrawCircleCastAndHits(results, origin, radius, direction, distance);
         }
 
-        static void DrawCircleCastAndHits(RaycastHit2D[] hits, Vector2 origin, float radius, Vector2 direction, float distance = Mathf.Infinity)
-        {	
+        private static void DrawCircleCastAndHits(
+            RaycastHit2D[] hits,
+            Vector2 origin,
+            float radius,
+            Vector2 direction,
+            float distance = Mathf.Infinity)
+        {
             // Nothing to draw with a 0 radius or 0 distance
             if (Mathf.Approximately(radius, 0.0f) || Mathf.Approximately(distance, 0.0f))
             {
@@ -169,18 +218,18 @@ namespace RedBlueGames.Tools
             {
                 direction.Normalize();
             }
-			
+
             DrawHitsForCirclecast(hits, radius);
-			
+
             Color drawColor = RaycastHitsContainHit(hits) ? HitCastColor : CastColor;
-			
+
             // Draw origin and end circles
             DebugUtilities.DrawCircle(origin, radius, drawColor);
             Vector2 endCirclePosition = origin + (direction * distance);
             DebugUtilities.DrawCircle(endCirclePosition, radius, drawColor);
-			
+
             // Draw edges
-            Vector2 radiusSegment = (direction * radius);
+            Vector2 radiusSegment = direction * radius;
             Vector2 orthoganalRadius = new Vector2(radiusSegment.y, -radiusSegment.x);
             DebugUtilities.DrawArrow(origin + orthoganalRadius, endCirclePosition + orthoganalRadius, drawColor);
             DebugUtilities.DrawArrow(origin - orthoganalRadius, endCirclePosition - orthoganalRadius, drawColor);
@@ -204,8 +253,12 @@ namespace RedBlueGames.Tools
 
         #region OverlapAreaCast Wrapper
 
-        public static Collider2D OverlapArea(Vector2 cornerA, Vector2 cornerB, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                             float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
+        public static Collider2D OverlapArea(
+            Vector2 cornerA,
+            Vector2 cornerB,
+            int layerMask = Physics2D.DefaultRaycastLayers,
+            float minDepth = -Mathf.Infinity,
+            float maxDepth = Mathf.Infinity)
         {
             Collider2D hit = Physics2D.OverlapArea(cornerA, cornerB, layerMask, minDepth, maxDepth);
             DrawBoxAndOverlaps(new Collider2D[] { hit }, cornerA, cornerB);
@@ -213,8 +266,12 @@ namespace RedBlueGames.Tools
             return hit;
         }
 
-        public static Collider2D[] OverlapAreaAll(Vector2 cornerA, Vector2 cornerB, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                                  float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
+        public static Collider2D[] OverlapAreaAll(
+            Vector2 cornerA, 
+            Vector2 cornerB, 
+            int layerMask = Physics2D.DefaultRaycastLayers, 
+            float minDepth = -Mathf.Infinity, 
+            float maxDepth = Mathf.Infinity)
         {
             Collider2D[] hits = Physics2D.OverlapAreaAll(cornerA, cornerB, layerMask, minDepth, maxDepth);
             DrawBoxAndOverlaps(hits, cornerA, cornerB);
@@ -235,8 +292,12 @@ namespace RedBlueGames.Tools
 
         #region OverlapCircleCast Wrapper
 
-        public static Collider2D OverlapCircle(Vector2 center, float radius, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                               float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
+        public static Collider2D OverlapCircle(
+            Vector2 center,
+            float radius,
+            int layerMask = Physics2D.DefaultRaycastLayers, 
+            float minDepth = -Mathf.Infinity,
+            float maxDepth = Mathf.Infinity)
         {
             Collider2D hit = Physics2D.OverlapCircle(center, radius, layerMask, minDepth, maxDepth);
             DrawCircleAndOverlaps(new Collider2D[] { hit }, center, radius);
@@ -244,8 +305,12 @@ namespace RedBlueGames.Tools
             return hit;
         }
 
-        public static Collider2D[] OverlapCircleAll(Vector2 center, float radius, int layerMask = Physics2D.DefaultRaycastLayers, 
-                                                    float minDepth = -Mathf.Infinity, float maxDepth = Mathf.Infinity)
+        public static Collider2D[] OverlapCircleAll(
+            Vector2 center,
+            float radius,
+            int layerMask = Physics2D.DefaultRaycastLayers, 
+            float minDepth = -Mathf.Infinity, 
+            float maxDepth = Mathf.Infinity)
         {
             Collider2D[] hits = Physics2D.OverlapCircleAll(center, radius, layerMask, minDepth, maxDepth);
             DrawCircleAndOverlaps(hits, center, radius);
