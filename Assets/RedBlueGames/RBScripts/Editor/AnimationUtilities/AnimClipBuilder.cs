@@ -5,8 +5,17 @@
     using UnityEditor;
     using UnityEngine;
 
+    /// <summary>
+    /// Utility class to help create AnimClips in code
+    /// </summary>
     public static class AnimClipBuilder
     {
+        /// <summary>
+        /// Create an animation clip from passed in sprites
+        /// </summary>
+        /// <returns>The created clip.</returns>
+        /// <param name="sprites">Sprites, in order.</param>
+        /// <param name="clipName">Clip name.</param>
         public static AnimationClip CreateClip(Sprite[] sprites, string clipName)
         {
             // Output nothing if there is no clip name
