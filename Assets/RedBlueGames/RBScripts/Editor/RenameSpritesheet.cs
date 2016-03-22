@@ -1,14 +1,17 @@
 ﻿namespace RedBlueGames.Tools
 {
-    using UnityEngine;
     using UnityEditor;
+    using UnityEngine;
 
+    /// <summary>
+    /// Tool that renames all the sprites in a selected spritesheet
+    /// </summary>
     public class RenameSpritesheet : EditorWindow
     {
         private string oldSpritePrefix;
         private string newSpritePrefix;
 
-        private static Object selectedObject
+        private static UnityEngine.Object SelectedObject
         {
             get
             {
@@ -23,14 +26,14 @@
             }
         }
 
-        [MenuItem("Assets/Rename Spritesheet")]
-        public static void ShowRenameSpritesheetWindow()
+        [MenuItem(RBToolsMenuPaths.RenameSpritesheet)]
+        private static void ShowRenameSpritesheetWindow()
         {
             EditorWindow.GetWindow<RenameSpritesheet>(true, "Rename Texture", true);
         }
 
-        [MenuItem("Assets/Rename Spritesheet", true)]
-        public static bool IsSelectionTexture()
+        [MenuItem(RBToolsMenuPaths.RenameSpritesheet, true)]
+        private static bool IsSelectionTexture()
         {
             if (Selection.activeObject == null)
             {
@@ -45,29 +48,9 @@
             return Selection.activeObject.GetType() == typeof(Texture2D);
         }
 
-        private void OnEnable()
+        private static void RenameSelectedTexture(string oldName, string newName)
         {
-            oldSpritePrefix = System.IO.Path.GetFileNameWithoutExtension(selectedObject.name);
-            newSpritePrefix = oldSpritePrefix;
-        }
-
-        void OnGUI()
-        {
-            EditorGUILayout.HelpBox("This SpritesheetRename tool is used to rename a texture that's been autosliced. It replaces " +
-                "all instances of the old prefix with a new one, and renames the Texture to match.", MessageType.None);
-            oldSpritePrefix = EditorGUILayout.TextField("Prefix to Replace", oldSpritePrefix);
-            newSpritePrefix = EditorGUILayout.TextField("New Sprite Prefix", newSpritePrefix);
-
-            if (GUILayout.Button("Rename"))
-            {
-                RenameSelectedTexture(oldSpritePrefix, newSpritePrefix);
-                Close();
-            }
-        }
-
-        static void RenameSelectedTexture(string oldName, string newName)
-        {
-            string path = AssetDatabase.GetAssetPath(selectedObject);
+            string path = AssetDatabase.GetAssetPath(SelectedObject);
             string metaFile = System.IO.File.ReadAllText(path + ".meta");
             string ammendedMetaFile = ReplaceSpritePrefixInMetafile(metaFile, oldName, newName);
             System.IO.File.WriteAllText(path + ".meta", ammendedMetaFile);
@@ -76,14 +59,14 @@
             AssetDatabase.Refresh();
         }
 
-        static string ReplaceSpritePrefixInMetafile(string metafileText, string prefixToReplace, string newPrefix)
+        private static string ReplaceSpritePrefixInMetafile(string metafileText, string prefixToReplace, string newPrefix)
         {
             string modifiedMetafile = ReplaceFileIDRecycleNames(metafileText, prefixToReplace, newPrefix);
-            modifiedMetafile = ReplaceSpriteMetaData(metafileText, prefixToReplace, newPrefix);
+            modifiedMetafile = ReplaceSpriteMetaData(modifiedMetafile, prefixToReplace, newPrefix);
             return modifiedMetafile;
         }
 
-        static string ReplaceFileIDRecycleNames(string metafileText, string oldPrefix, string newPrefix)
+        private static string ReplaceFileIDRecycleNames(string metafileText, string oldPrefix, string newPrefix)
         {
             string fileIDPattern = "([\\d]{8}: )" + oldPrefix;
             var fileIDRegex = new System.Text.RegularExpressions.Regex(fileIDPattern);
@@ -91,12 +74,34 @@
             return fileIDRegex.Replace(metafileText, replacementText);
         }
 
-        static string ReplaceSpriteMetaData(string metafileText, string oldPrefix, string newPrefix)
+        private static string ReplaceSpriteMetaData(string metafileText, string oldPrefix, string newPrefix)
         {
             string spritenamePattern = "(- name: )" + oldPrefix;
             var spritenameRegex = new System.Text.RegularExpressions.Regex(spritenamePattern);
             string replacementText = "$1" + newPrefix;
             return spritenameRegex.Replace(metafileText, replacementText);
+        }
+
+        private void OnEnable()
+        {
+            this.oldSpritePrefix = System.IO.Path.GetFileNameWithoutExtension(SelectedObject.name);
+            this.newSpritePrefix = this.oldSpritePrefix;
+        }
+
+        private void OnGUI()
+        {
+            EditorGUILayout.HelpBox(
+                "This SpritesheetRename tool is used to rename a texture that's been autosliced. It replaces " +
+                "all instances of the old prefix with a new one, and renames the Texture to match.",
+                MessageType.None);
+            this.oldSpritePrefix = EditorGUILayout.TextField("Prefix to Replace", this.oldSpritePrefix);
+            this.newSpritePrefix = EditorGUILayout.TextField("New Sprite Prefix", this.newSpritePrefix);
+
+            if (GUILayout.Button("Rename"))
+            {
+                RenameSelectedTexture(this.oldSpritePrefix, this.newSpritePrefix);
+                this.Close();
+            }
         }
     }
 }
