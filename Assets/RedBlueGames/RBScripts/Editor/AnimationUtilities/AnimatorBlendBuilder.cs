@@ -10,12 +10,12 @@
     /// </summary>
     public class AnimatorBlendBuilder
     {
-        private const string CreateFourDirMenuPath = RBMenuPaths.AnimationUtilitiesBase +
-                                                     RBMenuPaths.AnimatorSubmenu +
+        private const string CreateFourDirMenuPath = RBToolsMenuPaths.AnimationUtilitiesBase +
+                                                     RBToolsMenuPaths.AnimatorSubmenu +
                                                      "Create FourDir Blend";
         
-        private const string CreateEightDirMenuPath = RBMenuPaths.AnimationUtilitiesBase +
-                                                      RBMenuPaths.AnimatorSubmenu +
+        private const string CreateEightDirMenuPath = RBToolsMenuPaths.AnimationUtilitiesBase +
+                                                      RBToolsMenuPaths.AnimatorSubmenu +
                                                       "Create EightDir Blend";
 
         /// <summary>

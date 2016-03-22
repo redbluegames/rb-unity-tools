@@ -11,8 +11,8 @@
     /// </summary>
     public class AnimClipBuilderTool
     {
-        private const string CreateClipFromSpritesMenuPath = RBMenuPaths.AnimationUtilitiesBase +
-                                                             RBMenuPaths.AnimationClipSubmenu +
+        private const string CreateClipFromSpritesMenuPath = RBToolsMenuPaths.AnimationUtilitiesBase +
+                                                             RBToolsMenuPaths.AnimationClipSubmenu +
                                                              "Create Clip from Sprites";
 
         /// <summary>

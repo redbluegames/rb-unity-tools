@@ -10,8 +10,8 @@
     /// </summary>
     public class AnimatorOverrideFillIn : MonoBehaviour
     {
-        private const string FillClipsFromDirectoryMenuPath = RBMenuPaths.AnimationUtilitiesBase +
-                                                              RBMenuPaths.AnimatorOverrideSubmenu +
+        private const string FillClipsFromDirectoryMenuPath = RBToolsMenuPaths.AnimationUtilitiesBase +
+                                                              RBToolsMenuPaths.AnimatorOverrideSubmenu +
                                                               "Fill Clips from Directory";
 
         /// <summary>
