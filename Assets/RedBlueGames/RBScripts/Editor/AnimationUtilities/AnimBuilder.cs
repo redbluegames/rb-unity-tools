@@ -344,8 +344,8 @@
             AnimBuilder animBuilder = ScriptableObject.CreateInstance<AnimBuilder>();
             animBuilder.Initialize();
 
-            string currentPath = AssetDatabaseUtility.GetDirectoryOfSelection();
-            string path = AssetDatabaseUtility.GetDirectoryOfSelection();
+            string currentPath = SelectionUtilities.GetDirectoryOfSelection();
+            string path = SelectionUtilities.GetDirectoryOfSelection();
             string uniqueAssetPath = AssetDatabase.GenerateUniqueAssetPath(path + defaultName);
             AssetDatabaseUtility.SaveAndSelectObject(animBuilder, currentPath, Path.GetFileName(uniqueAssetPath));
         }
@@ -357,8 +357,8 @@
             animBuilder.Initialize();
             animBuilder.InitializeForCharacter();
 
-            string currentPath = AssetDatabaseUtility.GetDirectoryOfSelection();
-            string path = AssetDatabaseUtility.GetDirectoryOfSelection();
+            string currentPath = SelectionUtilities.GetDirectoryOfSelection();
+            string path = SelectionUtilities.GetDirectoryOfSelection();
             string uniqueAssetPath = AssetDatabase.GenerateUniqueAssetPath(path + defaultName);
             AssetDatabaseUtility.SaveAndSelectObject(animBuilder, currentPath, Path.GetFileName(uniqueAssetPath));
         }

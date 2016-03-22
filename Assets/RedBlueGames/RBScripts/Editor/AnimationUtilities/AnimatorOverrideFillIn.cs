@@ -20,7 +20,7 @@
         [MenuItem(FillClipsFromDirectoryMenuPath)]
         public static void FillInClips()
         {
-            string directory = AssetDatabaseUtility.GetDirectoryOfSelection();
+            string directory = SelectionUtilities.GetDirectoryOfSelection();
 
             // Get all animation clips in the current directory
             List<AnimationClip> clipsForAnimator = new List<AnimationClip>();
