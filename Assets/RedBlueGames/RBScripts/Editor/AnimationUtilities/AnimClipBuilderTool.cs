@@ -25,7 +25,7 @@
             Sprite[] sprites = GetSpritesFromTexture(selectedTexture);
 
             string filename = selectedTexture.name + ".anim";
-            AnimationClip clip = AnimClipBuilder.CreateClip(sprites, filename);
+            AnimationClip clip = AnimationClipUtility.CreateClip(sprites, filename);
 
             string fullClipPath = GetSavePathFromTexture(selectedTexture, filename);
 

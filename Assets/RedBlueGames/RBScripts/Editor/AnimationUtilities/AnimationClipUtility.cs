@@ -6,9 +6,9 @@
     using UnityEngine;
 
     /// <summary>
-    /// Utility class to help create AnimClips in code
+    /// Utility class to help manage AnimClips in code
     /// </summary>
-    public static class AnimClipBuilder
+    public static class AnimationClipUtility
     {
         /// <summary>
         /// Create an animation clip from passed in sprites
