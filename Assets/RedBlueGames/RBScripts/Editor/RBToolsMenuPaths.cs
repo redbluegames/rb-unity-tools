@@ -14,5 +14,6 @@
         public const string AnimationClipSubmenu = "Anim Clip/";
         public const string BuildScripts = "Window/Build Scripts/Export Build";
         public const string RenameSpritesheet = "Assets/Rename Spritesheet";
+        public const string ReplaceWithPrefab = "GameObject/Replace Selection with Prefab";
     }
 }
