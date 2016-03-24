@@ -14,7 +14,7 @@
         [MenuItem(RBToolsMenuPaths.ReplaceWithPrefab, false, 101)]
         private static void ReplaceSelectionWithPrefab()
         {
-            EditorWindow.GetWindow(typeof(ReplaceWithPrefab));
+            EditorWindow.GetWindow<ReplaceWithPrefab>(true, "Replace with Prefab", true);
         }
 
         private static bool IsGameObjectPrefab(GameObject obj)
@@ -35,8 +35,18 @@
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("This tool replaces the currently selected GameObjects with instances of the specified Prefab.", EditorStyles.centeredGreyMiniLabel);
+            EditorGUILayout.HelpBox(
+                "This tool replaces the currently selected GameObjects with instances of the specified Prefab.",
+                MessageType.None);
             EditorGUILayout.Space();
+
+            GUILayout.Label("Selections:", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical();
+            foreach (var selectedObject in Selection.gameObjects)
+            {
+                GUILayout.Label(selectedObject.name);
+            }
+            EditorGUILayout.EndVertical();
 
             GUILayout.Label("Prefab Object", EditorStyles.boldLabel);
             this.prefabObject = EditorGUILayout.ObjectField(this.prefabObject, typeof(GameObject), true) as GameObject;
