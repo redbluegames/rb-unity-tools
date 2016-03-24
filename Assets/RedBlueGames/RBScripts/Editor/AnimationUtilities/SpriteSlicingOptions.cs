@@ -3,6 +3,9 @@
     using UnityEditor;
     using UnityEngine;
 
+    /// <summary>
+    /// Sprite slicing options used with SpriteSlicer utility
+    /// </summary>
     [System.Serializable]
     public struct SpriteSlicingOptions
     {
@@ -13,68 +16,35 @@
         public Vector2 CustomPivot;
         public int Frames;
         public SpriteImportMode ImportMode;
-        private const char delimeterChar = ',';
+        private const char DelimeterChar = ',';
 
+        /// <summary>
+        /// Method to use when Grid Slicing. This could be extended to allow for alternate methods, like Unity's default style,
+        /// which is to skip a slice if there is no RGB.
+        /// </summary>
         public enum GridSlicingMethod
         {
+            /// <summary>
+            /// Slice All cells, regardless of if they are empty or not
+            /// </summary>
             SliceAll = 0,
-            Bogdan = 1,
         }
 
-        public string ToDisplayString()
-        {
-            var displayString = "";
-            if (ImportMode == SpriteImportMode.None)
-            {
-                displayString = "Default Settings";
-            }
-            else if (ImportMode == SpriteImportMode.Multiple)
-            {
-                displayString = string.Concat("Cell Size: ", CellSize.x, ",", CellSize.y, " Frames: ", Frames);
-            }
-            else if (ImportMode == SpriteImportMode.Single)
-            {
-                displayString = "Single Sprite";
-            }
-
-            return displayString;
-        }
-
-        public override string ToString()
-        {
-            string delimeterSpace = delimeterChar + " ";
-            string serialized = string.Concat(
-                                    CellSize.x,
-                                    delimeterSpace,
-                                    CellSize.y,
-                                    delimeterSpace,
-                                    Frames,
-                                    delimeterSpace, 
-                                    (int)ImportMode, 
-                                    delimeterSpace, 
-                                    (int)GridSlicing, 
-                                    delimeterSpace,
-                                    OverridePivot,
-                                    delimeterSpace,
-                                    (int)Pivot,
-                                    delimeterSpace,
-                                    CustomPivot.x,
-                                    delimeterSpace,
-                                    CustomPivot.y);
-            return serialized;
-        }
-
-        public static SpriteSlicingOptions FromString(string serialized)
+        /// <summary>
+        /// Deserializes the options from a serialized string
+        /// </summary>
+        /// <returns>The serializable string.</returns>
+        /// <param name="serializedOptions">String that represents serialized SlicingOptions.</param>
+        public static SpriteSlicingOptions FromSerializableString(string serializedOptions)
         {
             var options = new SpriteSlicingOptions();
-            string[] entries = serialized.Split(delimeterChar);
-            
+            string[] entries = serializedOptions.Split(DelimeterChar);
+
             // Default ImportMode to Multiple for versioned options
             options.ImportMode = UnityEditor.SpriteImportMode.Multiple;
 
-            // Default GridSlicing to Bogdan method
-            options.GridSlicing = GridSlicingMethod.Bogdan;
-            
+            options.GridSlicing = GridSlicingMethod.SliceAll;
+
             options.CellSize = new Vector2(int.Parse(entries[0]), int.Parse(entries[1]));
             if (entries.Length >= 3)
             {
@@ -88,15 +58,70 @@
                     options.CustomPivot = new Vector2(float.Parse(entries[7]), float.Parse(entries[8]));
                 }
             }
-        
+
             return options;
         }
 
+        /// <summary>
+        /// Converts the object to a displayable string
+        /// </summary>
+        /// <returns>The display string.</returns>
+        public override string ToString()
+        {
+            var displayString = string.Empty;
+            if (this.ImportMode == SpriteImportMode.None)
+            {
+                displayString = "Default Settings";
+            }
+            else if (this.ImportMode == SpriteImportMode.Multiple)
+            {
+                displayString = string.Concat("Cell Size: ", this.CellSize.x, ",", this.CellSize.y, " Frames: ", this.Frames);
+            }
+            else if (this.ImportMode == SpriteImportMode.Single)
+            {
+                displayString = "Single Sprite";
+            }
+
+            return displayString;
+        }
+
+        /// <summary>
+        /// Converts the Options to a string that serializes all data
+        /// </summary>
+        /// <returns>The serializable string.</returns>
+        public string ToSerializableString()
+        {
+            string delimeterSpace = DelimeterChar + " ";
+            string serialized = string.Concat(
+                                    this.CellSize.x,
+                                    delimeterSpace,
+                                    this.CellSize.y,
+                                    delimeterSpace,
+                                    this.Frames,
+                                    delimeterSpace, 
+                                    (int)this.ImportMode, 
+                                    delimeterSpace, 
+                                    (int)this.GridSlicing, 
+                                    delimeterSpace,
+                                    this.OverridePivot,
+                                    delimeterSpace,
+                                    (int)this.Pivot,
+                                    delimeterSpace,
+                                    this.CustomPivot.x,
+                                    delimeterSpace,
+                                    this.CustomPivot.y);
+            return serialized;
+        }
+
+        /// <summary>
+        /// Determines whether the options have been set up correctly.
+        /// </summary>
+        /// <returns><c>true</c> if the options would create valid slices; otherwise, <c>false</c>.</returns>
         public bool IsValid()
         {
-            if (ImportMode == SpriteImportMode.Multiple)
+            if (this.ImportMode == SpriteImportMode.Multiple)
             {
-                if (CellSize.x == 0 || CellSize.y == 0)
+                if (this.CellSize.x == 0 || this.CellSize.y == 0)
                 {
                     return false;
                 }

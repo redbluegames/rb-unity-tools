@@ -7,8 +7,17 @@
     using UnityEditorInternal;
     using UnityEngine;
 
+    /// <summary>
+    /// Sprite Slicing utility helps to slice sprites in alternate methods than Unity's auto slicer
+    /// </summary>
     public static class SpriteSlicer
     {
+        /// <summary>
+        /// Creates a spritesheet for a texture based on the slicing options
+        /// </summary>
+        /// <returns>The sprite sheet metadata for the texture.</returns>
+        /// <param name="texture">Texture to slice.</param>
+        /// <param name="slicingOptions">Slicing options.</param>
         public static SpriteMetaData[] CreateSpriteSheetForTexture(Texture2D texture, SpriteSlicingOptions slicingOptions)
         {
             List<SpriteMetaData> sprites = new List<SpriteMetaData>();
@@ -37,69 +46,12 @@
             {
                 for (int x = 0; x < numSpritesWide; x++)
                 {
-                    Rect rect = new Rect(x * cellSize.x, y * cellSize.y + remainderY, cellSize.x, cellSize.y);
+                    Rect rect = new Rect(x * cellSize.x, (y * cellSize.y) + remainderY, cellSize.x, cellSize.y);
                     rects[i++] = rect;
                 }
             }
     
             return rects;
-        }
-
-        public static SpriteMetaData[] CreateSpriteSheetForTextureBogdan(Texture2D texture, SpriteSlicingOptions slicingOptions)
-        {
-            Rect[] gridRects = InternalSpriteUtility.GenerateGridSpriteRectangles(texture, Vector2.zero,
-                                   slicingOptions.CellSize, Vector2.zero);
-            
-            string path = AssetDatabase.GetAssetPath(texture);
-            var importer = AssetImporter.GetAtPath(path) as TextureImporter;
-    
-            var spriteSheet = importer.spritesheet ?? new SpriteMetaData[gridRects.Length];
-    
-            // Add new sprite meta data to the end for all the newly parsed grid rects?
-            if (importer.spritesheet != null)
-            {
-                spriteSheet = spriteSheet.Concat(new SpriteMetaData[Mathf.Max(0, gridRects.Length - importer.spritesheet.Length)]).ToArray();
-            }
-
-            for (var i = 0; i < spriteSheet.Length; i++)
-            {
-                bool sliceExists = importer.spritesheet != null && i < importer.spritesheet.Length;
-                bool changePivot = !sliceExists || slicingOptions.OverridePivot;
-                spriteSheet[i] = new SpriteMetaData
-                {
-                    alignment = changePivot ? (int)slicingOptions.Pivot : spriteSheet[i].alignment,
-                    pivot = changePivot ? slicingOptions.CustomPivot : spriteSheet[i].pivot,
-                    name = sliceExists ? spriteSheet[i].name : texture.name + "_" + i,
-                    rect = gridRects[i]
-                };
-            }
-            
-            if (slicingOptions.Frames > 0)
-            {
-                spriteSheet = spriteSheet.Take((int)slicingOptions.Frames).ToArray();
-            }
-    
-            return spriteSheet;
-        }
-
-        public static Sprite[] GetSortedSpritesInTexture(Texture2D texture)
-        {
-            string path = AssetDatabase.GetAssetPath(texture);
-            if (string.IsNullOrEmpty(path))
-            {
-                Debug.LogWarning("Can't find sprites from Texture at path: " + path);
-                return null;
-            }
-
-            Sprite[] spriteArray = AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().ToArray();
-
-            List<Sprite> sortedSprites = new List<Sprite>(spriteArray);
-            sortedSprites.Sort(delegate(Sprite x, Sprite y)
-                {
-                    return EditorUtility.NaturalCompare(x.name, y.name);
-                });
-
-            return sortedSprites.ToArray();
         }
     }
 }

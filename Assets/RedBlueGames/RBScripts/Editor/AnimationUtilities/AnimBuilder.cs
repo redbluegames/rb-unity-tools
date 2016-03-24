@@ -194,7 +194,7 @@
                 curveBinding.type = typeof(SpriteRenderer);
 
                 // Build keyframes for the property
-                Sprite[] sprites = SpriteSlicer.GetSortedSpritesInTexture(SourceTexture);
+                Sprite[] sprites = AssetDatabaseUtility.LoadSpritesInTextureSorted(SourceTexture);
                 ObjectReferenceKeyframe[] keys = CreateKeysForKeyframeRanges(sprites, AnimationKeyframes, Samples);
 
                 // Build the clip if valid

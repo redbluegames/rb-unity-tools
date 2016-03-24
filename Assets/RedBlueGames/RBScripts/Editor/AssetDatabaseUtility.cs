@@ -1,7 +1,9 @@
 ﻿namespace RedBlueGames.Tools
 {
     using System.Collections;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using UnityEditor;
     using UnityEngine;
 
@@ -46,6 +48,31 @@
             AssetDatabase.CreateAsset(objectToSave, fullpath);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        /// <summary>
+        /// Loads and returns Sprites from a specified Texture asset, sorted in UnityEditor order
+        /// </summary>
+        /// <returns>The sprites in a texture, sorted in Unity order.</returns>
+        /// <param name="texture">Texture with sprite metadata.</param>
+        public static Sprite[] LoadSpritesInTextureSorted(Texture2D texture)
+        {
+            string path = AssetDatabase.GetAssetPath(texture);
+            if (string.IsNullOrEmpty(path))
+            {
+                Debug.LogWarning("Can't find sprites from Texture at path: " + path);
+                return null;
+            }
+
+            Sprite[] spriteArray = AssetDatabase.LoadAllAssetsAtPath(path).OfType<Sprite>().ToArray();
+
+            List<Sprite> sortedSprites = new List<Sprite>(spriteArray);
+            sortedSprites.Sort(delegate(Sprite x, Sprite y)
+                {
+                    return EditorUtility.NaturalCompare(x.name, y.name);
+                });
+
+            return sortedSprites.ToArray();
         }
     }
 }
