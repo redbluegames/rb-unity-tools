@@ -4,9 +4,9 @@
     using UnityEngine;
 
     /// <summary>
-    /// Contains utilities and "Extension methods" to the Debug class
+    /// Contains utilities and "Extension methods" to the Debug class, specifically for Drawing
     /// </summary>
-    public static class DebugUtility
+    public static partial class DebugUtility
     {
         /// <summary>
         /// Draws a Circle using Debug.Draw functions

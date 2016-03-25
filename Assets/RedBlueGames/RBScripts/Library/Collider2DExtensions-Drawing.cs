@@ -4,9 +4,9 @@
     using UnityEngine;
 
     /// <summary>
-    /// Extension methods to the Collider2D class
+    /// Extension methods to the Collider2D class, specifically for Drawing
     /// </summary>
-    public static class Collider2DExtensions
+    public static partial class Collider2DExtensions
     {
         /// <summary>
         /// Draw the collider using the DebugDraw library
