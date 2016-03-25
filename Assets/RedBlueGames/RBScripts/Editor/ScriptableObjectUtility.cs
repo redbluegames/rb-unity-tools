@@ -20,7 +20,7 @@
         {
             T scriptableObjectInstance = ScriptableObject.CreateInstance<T>();
 
-            string currentPath = SelectionUtilities.GetDirectoryOfSelection();
+            string currentPath = SelectionUtility.GetDirectoryOfSelection();
             string path = currentPath;
             string typeName = typeof(T).ToString();
             string typeWithoutNamespace = typeName.Split('.').Last();

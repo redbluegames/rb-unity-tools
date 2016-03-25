@@ -84,14 +84,14 @@
         [MenuItem(CreateFourDirMenuPath, true)]
         private static bool IsCreateFourDirBlendValid()
         {
-            return SelectionUtilities.IsActiveObjectOfType<AnimatorController>();
+            return SelectionUtility.IsActiveObjectOfType<AnimatorController>();
         }
 
         // Note that we pass the same path, and also pass "true" to the second argument.
         [MenuItem(CreateEightDirMenuPath, true)]
         private static bool IsCreateEightDirBlendValid()
         {
-            return SelectionUtilities.IsActiveObjectOfType<AnimatorController>();
+            return SelectionUtility.IsActiveObjectOfType<AnimatorController>();
         }
     }
 }

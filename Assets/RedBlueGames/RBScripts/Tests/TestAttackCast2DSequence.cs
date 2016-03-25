@@ -40,7 +40,7 @@
                 for (int i = 1; i < CastPositions.Count; i++)
                 {
                     Vector3 nextPoint = transform.position + CastPositions[i];
-                    DebugUtilities.DrawArrow(currentPoint, nextPoint, Color.cyan);
+                    DebugUtility.DrawArrow(currentPoint, nextPoint, Color.cyan);
                     currentPoint = nextPoint;
                 }
             }

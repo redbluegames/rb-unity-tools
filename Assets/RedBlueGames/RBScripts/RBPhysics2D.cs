@@ -103,7 +103,7 @@
             DrawHitsForRaycasts(hits);
 
             Color drawColor = RaycastHitsContainHit(hits) ? HitCastColor : CastColor;
-            DebugUtilities.DrawArrow(origin, endpoint, drawColor);
+            DebugUtility.DrawArrow(origin, endpoint, drawColor);
         }
 
         private static bool RaycastHitsContainHit(RaycastHit2D[] hits)
@@ -146,7 +146,7 @@
             bool isRayOriginatingFromInside = Mathf.Approximately(hit.fraction, 0.0f) && hit.collider != null;
             if (isRayOriginatingFromInside)
             {
-                DebugUtilities.DrawCircle(hit.point, size, HitNormalsColor, 20);
+                DebugUtility.DrawCircle(hit.point, size, HitNormalsColor, 20);
             }
             else
             {
@@ -224,15 +224,15 @@
             Color drawColor = RaycastHitsContainHit(hits) ? HitCastColor : CastColor;
 
             // Draw origin and end circles
-            DebugUtilities.DrawCircle(origin, radius, drawColor);
+            DebugUtility.DrawCircle(origin, radius, drawColor);
             Vector2 endCirclePosition = origin + (direction * distance);
-            DebugUtilities.DrawCircle(endCirclePosition, radius, drawColor);
+            DebugUtility.DrawCircle(endCirclePosition, radius, drawColor);
 
             // Draw edges
             Vector2 radiusSegment = direction * radius;
             Vector2 orthoganalRadius = new Vector2(radiusSegment.y, -radiusSegment.x);
-            DebugUtilities.DrawArrow(origin + orthoganalRadius, endCirclePosition + orthoganalRadius, drawColor);
-            DebugUtilities.DrawArrow(origin - orthoganalRadius, endCirclePosition - orthoganalRadius, drawColor);
+            DebugUtility.DrawArrow(origin + orthoganalRadius, endCirclePosition + orthoganalRadius, drawColor);
+            DebugUtility.DrawArrow(origin - orthoganalRadius, endCirclePosition - orthoganalRadius, drawColor);
         }
 
         static void DrawHitsForCirclecast(RaycastHit2D[] hits, float radius)
@@ -244,7 +244,7 @@
                     // Draw a ray hit at each hit location
                     DrawRaycastHit2D(hits[i], radius * 0.1f);
                     // Draw centroid
-                    DebugUtilities.DrawCircle(hits[i].centroid, radius, HitNormalsColor);
+                    DebugUtility.DrawCircle(hits[i].centroid, radius, HitNormalsColor);
                 }
             }
         }
@@ -283,7 +283,7 @@
         {
             bool overlapsExist = overlappingColliders != null && overlappingColliders.Length > 0;
             Color drawColor = overlapsExist ? HitCastColor : CastColor;
-            DebugUtilities.DrawBox(cornerA, cornerB, drawColor);
+            DebugUtility.DrawBox(cornerA, cornerB, drawColor);
 
             DebugDrawColliders(overlappingColliders, HitColliderColor);
         }
@@ -322,7 +322,7 @@
         {
             bool overlapsExist = overlappingColliders != null && overlappingColliders.Length > 0;
             Color drawColor = overlapsExist ? HitCastColor : CastColor;
-            DebugUtilities.DrawCircle(center, radius, drawColor);
+            DebugUtility.DrawCircle(center, radius, drawColor);
 
             DebugDrawColliders(overlappingColliders, HitColliderColor);
         }

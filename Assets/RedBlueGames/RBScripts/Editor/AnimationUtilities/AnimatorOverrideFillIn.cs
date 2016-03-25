@@ -20,7 +20,7 @@
         [MenuItem(FillClipsFromDirectoryMenuPath)]
         public static void FillInClips()
         {
-            string directory = SelectionUtilities.GetDirectoryOfSelection();
+            string directory = SelectionUtility.GetDirectoryOfSelection();
 
             // Get all animation clips in the current directory
             List<AnimationClip> clipsForAnimator = new List<AnimationClip>();
@@ -75,7 +75,7 @@
         [MenuItem(FillClipsFromDirectoryMenuPath, true)]
         private static bool IsFillInClipsValid()
         {
-            return SelectionUtilities.IsActiveObjectOfType<AnimatorOverrideController>();
+            return SelectionUtility.IsActiveObjectOfType<AnimatorOverrideController>();
         }
     }
 }

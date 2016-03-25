@@ -3,8 +3,16 @@
     using System.Collections;
     using UnityEngine;
 
+    /// <summary>
+    /// Extension methods to the Collider2D class
+    /// </summary>
     public static class Collider2DExtensions
     {
+        /// <summary>
+        /// Draw the collider using the DebugDraw library
+        /// </summary>
+        /// <param name="collider">Collider instance.</param>
+        /// <param name="color">Color for DebugDraw.</param>
         public static void DebugDraw(this Collider2D collider, Color color)
         {
             if (collider.GetType() == typeof(CircleCollider2D))
@@ -29,6 +37,11 @@
             }
         }
 
+        /// <summary>
+        /// Draws the CircleCollider2D using DebugDraw
+        /// </summary>
+        /// <param name="circleCollider">Circle collider instance.</param>
+        /// <param name="color">Color for DebugDraw.</param>
         public static void DebugDraw(this CircleCollider2D circleCollider, Color color)
         {
             Vector3 scale = circleCollider.transform.localScale;
@@ -39,9 +52,14 @@
             // Apply Transform to Offset
             Vector2 transformedOffset = circleCollider.transform.TransformVector(circleCollider.offset);
 
-            DebugUtilities.DrawCircle((Vector2)circleCollider.transform.position + transformedOffset, scaledRadius, color);
+            DebugUtility.DrawCircle((Vector2)circleCollider.transform.position + transformedOffset, scaledRadius, color);
         }
 
+        /// <summary>
+        /// Draws the BoxCollider2D using DebugDraw
+        /// </summary>
+        /// <param name="boxCollider">Box collider instance.</param>
+        /// <param name="color">Color for DebugDraw.</param>
         public static void DebugDraw(this BoxCollider2D boxCollider, Color color)
         {
             // Define the corners about the origin
@@ -66,15 +84,22 @@
             cornerBL += position + offset;
             cornerTR += position + offset;
 
-            DebugUtilities.DrawPolygon(new Vector2[]
+            DebugUtility.DrawPolygon(
+                new Vector2[]
                 {
                     cornerTL,
                     cornerTR,
                     cornerBR,
                     cornerBL
-                }, color);
+                },
+                color);
         }
 
+        /// <summary>
+        /// Draws the PolyCollider2D using DebugDraw
+        /// </summary>
+        /// <param name="polyCollider">Poly collider instance.</param>
+        /// <param name="color">Color for DebugDraw.</param>
         public static void DebugDraw(this PolygonCollider2D polyCollider, Color color)
         {
             if (polyCollider.pathCount >= 1)
@@ -94,10 +119,15 @@
                     transformedPath[i] += position + (Vector2)transformedOffset;
                 }
 
-                DebugUtilities.DrawPolygon(transformedPath, color);
+                DebugUtility.DrawPolygon(transformedPath, color);
             }
         }
 
+        /// <summary>
+        /// Draws the EdgeCollider2D using DebugDraw
+        /// </summary>
+        /// <param name="edgeCollider">Edge collider instance.</param>
+        /// <param name="color">Color for DebugDraw.</param>
         public static void DebugDraw(this EdgeCollider2D edgeCollider, Color color)
         {
             if (edgeCollider.pointCount >= 1)
@@ -116,7 +146,7 @@
                     transformedPath[i] += position + (Vector2)transformedOffset;
                 }
 
-                DebugUtilities.DrawEdges(transformedPath, color);
+                DebugUtility.DrawEdges(transformedPath, color);
             }
         }
     }

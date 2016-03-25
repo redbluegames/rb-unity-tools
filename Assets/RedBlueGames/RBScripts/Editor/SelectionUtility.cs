@@ -8,7 +8,7 @@
     /// <summary>
     /// Utility functions to extend Unity's Selection class
     /// </summary>
-    public static class SelectionUtilities
+    public static class SelectionUtility
     {
         /// <summary>
         /// Determines if is active object of the specified type.

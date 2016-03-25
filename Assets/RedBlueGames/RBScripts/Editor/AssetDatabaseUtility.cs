@@ -32,7 +32,7 @@
         public static void SaveAndSelectObject(UnityEngine.Object objectToSave, string path, string filename)
         {
             SaveObject(objectToSave, path, filename);
-            SelectionUtilities.SelectObject(objectToSave);
+            SelectionUtility.SelectObject(objectToSave);
         }
 
         /// <summary>
