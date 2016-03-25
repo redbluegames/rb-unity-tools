@@ -18,48 +18,42 @@ namespace RedBlueGames.Tools
 {
     using UnityEngine;
 
-    /*
- * Simple timer that does NOT update itself. The classes using
- * this need to check back periodically to see how much time
- * has gone by.
- */
+    /// <summary>
+    /// Simple timer that does NOT update itself. The classes using
+    /// this need to check back periodically to see how much time
+    /// has gone by.
+    /// </summary>
     [System.Serializable]
     public class RBTimeSince
     {
+        private const float UNSET = float.NaN;
         private float timeStarted;
 
-        public bool IsRunning { get; private set; }
-
-        private const float UNSET = float.NaN;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RBTimeSince"/> class with invalid values
+        /// </summary>
+        public RBTimeSince()
+        {
+            this.Stop();
+        }
 
         /// <summary>
-        /// The amount of time in seconds the timer has been running.
+        /// Gets a value indicating whether this instance has been started.
+        /// </summary>
+        /// <value><c>true</c> if this instance is running; otherwise, <c>false</c>.</value>
+        public bool IsRunning { get; private set; }
+
+        /// <summary>
+        /// Gets the amount of time in seconds the timer has been running.
         /// </summary>
         /// <value>The elapsed.</value>
         public float Elapsed
         {
             get
             {
-                WarnIfUnSet();
-                return Time.time - timeStarted;
+                this.WarnIfUnSet();
+                return Time.time - this.timeStarted;
             }
-        }
-
-        /// <summary>
-        /// Null constructor. Set our duration to a known invalid value.
-        /// </summary>
-        public RBTimeSince()
-        {
-            Stop();
-        }
-
-        /// <summary>
-        /// Starts the timesince
-        /// </summary>
-        public void Start()
-        {
-            timeStarted = Time.time;
-            IsRunning = true;
         }
 
         /// <summary>
@@ -67,16 +61,25 @@ namespace RedBlueGames.Tools
         /// </summary>
         public void Stop()
         {
-            timeStarted = UNSET;
-            IsRunning = false;
+            this.timeStarted = UNSET;
+            this.IsRunning = false;
+        }
+
+        /// <summary>
+        /// Starts the timesince
+        /// </summary>
+        public void Start()
+        {
+            this.timeStarted = Time.time;
+            this.IsRunning = true;
         }
 
         /// <summary>
         /// Warns to tell coder they called a method that needs duration set.
         /// </summary>
-        void WarnIfUnSet()
+        private void WarnIfUnSet()
         {
-            if (!IsRunning || timeStarted == UNSET)
+            if (!this.IsRunning || this.timeStarted == UNSET)
             {
                 Debug.LogWarning("Tried to check time left on stopped or unset timesince.");
             }
