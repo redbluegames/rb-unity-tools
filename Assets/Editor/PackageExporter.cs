@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Tool that helps us export RedBlueTools for use in other projects, as well as for the public
+/// </summary>
 public class PackageExporter : UnityEditor.EditorWindow
 {
     private static string assetPathName = "Assets/RedBlueGames";
@@ -23,14 +26,14 @@ public class PackageExporter : UnityEditor.EditorWindow
         }
     }
 
-    [MenuItem("Assets/PackageExporter/Export with Tests", false, 111)]
-    public static void ExportRBScriptsWithTests()
+    [MenuItem("RedBlueTools/PackageExporter/Export with Tests", false, 211)]
+    private static void ExportRBScriptsWithTests()
     {
         ExportRBScripts(false);
     }
 
-    [MenuItem("Assets/PackageExporter/Export", false, 100)]
-    public static void ExportRBScripts()
+    [MenuItem("RedBlueTools/PackageExporter/Export", false, 200)]
+    private static void ExportRBScripts()
     {
         ExportRBScripts(true);
     }
