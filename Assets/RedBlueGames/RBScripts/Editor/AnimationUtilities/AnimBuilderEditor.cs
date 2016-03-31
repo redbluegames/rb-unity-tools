@@ -1,18 +1,24 @@
 ﻿namespace RedBlueGames.Tools
 {
+    using System.Collections;
     using UnityEditor;
     using UnityEngine;
-    using System.Collections;
 
+    /// <summary>
+    /// Animation builder editor draws the AnimBuilder scriptable object
+    /// </summary>
     [CustomEditor(typeof(AnimBuilder))]
     public class AnimBuilderEditor : UnityEditor.Editor
     {
-        string clipName;
-        bool allowErasing = false;
+        private string clipName;
+        private bool allowErasing = false;
 
+        /// <summary>
+        /// Raises the inspector GU event.
+        /// </summary>
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            this.DrawDefaultInspector();
 
             if (GUILayout.Button("Generate Clips"))
             {
@@ -20,15 +26,15 @@
                 animBuilder.GenerateClips();
             }
 
-            clipName = EditorGUILayout.TextField("Clip Name", clipName);
+            this.clipName = EditorGUILayout.TextField("Clip Name", this.clipName);
             if (GUILayout.Button("Add Eight Dir Clips"))
             {
                 AnimBuilder animBuilder = (AnimBuilder)target;
-                animBuilder.AddEightBlendToClips(clipName);
+                animBuilder.AddEightBlendToClips(this.clipName);
             }
 
             // Enable this only for when you duplicate a builder and need to clear it... should rarely come up.
-            allowErasing = EditorGUILayout.BeginToggleGroup("EnableEraseClips", allowErasing);
+            this.allowErasing = EditorGUILayout.BeginToggleGroup("EnableEraseClips", this.allowErasing);
             if (GUILayout.Button("Erase clips"))
             {
                 AnimBuilder animBuilder = (AnimBuilder)target;
@@ -37,29 +43,33 @@
                     clip.SavedClip = null;
                 }
             }
+
             EditorGUILayout.EndToggleGroup();
         }
-    }
 
-    public static class AnimBuilderCreator
-    {
-        [MenuItem("Assets/Create/AnimBuilder/Empty")]
-        static void CreateAnimBuilder()
+        /// <summary>
+        /// Class that contains methods for creating AnimBuilders 
+        /// </summary>
+        public static class AnimBuilderCreator
         {
-            AnimBuilder animBuilder = ScriptableObjectUtility.CreateAsset <AnimBuilder>();
-            animBuilder.Initialize();
+            [MenuItem("Assets/Create/AnimBuilder/Empty")]
+            private static void CreateAnimBuilder()
+            {
+                AnimBuilder animBuilder = ScriptableObjectUtility.CreateAsset<AnimBuilder>();
+                animBuilder.Initialize();
 
-            AssetDatabase.SaveAssets();
-        }
+                AssetDatabase.SaveAssets();
+            }
 
-        [MenuItem("Assets/Create/AnimBuilder/Character")]
-        static void CreateAnimBuilderForCharacter()
-        {
-            AnimBuilder animBuilder = ScriptableObjectUtility.CreateAsset <AnimBuilder>();
-            animBuilder.Initialize();
-            animBuilder.InitializeForCharacter();
+            [MenuItem("Assets/Create/AnimBuilder/Character")]
+            private static void CreateAnimBuilderForCharacter()
+            {
+                AnimBuilder animBuilder = ScriptableObjectUtility.CreateAsset<AnimBuilder>();
+                animBuilder.Initialize();
+                animBuilder.InitializeForCharacter();
 
-            AssetDatabase.SaveAssets();
+                AssetDatabase.SaveAssets();
+            }
         }
     }
 }
