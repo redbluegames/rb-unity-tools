@@ -19,18 +19,27 @@ namespace RedBlueGames.Tools
 {
     using UnityEngine;
 
+    /// <summary>
+    /// Class that draws a simple gizmo in the Editor
+    /// </summary>
     public class Gizmo : MonoBehaviour
     {
-        public float gizmoSize = 0.5f;
-        public Color gizmoColor = Color.yellow;
+        [Tooltip("The size for the gizmos")]
+        [SerializeField]
+        private float gizmoSize = 0.5f;
 
-        void OnDrawGizmos()
+        [Tooltip("The color for the gizmos")]
+        [SerializeField]
+
+        private Color gizmoColor = Color.yellow;
+
+        private void OnDrawGizmos()
         {
-            Gizmos.color = gizmoColor;
-            Gizmos.DrawWireSphere(transform.position, gizmoSize);
+            Gizmos.color = this.gizmoColor;
+            Gizmos.DrawWireSphere(transform.position, this.gizmoSize);
 
             // Draw X line
-            float lineSize = gizmoSize * 2;
+            float lineSize = this.gizmoSize * 2;
             Vector3 position = transform.position + transform.TransformDirection(Vector3.forward * lineSize);
             Gizmos.DrawLine(transform.position, position);
 

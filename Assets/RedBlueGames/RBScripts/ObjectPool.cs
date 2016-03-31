@@ -4,37 +4,42 @@
     using System.Collections.Generic;
     using UnityEngine;
 
+    /// <summary>
+    /// Simple object pooling class
+    /// </summary>
     public class ObjectPool : MonoBehaviour
     {
-        // [NotNull]
-        public GameObject PooledObject;
-        public int PoolSize;
-        public bool Grow;
+        [Tooltip("GameObject to use as the pooled object")]
+        [SerializeField]
+        private GameObject pooledObject;
+
+        [Tooltip("The number of game objects to use in the pool")]
+        [SerializeField]
+        private int poolSize;
+
+        [Tooltip("Specify whether or not the pool can grow to satisfy requests for objects when all pooled objects are used")]
+        [SerializeField]
+        private bool grow;
 
         private List<GameObject> pool;
 
-        private void Awake()
-        {
-            pool = new List<GameObject>();
-            for (int i = 0; i < PoolSize; i++)
-            {
-                AddObjectToPool();
-            }
-        }
-
+        /// <summary>
+        /// Gets the next available pooled object. If full, and flagged to grow, it will create a new object and add it to the pool.
+        /// </summary>
+        /// <returns>The pooled object.</returns>
         public GameObject GetPooledObject()
         {
-            for (int i = 0; i < pool.Count; i++)
+            for (int i = 0; i < this.pool.Count; i++)
             {
-                if (!pool[i].activeInHierarchy)
+                if (!this.pool[i].activeInHierarchy)
                 {
-                    return pool[i];
+                    return this.pool[i];
                 }
             }
 
-            if (Grow)
+            if (this.grow)
             {
-                return AddObjectToPool();
+                return this.AddObjectToPool();
             }
             else
             {
@@ -42,11 +47,20 @@
             }
         }
 
+        private void Awake()
+        {
+            this.pool = new List<GameObject>();
+            for (int i = 0; i < this.poolSize; i++)
+            {
+                this.AddObjectToPool();
+            }
+        }
+
         private GameObject AddObjectToPool()
         {
-            GameObject obj = (GameObject)Instantiate(PooledObject);
+            GameObject obj = (GameObject)Instantiate(this.pooledObject);
             obj.SetActive(false);
-            pool.Add(obj);
+            this.pool.Add(obj);
 
             return obj;
         }

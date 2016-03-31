@@ -378,7 +378,13 @@
 
         private string[] GetLevelsForBuild()
         {
-            return SceneManager.GetAllPaths();
+            int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
+            var scenePaths = new string[sceneCount];
+            for (int i = 0; i < scenePaths.Length; i++)
+            {
+                scenePaths[i] = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).path;
+            }
+            return scenePaths;
         }
 
         private BuildOptions GetBuildOptionsForBuild()
