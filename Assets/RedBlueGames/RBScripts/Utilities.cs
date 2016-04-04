@@ -42,7 +42,7 @@
         /// <summary>
         /// Loads a file stored at a path and returns it as a Texure2D in Unity.
         /// </summary>
-        /// <returns>The file to texture2 d.</returns>
+        /// <returns>The file to texture2D.</returns>
         /// <param name="path">Path to file.</param>
         public static Texture2D ConvertFileToTexture2D(string path)
         {
