@@ -4,9 +4,9 @@
     using UnityEngine;
 
     /// <summary>
-    /// Utility extensions for the Debug class
+    /// Extensions for the Collider2D class
     /// </summary>
-    public partial class DebugUtility
+    public partial class Collider2DExtensions
     {
     }
 }
