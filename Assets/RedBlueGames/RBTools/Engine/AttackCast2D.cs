@@ -12,9 +12,11 @@
     public class AttackCast2D : MonoBehaviour
     {
         [Tooltip("Radius of the attack circle")]
+        [SerializeField]
         private float radius;
 
         [Tooltip("Layers the attack casts against")]
+        [SerializeField]
         private LayerMask hitLayer;
 
         [Tooltip("The \"Originator\" of the cast who will be ignored by the attack.")]
@@ -35,8 +37,6 @@
         /// </summary>
         /// <value><c>true</c> if this instance is casting; otherwise, <c>false</c>.</value>
         public bool IsCasting { get; private set; }
-
-        #region Attack Casting
 
         /// <summary>
         /// Begin the attack sweep
@@ -96,10 +96,6 @@
             }
         }
 
-        #endregion
-
-        #region Hit Reporting
-
         /// <summary>
         /// Send Hits to hit objects, from a Raycast hit array.
         /// </summary>
@@ -149,10 +145,6 @@
             }
         }
 
-        #endregion
-
-        #region Debugging
-
         private void OnDrawGizmosSelected()
         {
             // Let the casting debug draw when casting
@@ -164,8 +156,6 @@
             Gizmos.color = Color.cyan;
             Gizmos.DrawWireSphere(transform.position, this.radius);
         }
-
-        #endregion
 
         /// <summary>
         /// Event Arguments for Hit events

@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57e75312b41f14789864a9bdda18fe48, type: 3}
   m_Name: BuildScriptProjectSettings
   m_EditorClassIdentifier: 
-  CompanyDisplayName: Company Name
-  AppDisplayName: App Name
-  DefaultFilenamePattern: ${appName}-v${version}
-  DefaultBundleIdentifierPattern: com.${companyName}.${appName}
+  companyDisplayName: Company Name
+  defaultFilenamePattern: ${appName}-v${version}
+  defaultBundleIdentifierPattern: com.${companyName}.${appName}
+  appDisplayName: App Name

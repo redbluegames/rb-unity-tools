@@ -8,25 +8,25 @@ SceneSettings:
   m_PVSPortalsArray: []
   m_OcclusionBakeSettings:
     smallestOccluder: 5
-    smallestHole: .25
+    smallestHole: 0.25
     backfaceThreshold: 100
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
   m_Fog: 0
-  m_FogColor: {r: .5, g: .5, b: .5, a: 1}
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: .00999999978
+  m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: .211999997, g: .226999998, b: .259000003, a: 1}
-  m_AmbientEquatorColor: {r: .114, g: .125, b: .133000001, a: 1}
-  m_AmbientGroundColor: {r: .0469999984, g: .0430000015, b: .0350000001, a: 1}
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SkyboxMaterial: {fileID: 0}
-  m_HaloStrength: .5
+  m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
@@ -37,13 +37,10 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
---- !u!127 &3
-LevelGameManager:
-  m_ObjectHideFlags: 0
 --- !u!157 &4
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 5
+  serializedVersion: 6
   m_GIWorkflowMode: 1
   m_LightmapsMode: 1
   m_GISettings:
@@ -68,7 +65,8 @@ LightmapSettings:
     m_TextureCompression: 1
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
-  m_LightmapSnapshot: {fileID: 0}
+    m_ReflectionCompression: 2
+  m_LightingDataAsset: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &5
 NavMeshSettings:
@@ -76,15 +74,15 @@ NavMeshSettings:
   m_ObjectHideFlags: 0
   m_BuildSettings:
     serializedVersion: 2
-    agentRadius: .5
+    agentRadius: 0.5
     agentHeight: 2
     agentSlope: 45
-    agentClimb: .400000006
+    agentClimb: 0.4
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     accuratePlacement: 0
     minRegionArea: 2
-    cellSize: .166666672
+    cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &396985471
@@ -114,12 +112,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da00a9be86f7b4036a52149274f66f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
+  radius: 0.1
   hitLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
-  debugShowCasts: 0
-  debugShowHits: 0
+    m_Bits: 256
 --- !u!4 &396985473
 Transform:
   m_ObjectHideFlags: 0
@@ -239,7 +235,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 501022662}
   - 58: {fileID: 501022663}
-  m_Layer: 29
+  m_Layer: 8
   m_Name: TargetA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -253,7 +249,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 501022661}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 19.2999992, y: 19.5, z: 0}
+  m_LocalPosition: {x: 19.3, y: 19.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1845376441}
@@ -265,6 +261,7 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 501022661}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -280,7 +277,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 517251945}
   - 58: {fileID: 517251946}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: TargetA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -306,6 +303,7 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 517251944}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -339,12 +337,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da00a9be86f7b4036a52149274f66f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
+  radius: 0.1
   hitLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
-  debugShowCasts: 0
-  debugShowHits: 0
+    m_Bits: 256
 --- !u!4 &523099471
 Transform:
   m_ObjectHideFlags: 0
@@ -366,7 +362,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 747807154}
   - 58: {fileID: 747807153}
-  m_Layer: 29
+  m_Layer: 8
   m_Name: TargetA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -380,6 +376,7 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 747807152}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -407,7 +404,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 769751398}
   - 58: {fileID: 769751399}
-  m_Layer: 30
+  m_Layer: 9
   m_Name: TargetB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -433,6 +430,7 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 769751397}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -507,12 +505,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da00a9be86f7b4036a52149274f66f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
+  radius: 0.1
   hitLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
-  debugShowCasts: 0
-  debugShowHits: 0
+    m_Bits: 256
 --- !u!1 &966829448
 GameObject:
   m_ObjectHideFlags: 0
@@ -551,7 +547,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1002954193}
   - 58: {fileID: 1002954194}
-  m_Layer: 29
+  m_Layer: 8
   m_Name: TargetA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -577,6 +573,7 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1002954192}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -592,7 +589,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1144210303}
   - 58: {fileID: 1144210302}
-  m_Layer: 29
+  m_Layer: 8
   m_Name: TargetA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -606,6 +603,7 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1144210301}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -633,7 +631,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 1195458354}
   - 58: {fileID: 1195458355}
-  m_Layer: 31
+  m_Layer: 10
   m_Name: TargetC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -659,6 +657,7 @@ CircleCollider2D:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1195458353}
   m_Enabled: 1
+  m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
@@ -933,12 +932,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da00a9be86f7b4036a52149274f66f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
+  radius: 0.1
   hitLayer:
     serializedVersion: 2
-    m_Bits: 1073741824
-  debugShowCasts: 0
-  debugShowHits: 0
+    m_Bits: 512
 --- !u!1 &2129104508
 GameObject:
   m_ObjectHideFlags: 0
@@ -978,9 +975,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da00a9be86f7b4036a52149274f66f4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 3
+  radius: 0.1
   hitLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
-  debugShowCasts: 0
-  debugShowHits: 0
+    m_Bits: 1792
