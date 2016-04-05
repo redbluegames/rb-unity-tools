@@ -15,31 +15,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-/* Code grabbed from http://wiki.unity3d.com/index.php/Singleton
- * 
- * Be aware this will not prevent a non singleton constructor
- *   such as `T myT = new T();`
- * To prevent that, add `protected T () {}` to your singleton class.
- * As a note, this is made as MonoBehaviour because we need Coroutines.
- */
 namespace RedBlueGames.Tools
 {
     using UnityEngine;
 
     /// <summary>
+    /// Code grabbed from http://wiki.unity3d.com/index.php/Singleton
     /// Be aware this will not prevent a non singleton constructor
     ///   such as `T myT = new T();`
     /// To prevent that, add `protected T () {}` to your singleton class.
-    /// 
     /// As a note, this is made as MonoBehaviour because we need Coroutines.
     /// </summary>
+    /// <typeparam name="T">Underlying type for the Singleton</typeparam>
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        private static object _lock = new object();
         private static bool applicationIsQuitting = false;
+        private static T instance;
 
-        private static T _instance;
+        private static object lockObj = new object();
 
+        /// <summary>
+        /// Gets the instance for the Singleton
+        /// </summary>
+        /// <value>The instance.</value>
         public static T Instance
         {
             get
@@ -52,27 +50,27 @@ namespace RedBlueGames.Tools
                     return null;
                 }
 
-                lock (_lock)
+                lock (lockObj)
                 {
-                    if (_instance == null)
+                    if (instance == null)
                     {
-                        _instance = (T)FindObjectOfType(typeof(T));
+                        instance = (T)FindObjectOfType(typeof(T));
 
                         if (FindObjectsOfType(typeof(T)).Length > 1)
                         {
                             Debug.LogError("[Singleton] Something went really wrong " +
                                 " - there should never be more than 1 singleton!" +
                                 " Reopening the scene might fix it.");
-                            return _instance;
+                            return instance;
                         }
 
-                        if (_instance == null)
+                        if (instance == null)
                         {
                             GameObject singleton = new GameObject();
-                            _instance = singleton.AddComponent<T>();
+                            instance = singleton.AddComponent<T>();
                             singleton.name = "(singleton) " + typeof(T).ToString();
 
-                            DontDestroyOnLoad(singleton);
+                            this.DontDestroyOnLoad(singleton);
 
                             Debug.Log("[Singleton] An instance of " + typeof(T) +
                                 " is needed in the scene, so '" + singleton +
@@ -81,11 +79,11 @@ namespace RedBlueGames.Tools
                         else
                         {
                             Debug.Log("[Singleton] Using instance already created: " +
-                                _instance.gameObject.name);
+                                instance.gameObject.name);
                         }
                     }
 
-                    return _instance;
+                    return instance;
                 }
             }
         }
@@ -98,7 +96,7 @@ namespace RedBlueGames.Tools
         ///   even after stopping playing the Application. Really bad!
         /// So, this was made to be sure we're not creating that buggy ghost object.
         /// </summary>
-        public virtual void OnDestroy()
+        protected void OnDestroy()
         {
             applicationIsQuitting = true;
         }
