@@ -11,34 +11,30 @@
     /// </summary>
     public class AttackCast2D : MonoBehaviour
     {
-        public class HitEventArgs : EventArgs
-        {
-            public RaycastHit2D Hit;
+        [Tooltip("Radius of the attack circle")]
+        private float radius;
 
-            public HitEventArgs(RaycastHit2D hit)
-            {
-                this.Hit = hit;
-            }
-        }
+        [Tooltip("Layers the attack casts against")]
+        private LayerMask hitLayer;
+
+        [Tooltip("The \"Originator\" of the cast who will be ignored by the attack.")]
+        private GameObject originator;
+        private Vector3 lastFramePosition;
+
+        // Track last position of this game object
+        // A list of hit game objects so that we only report one OnHit per object
+        private List<GameObject> ignoreObjects = new List<GameObject>();
 
         /// <summary>
         /// Occurs when the attack hits a collider
         /// </summary>
         public event EventHandler<HitEventArgs> Hit;
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is currently casting for hits.
+        /// </summary>
+        /// <value><c>true</c> if this instance is casting; otherwise, <c>false</c>.</value>
         public bool IsCasting { get; private set; }
-
-        [Tooltip("Radius of the attack circle")]
-        public float radius;
-        [Tooltip("Layers the attack casts against")]
-        public LayerMask hitLayer;
-        [Tooltip("The \"Originator\" of the cast who will be ignored by the attack.")]
-        public GameObject Originator;
-        private Vector3 lastFramePosition;
-
-        // Track last position of this game object
-        // A list of hit game objects so that we only report one OnHit per object
-        private List<GameObject> ignoreObjects = new List<GameObject>();
 
         #region Attack Casting
 
@@ -47,26 +43,26 @@
         /// </summary>
         public void Begin()
         {
-            if (IsCasting)
+            if (this.IsCasting)
             {
                 Debug.LogWarning("AttackCast: Tried to Begin attack when attack is " +
                     "already in progress. Ignoring.");
                 return;
             }
 
-            IsCasting = true;
+            this.IsCasting = true;
 
             // Initialize previous position to the current attack position
-            lastFramePosition = transform.position;
+            this.lastFramePosition = transform.position;
 
             // Always ignore Originator
-            if (Originator != null)
+            if (this.originator != null)
             {
                 // TODO: Consider ignoring all colliders in Originator's hierarchy
-                ignoreObjects.Add(Originator);
+                this.ignoreObjects.Add(this.originator);
             }
 
-            StartCoroutine("CastForHits");
+            this.StartCoroutine("CastForHits");
         }
 
         /// <summary>
@@ -74,27 +70,27 @@
         /// </summary>
         public void End()
         {
-            StopCoroutine("CastForHits");
+            this.StopCoroutine("CastForHits");
 
-            IsCasting = false;
+            this.IsCasting = false;
 
             // Cleanup the Attack
-            ignoreObjects.Clear();
+            this.ignoreObjects.Clear();
         }
 
         private IEnumerator CastForHits()
         {
             while (true)
             {
-                Vector3 direction = transform.position - lastFramePosition;
+                Vector3 direction = transform.position - this.lastFramePosition;
                 float distance = direction.magnitude;
                 direction.Normalize();
                 RaycastHit2D[] hits;
-                hits = RBPhysics2D.CircleCastAll(lastFramePosition, radius, direction, distance, hitLayer);
-                ReportHits(hits);
+                hits = RBPhysics2D.CircleCastAll(this.lastFramePosition, this.radius, direction, distance, this.hitLayer);
+                this.ReportHits(hits);
 
                 // Remember this position as the last
-                lastFramePosition = transform.position;
+                this.lastFramePosition = transform.position;
 
                 yield return null;
             }
@@ -107,12 +103,12 @@
         /// <summary>
         /// Send Hits to hit objects, from a Raycast hit array.
         /// </summary>
-        /// <param name="hits">Hits.</param>
+        /// <param name="hits">Hits to report</param>
         private void ReportHits(RaycastHit2D[] hits)
         {
             foreach (RaycastHit2D hit in hits)
             {
-                ReportHit(hit);
+                this.ReportHit(hit);
             }
         }
 
@@ -120,19 +116,19 @@
         /// Apply the OnHit function to a specified Raycast hit. This should be made project-agnostic
         /// at some point, so that AttackCasts can be a tool.
         /// </summary>
-        /// <param name="hit">Hit.</param>
-        void ReportHit(RaycastHit2D hit)
+        /// <param name="hit">Single hit to report</param>
+        private void ReportHit(RaycastHit2D hit)
         {
             // Throw out ignored objects
-            if (ignoreObjects.Contains(GetHitObject(hit)))
+            if (this.ignoreObjects.Contains(this.GetHitObject(hit)))
             {
                 return;
             }
 
             // Ignore before OnHit or else ignoredObjects might be added to list after attack is canceled.
-            ignoreObjects.Add(GetHitObject(hit));
+            this.ignoreObjects.Add(this.GetHitObject(hit));
 
-            OnHit(new HitEventArgs(hit));
+            this.OnHit(new HitEventArgs(hit));
         }
 
         private GameObject GetHitObject(RaycastHit2D hit)
@@ -147,9 +143,9 @@
 
         private void OnHit(HitEventArgs args)
         {
-            if (Hit != null)
+            if (this.Hit != null)
             {
-                Hit(this, args);
+                this.Hit(this, args);
             }
         }
 
@@ -160,15 +156,36 @@
         private void OnDrawGizmosSelected()
         {
             // Let the casting debug draw when casting
-            if (IsCasting)
+            if (this.IsCasting)
             {
                 return;
             }
 
             Gizmos.color = Color.cyan;
-            Gizmos.DrawWireSphere(transform.position, radius);
+            Gizmos.DrawWireSphere(transform.position, this.radius);
         }
 
         #endregion
+
+        /// <summary>
+        /// Event Arguments for Hit events
+        /// </summary>
+        public class HitEventArgs : EventArgs
+        {
+            /// <summary>
+            /// Initializes a new instance of the <see cref="HitEventArgs"/> class.
+            /// </summary>
+            /// <param name="hit">Hit Information.</param>
+            public HitEventArgs(RaycastHit2D hit)
+            {
+                this.Hit = hit;
+            }
+
+            /// <summary>
+            /// Gets the hit information
+            /// </summary>
+            /// <value>The hit.</value>
+            public RaycastHit2D Hit { get; private set; }
+        }
     }
 }
