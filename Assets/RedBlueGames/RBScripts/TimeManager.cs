@@ -19,14 +19,25 @@ namespace RedBlueGames.Tools
 {
     using UnityEngine;
 
+    /// <summary>
+    /// Class that handles setting TimeScale to 0 and back, properly handling multiple requests to pause and unpause.
+    /// </summary>
     public static class TimeManager
     {
         // Time and Pause handling members
         private static int pauseRequests;
         private static int lowLevelPauseRequests;
 
+        /// <summary>
+        /// Gets a value indicating whether the game is paused
+        /// </summary>
+        /// <value><c>true</c> if is paused; otherwise, <c>false</c>.</value>
         public static bool IsPaused { get; private set; }
 
+        /// <summary>
+        /// Gets a value indicating whether the game is paused with a low level pause.
+        /// </summary>
+        /// <value><c>true</c> if is low level paused; otherwise, <c>false</c>.</value>
         public static bool IsLowLevelPaused { get; private set; }
 
         /// <summary>
@@ -54,6 +65,9 @@ namespace RedBlueGames.Tools
             ResolveTimeScale();
         }
 
+        /// <summary>
+        /// Requests a low level pause, used for debugging
+        /// </summary>
         public static void RequestLowLevelPause()
         {
             lowLevelPauseRequests++;
@@ -61,6 +75,9 @@ namespace RedBlueGames.Tools
             ResolveTimeScale();
         }
 
+        /// <summary>
+        /// Requests a low level unpause
+        /// </summary>
         public static void RequestLowLevelUnpause()
         {
             lowLevelPauseRequests--;
@@ -72,7 +89,7 @@ namespace RedBlueGames.Tools
             ResolveTimeScale();
         }
 
-        static void ResolveTimeScale()
+        private static void ResolveTimeScale()
         {
             if (IsPaused || IsLowLevelPaused)
             {

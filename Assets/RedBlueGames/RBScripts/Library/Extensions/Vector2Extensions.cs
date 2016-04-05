@@ -3,8 +3,16 @@ namespace RedBlueGames.Tools
     using System.Collections;
     using UnityEngine;
 
+    /// <summary>
+    /// Extension methods to Vector2 class
+    /// </summary>
     public static class Vector2Extensions
     {
+        /// <summary>
+        /// Determines if the vector is normalized (magnitude of 1)
+        /// </summary>
+        /// <returns><c>true</c> if the vector is normalized; otherwise, <c>false</c>.</returns>
+        /// <param name="vector">Vector to test.</param>
         public static bool IsNormalized(this Vector2 vector)
         {
             return Mathf.Approximately(vector.sqrMagnitude, 1.0f);
@@ -57,44 +65,11 @@ namespace RedBlueGames.Tools
             return arcBisector * vector.magnitude;
         }
 
-        static int GetNearestArc(this Vector2 vector, int numArcs, float rotationDegrees = 0.0f)
-        {
-            float angleRotated = Mathf.Atan2(vector.y, vector.x) - (rotationDegrees * Mathf.Deg2Rad);
-            float angleAsFractionOfCircle = angleRotated / (2 * Mathf.PI);
-            float angleInArcs = (numArcs * angleAsFractionOfCircle);
-
-            // Add a full circle and mod to handle -180 degree / 180 degree wraparound
-            int arc = Mathf.RoundToInt((angleInArcs + numArcs) % numArcs);
-
-            return arc;
-        }
-
-        static Vector2 GetBisectorForArc(this Vector2 vector, int arc, int numArcs, float rotationDegrees = 0.0f)
-        {
-            float arcsToRadians = (2 * Mathf.PI) / numArcs;
-            float arcAngleRotated = (arc * arcsToRadians) + (rotationDegrees * Mathf.Deg2Rad);
-            Vector2 arcBisector = new Vector2(Mathf.Cos(arcAngleRotated), Mathf.Sin(arcAngleRotated));
-
-            // Workaround - for some reason, Mathf.Sin and Cos return values too big to be considered
-            // zero by Mathf.Epsilon for cardinal angles.
-            float customEpsilon = 0.000001f;
-            if (arcBisector.x > -customEpsilon && arcBisector.x < customEpsilon)
-            {
-                arcBisector.x = 0.0f;
-            }
-            if (arcBisector.y > -customEpsilon && arcBisector.y < customEpsilon)
-            {
-                arcBisector.y = 0.0f;
-            }
-
-            return arcBisector;
-        }
-
         /// <summary>
-        /// Round the input vector to the closest cardinal direction and returns the rounded result.
+        /// Rounds the input vector to the closest cardinal direction and returns the rounded result.
         /// </summary>
         /// <returns>The nearest cardinal direction</returns>
-        /// <param name="vector">Vector to round.</param>
+        /// <param name="vectorToRound">Vector to round.</param>
         public static Vector2 RoundToCardinals(this Vector2 vectorToRound)
         {
             return vectorToRound.RoundToNearestArc(4);
@@ -105,7 +80,7 @@ namespace RedBlueGames.Tools
         /// return the cardinal direction. Otherwise it will just return the same angle.
         /// </summary>
         /// <returns>The cardinal direction within the specified bias.</returns>
-        /// <param name="vector">Vector to bias.</param>
+        /// <param name="vectorToBias">Vector to bias.</param>
         /// <param name="biasAngle">Bias angle.</param>
         public static Vector2 BiasToCardinals(this Vector2 vectorToBias, float biasAngle)
         {
@@ -147,16 +122,50 @@ namespace RedBlueGames.Tools
         /// <summary>
         /// Returns the angle in degrees from one Vector2 to another.  Degrees are signed, with CCW being positive.
         /// </summary>
-        /// <returns></returns>
-        /// <param name="fromVector"></param>
-        /// <param name="toVector"></param>
+        /// <returns>Returns the angle that would rotate the FromVector to the ToVector in degrees.</returns>
+        /// <param name="fromVector">The from vector</param>
+        /// <param name="toVector">The to vector</param>
         public static float GetDegreesBetweenVectorsCCW(Vector2 fromVector, Vector2 toVector)
         {
             // This is 2D short-hand for calculating just the z-component of the cross-product of 'from' and 'to':
             //    sign = -Mathf.Sign( ( Vector3.Cross( fromVector, toVector ) ).z );
             float sign = -Mathf.Sign((fromVector.x * toVector.y) - (fromVector.y * toVector.x));
 
-            return (Vector2.Angle(fromVector, toVector) * sign);
+            return Vector2.Angle(fromVector, toVector) * sign;
+        }
+
+        private static int GetNearestArc(this Vector2 vector, int numArcs, float rotationDegrees = 0.0f)
+        {
+            float angleRotated = Mathf.Atan2(vector.y, vector.x) - (rotationDegrees * Mathf.Deg2Rad);
+            float angleAsFractionOfCircle = angleRotated / (2 * Mathf.PI);
+            float angleInArcs = numArcs * angleAsFractionOfCircle;
+
+            // Add a full circle and mod to handle -180 degree / 180 degree wraparound
+            int arc = Mathf.RoundToInt((angleInArcs + numArcs) % numArcs);
+
+            return arc;
+        }
+
+        private static Vector2 GetBisectorForArc(this Vector2 vector, int arc, int numArcs, float rotationDegrees = 0.0f)
+        {
+            float arcsToRadians = (2 * Mathf.PI) / numArcs;
+            float arcAngleRotated = (arc * arcsToRadians) + (rotationDegrees * Mathf.Deg2Rad);
+            Vector2 arcBisector = new Vector2(Mathf.Cos(arcAngleRotated), Mathf.Sin(arcAngleRotated));
+
+            // Workaround - for some reason, Mathf.Sin and Cos return values too big to be considered
+            // zero by Mathf.Epsilon for cardinal angles.
+            float customEpsilon = 0.000001f;
+            if (arcBisector.x > -customEpsilon && arcBisector.x < customEpsilon)
+            {
+                arcBisector.x = 0.0f;
+            }
+
+            if (arcBisector.y > -customEpsilon && arcBisector.y < customEpsilon)
+            {
+                arcBisector.y = 0.0f;
+            }
+
+            return arcBisector;
         }
     }
 }

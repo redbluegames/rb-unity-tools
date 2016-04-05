@@ -4,25 +4,55 @@
     using UnityEditor;
     using UnityEngine;
 
+    /// <summary>
+    /// This tool replaces the currently selected GameObjects with instances of the specified Prefab.
+    /// </summary>
     public class ReplaceWithPrefab : EditorWindow
     {
         private GameObject prefabObject;
 
-        [MenuItem("GameObject/Replace Selection with Prefab")]
-        public static void ReplaceSelectionWithPrefab()
+        [MenuItem(RBToolsMenuPaths.ReplaceWithPrefab, false, 101)]
+        private static void ReplaceSelectionWithPrefab()
         {
-            EditorWindow.GetWindow(typeof(ReplaceWithPrefab));
+            EditorWindow.GetWindow<ReplaceWithPrefab>(true, "Replace with Prefab", true);
+        }
+
+        private static bool IsGameObjectPrefab(GameObject obj)
+        {
+            if (obj == null)
+            {
+                return false;
+            }
+
+            var prefabType = PrefabUtility.GetPrefabType(obj);
+            if (prefabType == PrefabType.None)
+            {
+                return false;
+            }
+
+            return prefabType == PrefabType.PrefabInstance || prefabType == PrefabType.Prefab;
         }
 
         private void OnGUI()
         {
-            EditorGUILayout.LabelField("This tool replaces the currently selected GameObjects with instances of the specified Prefab.", EditorStyles.centeredGreyMiniLabel);
+            EditorGUILayout.HelpBox(
+                "This tool replaces the currently selected GameObjects with instances of the specified Prefab.",
+                MessageType.None);
             EditorGUILayout.Space();
 
-            GUILayout.Label("Prefab Object", EditorStyles.boldLabel);
-            prefabObject = EditorGUILayout.ObjectField(prefabObject, typeof(GameObject), true) as GameObject;
+            GUILayout.Label("Selections:", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical();
+            foreach (var selectedObject in Selection.gameObjects)
+            {
+                GUILayout.Label(selectedObject.name);
+            }
 
-            if (!IsGameObjectPrefab(prefabObject))
+            EditorGUILayout.EndVertical();
+
+            GUILayout.Label("Prefab Object", EditorStyles.boldLabel);
+            this.prefabObject = EditorGUILayout.ObjectField(this.prefabObject, typeof(GameObject), true) as GameObject;
+
+            if (!IsGameObjectPrefab(this.prefabObject))
             {
                 EditorGUILayout.HelpBox("GameObject is not a Prefab or Prefab Instance", MessageType.Error);
                 return;
@@ -36,25 +66,27 @@
 
             if (GUILayout.Button("Replace Selected"))
             {
-                if (prefabObject != null)
+                if (this.prefabObject != null)
                 {
                     Transform transformToSelect = null;
                     foreach (Transform transformToCopy in Selection.transforms)
                     {
                         GameObject instanceObj = null;
-                        GameObject prefab = PrefabUtility.GetPrefabParent(prefabObject) as GameObject;
-                        var prefabType = PrefabUtility.GetPrefabType(prefabObject);
+                        GameObject prefab = PrefabUtility.GetPrefabParent(this.prefabObject) as GameObject;
+                        var prefabType = PrefabUtility.GetPrefabType(this.prefabObject);
 
                         if (prefabType == PrefabType.PrefabInstance)
                         {
                             // Copy instance settings into selected object if the selection is a prefab instance
                             instanceObj = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                            PrefabUtility.SetPropertyModifications(instanceObj, PrefabUtility.GetPropertyModifications(prefabObject));
+                            PrefabUtility.SetPropertyModifications(
+                                instanceObj, 
+                                PrefabUtility.GetPropertyModifications(this.prefabObject));
                         }
                         else if (prefabType == PrefabType.Prefab)
                         {
                             // Instantiate a new prefab
-                            instanceObj = (GameObject)PrefabUtility.InstantiatePrefab(prefabObject);
+                            instanceObj = (GameObject)PrefabUtility.InstantiatePrefab(this.prefabObject);
                         }
                         else
                         {
@@ -96,22 +128,6 @@
                     }
                 }
             }
-        }
-
-        bool IsGameObjectPrefab(GameObject obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
-
-            var prefabType = PrefabUtility.GetPrefabType(prefabObject);
-            if (prefabType == PrefabType.None)
-            {
-                return false;
-            }
-
-            return prefabType == PrefabType.PrefabInstance || prefabType == PrefabType.Prefab;
         }
     }
 }

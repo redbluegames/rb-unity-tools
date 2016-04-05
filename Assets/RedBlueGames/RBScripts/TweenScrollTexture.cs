@@ -18,39 +18,55 @@ namespace RedBlueGames.Tools
 {
     using UnityEngine;
 
-    [RequireComponent(typeof(TextureShifter))]
     /// <summary>
     /// Move a texture across a plane at a given linear speed.
     /// </summary>
+    [RequireComponent(typeof(TextureShifter))]
     public class TweenScrollTexture : MonoBehaviour
     {
-        public Vector2 speed;
-        public bool IsPaused;
         private TextureShifter textureShifter;
         private Vector2 currentOffset;
-        public bool MoveAsSinWave;
-        public int SinCycleSeconds = 60;
+
+        [Tooltip("The direction for the scroll")]
+        [SerializeField]
+        private Vector2 direction;
+
+        [Tooltip("Is the scrolling currently paused?")]
+        [SerializeField]
+        private bool isPaused;
+
+        /// <summary>
+        /// Gets or sets the direction (with magnitude) for the scroll
+        /// </summary>
+        /// <value>The direction.</value>
+        public Vector2 Direction
+        {
+            get
+            {
+                return this.direction;
+            }
+
+            set
+            {
+                this.direction = value;
+            }
+        }
 
         private void Awake()
         {
-            currentOffset = Vector2.zero;
-            textureShifter = GetComponent<TextureShifter>();
+            this.currentOffset = Vector2.zero;
+            this.textureShifter = this.GetComponent<TextureShifter>();
         }
 
         private void Update()
         {
-            if (!IsPaused)
+            if (!this.isPaused)
             {
-                float xOffset = (Time.deltaTime * speed.x);
-                float yOffset = (Time.deltaTime * speed.y);
-                if (MoveAsSinWave)
-                {
-                    float sinBasedOffset = Mathf.Sin((Time.timeSinceLevelLoad * Mathf.PI * 2) / SinCycleSeconds);
-                    yOffset = sinBasedOffset * (Time.deltaTime * speed.y);
-                }
+                float xOffset = Time.deltaTime * this.direction.x;
+                float yOffset = Time.deltaTime * this.direction.y;
 
-                currentOffset = new Vector2((currentOffset.x + xOffset) % 1, (currentOffset.y + yOffset) % 1);
-                textureShifter.ShiftTexture(currentOffset);
+                this.currentOffset = new Vector2((this.currentOffset.x + xOffset) % 1, (this.currentOffset.y + yOffset) % 1);
+                this.textureShifter.ShiftTexture(this.currentOffset);
             }
         }
     }

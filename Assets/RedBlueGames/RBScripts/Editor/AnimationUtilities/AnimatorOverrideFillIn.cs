@@ -5,12 +5,22 @@
     using UnityEditor;
     using UnityEngine;
 
+    /// <summary>
+    /// This class helped us quickly assign anim clips into Animator Override controllers based on filename
+    /// </summary>
     public class AnimatorOverrideFillIn : MonoBehaviour
     {
-        [MenuItem("Assets/Animator Override Utility/Fill Clips from Directory")]
+        private const string FillClipsFromDirectoryMenuPath = RBToolsMenuPaths.AnimationUtilitiesBase +
+                                                              RBToolsMenuPaths.AnimatorOverrideSubmenu +
+                                                              "Fill Clips from Directory";
+
+        /// <summary>
+        /// Fill in clips on a selected Animator Controller based on file names
+        /// </summary>
+        [MenuItem(FillClipsFromDirectoryMenuPath)]
         public static void FillInClips()
         {
-            string directory = AssetDatabaseUtility.GetDirectoryOfSelection();
+            string directory = SelectionUtility.GetDirectoryOfSelection();
 
             // Get all animation clips in the current directory
             List<AnimationClip> clipsForAnimator = new List<AnimationClip>();
@@ -48,7 +58,7 @@
             }
         }
 
-        static string ExtractAnimNameFromClipName(string clipName)
+        private static string ExtractAnimNameFromClipName(string clipName)
         {
             string[] possiblePrefixes = new string[] { "Hero_Archer", "Hero_Grey_PM", "HeroMechanic_PM" };
             foreach (string prefix in possiblePrefixes)
@@ -62,10 +72,10 @@
             return string.Empty;
         }
 
-        [MenuItem("Assets/Animator Override Utility/Fill Clips from Directory", true)]
+        [MenuItem(FillClipsFromDirectoryMenuPath, true)]
         private static bool IsFillInClipsValid()
         {
-            return SelectionUtilities.IsActiveObjectOfType<AnimatorOverrideController>();
+            return SelectionUtility.IsActiveObjectOfType<AnimatorOverrideController>();
         }
     }
 }

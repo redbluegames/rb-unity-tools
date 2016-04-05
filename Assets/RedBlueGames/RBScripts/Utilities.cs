@@ -5,7 +5,7 @@
     using UnityEngine;
 
     /// <summary>
-    /// Ideal for static methods that could be called anywhere.
+    /// Class that stores generic Utiliities that have no other home.
     /// </summary>
     public static class Utilities
     {
@@ -13,8 +13,7 @@
         /// Opens the URL in a new window if webplayer build, otherwise uses the behavior
         /// built into Application.OpenURL which depends on the platform.
         /// </summary>
-        /// <param name="url">URL.</param>
-        /// <param name="windowTitle">Window title.</param>
+        /// <param name="url">URL to open.</param>
         public static void OpenURL(string url)
         {
             if (Application.isWebPlayer)
@@ -40,6 +39,11 @@
             te.Copy();
         }
 
+        /// <summary>
+        /// Loads a file stored at a path and returns it as a Texure2D in Unity.
+        /// </summary>
+        /// <returns>The file to texture2D.</returns>
+        /// <param name="path">Path to file.</param>
         public static Texture2D ConvertFileToTexture2D(string path)
         {
             Texture2D texture = new Texture2D(0, 0, TextureFormat.ARGB32, false);
@@ -58,6 +62,12 @@
             return texture;
         }
 
+        /// <summary>
+        /// Writes a Texture to Disk
+        /// </summary>
+        /// <param name="texture">Texture to write.</param>
+        /// <param name="outputDirectory">Output directory.</param>
+        /// <param name="filename">Output filename.</param>
         public static void WriteTextureToDisk(Texture2D texture, string outputDirectory, string filename)
         {
             byte[] bytes = texture.EncodeToPNG();

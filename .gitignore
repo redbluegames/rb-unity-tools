@@ -18,5 +18,9 @@ desktop.ini
 *.pidb
 *.userprefs
 
+# Style Cop run caches
+*.Cache
+*.Cache.meta
+
 # Visual Studio Files
 *.suo

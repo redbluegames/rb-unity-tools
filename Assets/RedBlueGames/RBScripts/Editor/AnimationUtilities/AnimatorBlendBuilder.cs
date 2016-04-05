@@ -5,11 +5,23 @@
     using UnityEditor.Animations;
     using UnityEngine;
 
+    /// <summary>
+    /// Facilitates quick building of common blend trees for Pixel art games
+    /// </summary>
     public class AnimatorBlendBuilder
     {
-        #region Menu Items
+        private const string CreateFourDirMenuPath = RBToolsMenuPaths.AnimationUtilitiesBase +
+                                                     RBToolsMenuPaths.AnimatorSubmenu +
+                                                     "Create FourDir Blend";
+        
+        private const string CreateEightDirMenuPath = RBToolsMenuPaths.AnimationUtilitiesBase +
+                                                      RBToolsMenuPaths.AnimatorSubmenu +
+                                                      "Create EightDir Blend";
 
-        [MenuItem("Assets/Animator Utility/Create FourDir Blend")]
+        /// <summary>
+        /// Create a four way (NSEW) directional blend in a selected Animator
+        /// </summary>
+        [MenuItem(CreateFourDirMenuPath)]
         public static void CreateFourDirBlend()
         {
             AnimatorController controller = (AnimatorController)Selection.activeObject;
@@ -26,7 +38,10 @@
             SaveAnimatorController(controller);
         }
 
-        [MenuItem("Assets/Animator Utility/Create EightDir Blend")]
+        /// <summary>
+        /// Create an eight way directional (N, NE, E, SE, S, SW, W, NW) blend in a selected Animator
+        /// </summary>
+        [MenuItem(CreateEightDirMenuPath)]
         public static void CreateEightDirBlend()
         {
             AnimatorController controller = (AnimatorController)Selection.activeObject;
@@ -65,24 +80,18 @@
             tree.hideFlags = HideFlags.HideInHierarchy;
         }
 
-        #endregion
-
-        #region Menu Item Validation
-
         // Note that we pass the same path, and also pass "true" to the second argument.
-        [MenuItem("Assets/Animator Utility/Create FourDir Blend", true)]
+        [MenuItem(CreateFourDirMenuPath, true)]
         private static bool IsCreateFourDirBlendValid()
         {
-            return SelectionUtilities.IsActiveObjectOfType<AnimatorController>();
+            return SelectionUtility.IsActiveObjectOfType<AnimatorController>();
         }
 
         // Note that we pass the same path, and also pass "true" to the second argument.
-        [MenuItem("Assets/Animator Utility/Create EightDir Blend", true)]
+        [MenuItem(CreateEightDirMenuPath, true)]
         private static bool IsCreateEightDirBlendValid()
         {
-            return SelectionUtilities.IsActiveObjectOfType<AnimatorController>();
+            return SelectionUtility.IsActiveObjectOfType<AnimatorController>();
         }
-
-        #endregion
     }
 }

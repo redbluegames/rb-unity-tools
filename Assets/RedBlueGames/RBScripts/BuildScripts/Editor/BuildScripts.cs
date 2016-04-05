@@ -3,6 +3,10 @@
     using UnityEditor;
     using UnityEngine;
 
+    /// <summary>
+    /// This tool helps us streamline the build process by combining shared settings, and building multiple platforms
+    /// at once
+    /// </summary>
     public class BuildScripts : EditorWindow
     {
         private const int NumDigitsPerVersionIteration = 2;
@@ -15,7 +19,7 @@
         private string savePath;
         private bool buildAndroid = true;
         private bool buildIOS;
-        private bool iOSSimulationBuild = false;
+        private bool simulationBuildIOS = false;
         private string androidKeystorePath = PlayerSettings.Android.keystoreName;
         private string androidKeystorePassword;
         private string androidKeyAlias = PlayerSettings.Android.keyaliasName;
@@ -25,34 +29,41 @@
         private BuildScriptSettings currentSettings;
         private bool isInitialized;
 
-        public enum BuildType
+        private enum BuildType
         {
             Development,
             Release
         }
 
+        [MenuItem(RBToolsMenuPaths.BuildScripts)]
+        private static void ExportBuild()
+        {
+            EditorWindow.GetWindow<BuildScripts>("Export Builds");
+        }
+
         private void OnEnable()
         {
-            ImportBuildScriptSettings();
+            this.ImportBuildScriptSettings();
         }
 
         private void ImportBuildScriptSettings()
         {
             var assetPath = BuildScriptSettings.SavePath;
-            currentSettings = AssetDatabase.LoadAssetAtPath<BuildScriptSettings>(assetPath);
+            var loadedSettings = AssetDatabase.LoadAssetAtPath<BuildScriptSettings>(assetPath);
 
-            if (currentSettings == null)
+            if (loadedSettings == null)
             {
-                isInitialized = false;
+                this.isInitialized = false;
             }
             else
             {
-                isInitialized = true;
+                this.isInitialized = true;
+                this.currentSettings = loadedSettings;
 
-                companyDisplayName = currentSettings.CompanyDisplayName;
-                appName = currentSettings.AppDisplayName;
-                filename = currentSettings.DefaultFilename;
-                bundleIdentifier = currentSettings.DefaultBundleIdentifier;
+                this.companyDisplayName = loadedSettings.CompanyDisplayName;
+                this.appName = loadedSettings.AppDisplayName;
+                this.filename = loadedSettings.DefaultFilename;
+                this.bundleIdentifier = loadedSettings.DefaultBundleIdentifier;
             }
         }
 
@@ -61,10 +72,10 @@
             switch (type)
             {
                 case BuildType.Development:
-                    isDevelopmentBuild = true;
+                    this.isDevelopmentBuild = true;
                     break;
                 case BuildType.Release:
-                    isDevelopmentBuild = false;
+                    this.isDevelopmentBuild = false;
                     break;
                 default:
                     Debug.LogError("Unrecognized build type selected for build.");
@@ -72,79 +83,75 @@
             }
         }
 
-        [MenuItem("Window/BuildScripts/ExportBuild")]
-        public static void ExportBuild()
-        {
-            EditorWindow.GetWindow<BuildScripts>("Export Builds");
-        }
-
         private void OnGUI()
         {
             GUILayout.Label("BuildSettings", EditorStyles.boldLabel);
-            if (!isInitialized)
+            if (!this.isInitialized)
             {
-                EditorGUILayout.HelpBox("Build Scripts have not been setup. Create a settings file" +
-                    " and enter the project settings to begin.", MessageType.Info);
+                EditorGUILayout.HelpBox(
+                    "Build Scripts have not been setup. Create a settings file and enter the project settings to begin.",
+                    MessageType.Info);
                 if (GUILayout.Button("Create Settings"))
                 {
-                    CreateSettings();
+                    this.CreateSettings();
                 }
+
                 return;
             }
 
-            filename = EditorGUILayout.TextField("Filename: ", filename);
-            version = EditorGUILayout.TextField("Version: ", version);
+            this.filename = EditorGUILayout.TextField("Filename: ", this.filename);
+            this.version = EditorGUILayout.TextField("Version: ", this.version);
 
-            buildType = (BuildType)EditorGUILayout.EnumPopup("Build Type: ", buildType);
+            this.buildType = (BuildType)EditorGUILayout.EnumPopup("Build Type: ", this.buildType);
 
             // Handle App Name and Bundle ID
-            appName = EditorGUILayout.TextField("App Name: ", appName);
-            bundleIdentifier = EditorGUILayout.TextField("Bundle Identifier: ", bundleIdentifier);
+            this.appName = EditorGUILayout.TextField("App Name: ", this.appName);
+            this.bundleIdentifier = EditorGUILayout.TextField("Bundle Identifier: ", this.bundleIdentifier);
 
             EditorGUILayout.LabelField("Platform Settings - iOS", EditorStyles.boldLabel);
-            iOSSimulationBuild = EditorGUILayout.Toggle("iOS Simulation", iOSSimulationBuild);
+            this.simulationBuildIOS = EditorGUILayout.Toggle("iOS Simulation", this.simulationBuildIOS);
 
             GUILayout.Label("Build Targets", EditorStyles.boldLabel);
-            buildAndroid = EditorGUILayout.Toggle("Android", buildAndroid);
-            buildIOS = EditorGUILayout.Toggle("iOS", buildIOS);
+            this.buildAndroid = EditorGUILayout.Toggle("Android", this.buildAndroid);
+            this.buildIOS = EditorGUILayout.Toggle("iOS", this.buildIOS);
 
-            if (buildAndroid && buildType == BuildType.Release)
+            if (this.buildAndroid && this.buildType == BuildType.Release)
             {
                 EditorGUILayout.LabelField("Android Publishing Settings", EditorStyles.boldLabel);
 
-                bool PressedKeystore = GUILayout.Button("Locate Keystore");
+                bool pressedKeystore = GUILayout.Button("Locate Keystore");
 
-                androidKeystorePath = EditorGUILayout.TextField("Path To Keystore: ", androidKeystorePath);
-                androidKeystorePassword = EditorGUILayout.PasswordField("Keystore Password: ", androidKeystorePassword);
-                androidKeyAlias = EditorGUILayout.TextField("Key Alias: ", androidKeyAlias);
-                androidKeyAliasPassword = EditorGUILayout.PasswordField("Key Alias Password: ", androidKeyAliasPassword);
+                this.androidKeystorePath = EditorGUILayout.TextField("Path To Keystore: ", this.androidKeystorePath);
+                this.androidKeystorePassword = EditorGUILayout.PasswordField("Keystore Password: ", this.androidKeystorePassword);
+                this.androidKeyAlias = EditorGUILayout.TextField("Key Alias: ", this.androidKeyAlias);
+                this.androidKeyAliasPassword = EditorGUILayout.PasswordField("Key Alias Password: ", this.androidKeyAliasPassword);
 
-                if (PressedKeystore)
+                if (pressedKeystore)
                 {
-                    androidKeystorePath = EditorUtility.OpenFilePanel("Open Keystore", ".", "keystore");
+                    this.androidKeystorePath = EditorUtility.OpenFilePanel("Open Keystore", ".", "keystore");
                 }
             }
             else
             {
                 // Clear out our keystore info when BuildType is development
-                androidKeystorePath = string.Empty;
-                androidKeystorePassword = string.Empty;
-                androidKeyAlias = string.Empty;
-                androidKeyAliasPassword = string.Empty;
+                this.androidKeystorePath = string.Empty;
+                this.androidKeystorePassword = string.Empty;
+                this.androidKeyAlias = string.Empty;
+                this.androidKeyAliasPassword = string.Empty;
             }
 
-            bool UpdatePressed = GUILayout.Button("Update");
-            bool BuildPressed = GUILayout.Button("Build");
+            bool updatePressed = GUILayout.Button("Update");
+            bool buildPressed = GUILayout.Button("Build");
 
-            if (BuildPressed || UpdatePressed)
+            if (buildPressed || updatePressed)
             {
                 try
                 {
-                    PrepareUniversalBuild();
-                    if (BuildPressed)
+                    this.PrepareUniversalBuild();
+                    if (buildPressed)
                     {
-                        savePath = PromptUserForSaveLocation();
-                        if (string.IsNullOrEmpty(savePath))
+                        this.savePath = this.PromptUserForSaveLocation();
+                        if (string.IsNullOrEmpty(this.savePath))
                         {
                             throw new System.ArgumentException("No save path provided");
                         }
@@ -156,29 +163,29 @@
                     return;
                 }
 
-                ConfigureUniversalBuildSettings();
+                this.ConfigureUniversalBuildSettings();
 
-                if (BuildPressed && buildIOS == false && buildAndroid == false)
+                if (buildPressed && this.buildIOS == false && this.buildAndroid == false)
                 {
                     Debug.LogError("Tried to do build without specifying a build target.");
                     return;
                 }
 
-                if (buildIOS)
+                if (this.buildIOS)
                 {
-                    ConfigureiOSBuildSettings();
-                    if (BuildPressed)
+                    this.ConfigureiOSBuildSettings();
+                    if (buildPressed)
                     {
-                        ExportiOSBuild();
+                        this.ExportiOSBuild();
                     }
                 }
 
-                if (buildAndroid)
+                if (this.buildAndroid)
                 {
-                    ConfigureAndroidBuildSettings();
-                    if (BuildPressed)
+                    this.ConfigureAndroidBuildSettings();
+                    if (buildPressed)
                     {
-                        ExportAndroidBuild();
+                        this.ExportAndroidBuild();
                     }
                 }
             }
@@ -194,16 +201,16 @@
             EditorUtility.FocusProjectWindow();
             Selection.activeObject = asset;
 
-            ImportBuildScriptSettings();
+            this.ImportBuildScriptSettings();
         }
 
         #region Field Validation
 
         private void ValidateAllEditorFields()
         {
-            ValidateStringAsFilename(filename);
-            ValidateStringAsBundleIdentifier(bundleIdentifier);
-            ValidateStringAsVersionNumber(version);
+            this.ValidateStringAsFilename(this.filename);
+            this.ValidateStringAsBundleIdentifier(this.bundleIdentifier);
+            this.ValidateStringAsVersionNumber(this.version);
         }
 
         private void ValidateStringAsFilename(string inputString)
@@ -222,7 +229,7 @@
             }
 
             System.Text.RegularExpressions.Regex stringFormat =
-                new System.Text.RegularExpressions.Regex("^com\\." + currentSettings.CompanyName + "\\.[\\w\\d]+$");
+                new System.Text.RegularExpressions.Regex("^com\\." + this.currentSettings.CompanyName + "\\.[\\w\\d]+$");
             if (!stringFormat.IsMatch(inputString))
             {
                 throw new System.FormatException("BundleIdentifier string formatted incorrectly. Must be of the regex format: "
@@ -258,12 +265,12 @@
 
         private void PrepareUniversalBuild()
         {
-            ValidateAllEditorFields();
+            this.ValidateAllEditorFields();
         }
 
         private string PromptUserForSaveLocation()
         {
-            string path = EditorUtility.SaveFolderPanel("Choose location to save build(s)", "", "");
+            string path = EditorUtility.SaveFolderPanel("Choose location to save build(s)", string.Empty, string.Empty);
             if (string.IsNullOrEmpty(path))
             {
                 return string.Empty;
@@ -275,30 +282,30 @@
         private void ConfigureUniversalBuildSettings()
         {
             // Configure PlayerSettings that never change //
-            PlayerSettings.companyName = companyDisplayName;
+            PlayerSettings.companyName = this.companyDisplayName;
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.Portrait;
             PlayerSettings.allowedAutorotateToPortrait = true;
             PlayerSettings.allowedAutorotateToPortraitUpsideDown = true;
             PlayerSettings.allowedAutorotateToLandscapeLeft = false;
             PlayerSettings.allowedAutorotateToLandscapeRight = false;
 
-            PlayerSettings.bundleIdentifier = bundleIdentifier;
-            PlayerSettings.bundleVersion = version;
+            PlayerSettings.bundleIdentifier = this.bundleIdentifier;
+            PlayerSettings.bundleVersion = this.version;
 
-            PlayerSettings.productName = appName;
+            PlayerSettings.productName = this.appName;
         }
 
         private void ConfigureAndroidBuildSettings()
         {
             PlayerSettings.Android.androidTVCompatibility = false;
 
-            PlayerSettings.Android.bundleVersionCode = ConvertVersionStringToVersionCode(version);
-            ConfigurePlatformDefinesForBuiltTarget(BuildTargetGroup.Android);
+            PlayerSettings.Android.bundleVersionCode = this.ConvertVersionStringToVersionCode(this.version);
+            this.ConfigurePlatformDefinesForBuiltTarget(BuildTargetGroup.Android);
 
-            PlayerSettings.Android.keystoreName = androidKeystorePath;
-            PlayerSettings.Android.keystorePass = androidKeystorePassword;
-            PlayerSettings.Android.keyaliasName = androidKeyAlias;
-            PlayerSettings.Android.keyaliasPass = androidKeyAliasPassword;
+            PlayerSettings.Android.keystoreName = this.androidKeystorePath;
+            PlayerSettings.Android.keystorePass = this.androidKeystorePassword;
+            PlayerSettings.Android.keyaliasName = this.androidKeyAlias;
+            PlayerSettings.Android.keyaliasPass = this.androidKeyAliasPassword;
         }
 
         private int ConvertVersionStringToVersionCode(string inputString)
@@ -335,7 +342,7 @@
 
         private void ConfigureiOSBuildSettings()
         {
-            if (iOSSimulationBuild)
+            if (this.simulationBuildIOS)
             {
                 PlayerSettings.iOS.sdkVersion = iOSSdkVersion.SimulatorSDK;
             }
@@ -344,7 +351,7 @@
                 PlayerSettings.iOS.sdkVersion = iOSSdkVersion.DeviceSDK;
             }
 
-            ConfigurePlatformDefinesForBuiltTarget(BuildTargetGroup.iOS);
+            this.ConfigurePlatformDefinesForBuiltTarget(BuildTargetGroup.iOS);
         }
 
         #endregion
@@ -353,23 +360,38 @@
 
         private void ExportAndroidBuild()
         {
-            BuildPipeline.BuildPlayer(GetLevelsForBuild(), savePath + "/" + filename + ".apk", BuildTarget.Android, GetBuildOptionsForBuild());
+            BuildPipeline.BuildPlayer(
+                this.GetLevelsForBuild(),
+                this.savePath + "/" + this.filename + ".apk",
+                BuildTarget.Android,
+                this.GetBuildOptionsForBuild());
         }
 
         private void ExportiOSBuild()
         {
-            BuildPipeline.BuildPlayer(GetLevelsForBuild(), savePath + "/" + filename, BuildTarget.iOS, GetBuildOptionsForBuild());
+            BuildPipeline.BuildPlayer(
+                this.GetLevelsForBuild(),
+                this.savePath + "/" + this.filename,
+                BuildTarget.iOS, 
+                this.GetBuildOptionsForBuild());
         }
 
         private string[] GetLevelsForBuild()
         {
-            return SceneManager.GetAllPaths();
+            int sceneCount = UnityEngine.SceneManagement.SceneManager.sceneCount;
+            var scenePaths = new string[sceneCount];
+            for (int i = 0; i < scenePaths.Length; i++)
+            {
+                scenePaths[i] = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).path;
+            }
+
+            return scenePaths;
         }
 
         private BuildOptions GetBuildOptionsForBuild()
         {
             BuildOptions buildOptions;
-            if (isDevelopmentBuild)
+            if (this.isDevelopmentBuild)
             {
                 buildOptions = BuildOptions.Development;
             }

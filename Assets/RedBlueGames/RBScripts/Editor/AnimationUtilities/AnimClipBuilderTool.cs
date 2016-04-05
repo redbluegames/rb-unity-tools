@@ -6,18 +6,26 @@
     using UnityEditor;
     using UnityEngine;
 
+    /// <summary>
+    /// Exposes AnimClipBuilder to the Editor, allowing quick creation of an Anim Clip from a spritesheet
+    /// </summary>
     public class AnimClipBuilderTool
     {
-        #region Menu Items
+        private const string CreateClipFromSpritesMenuPath = RBToolsMenuPaths.AnimationUtilitiesBase +
+                                                             RBToolsMenuPaths.AnimationClipSubmenu +
+                                                             "Create Clip from Sprites";
 
-        [MenuItem("Assets/AnimationClipUtility/Create Clip from Sprites")]
+        /// <summary>
+        /// Create an anim clip from a selected spritesheet
+        /// </summary>
+        [MenuItem(CreateClipFromSpritesMenuPath)]
         public static void CreateAnimClip()
         {
             Texture2D selectedTexture = (Texture2D)Selection.activeObject;
             Sprite[] sprites = GetSpritesFromTexture(selectedTexture);
 
             string filename = selectedTexture.name + ".anim";
-            AnimationClip clip = AnimClipBuilder.CreateClip(sprites, filename);
+            AnimationClip clip = AnimationClipUtility.CreateClip(sprites, filename);
 
             string fullClipPath = GetSavePathFromTexture(selectedTexture, filename);
 
@@ -81,11 +89,7 @@
             }
         }
 
-        #endregion
-
-        #region Menu Item Validation
-
-        [MenuItem("Assets/AnimationClipUtility/Create Clip from Sprites", true)]
+        [MenuItem(CreateClipFromSpritesMenuPath, true)]
         private static bool ValidateSelect()
         {
             if (!IsSelectionValidTexture())
@@ -110,7 +114,5 @@
 
             return Selection.activeObject.GetType() == typeof(Texture2D);
         }
-
-        #endregion
     }
 }
