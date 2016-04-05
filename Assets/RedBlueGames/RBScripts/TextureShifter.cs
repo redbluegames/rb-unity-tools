@@ -19,15 +19,27 @@ namespace RedBlueGames.Tools
     using System.Collections;
     using UnityEngine;
 
+    /// <summary>
+    /// Component that can be added to GameObjects with Renderers to let them offset the texture at runtime.
+    /// </summary>
     public class TextureShifter : MonoBehaviour
     {
-        private Material textureToShift;
+        private Material materialToShift;
         private Vector2 aggregatedOffset;
+
+        /// <summary>
+        /// Shift the texture by the supplied offset
+        /// </summary>
+        /// <param name="offsetToApply">Offset to apply.</param>
+        public void ShiftTexture(Vector2 offsetToApply)
+        {
+            this.aggregatedOffset += offsetToApply;
+        }
 
         private void Awake()
         {
-            aggregatedOffset = Vector2.zero;
-            textureToShift = GetComponent<Renderer>().material;
+            this.aggregatedOffset = Vector2.zero;
+            this.materialToShift = GetComponent<Renderer>().material;
         }
 
         /// <summary>
@@ -35,13 +47,8 @@ namespace RedBlueGames.Tools
         /// </summary>
         private void LateUpdate()
         {
-            textureToShift.mainTextureOffset = aggregatedOffset;
-            aggregatedOffset = Vector2.zero;
-        }
-
-        public void ShiftTexture(Vector2 offsetToApply)
-        {
-            aggregatedOffset += offsetToApply;
+            this.materialToShift.mainTextureOffset = this.aggregatedOffset;
+            this.aggregatedOffset = Vector2.zero;
         }
     }
 }
