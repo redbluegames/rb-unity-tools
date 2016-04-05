@@ -70,7 +70,7 @@ namespace RedBlueGames.Tools
                             instance = singleton.AddComponent<T>();
                             singleton.name = "(singleton) " + typeof(T).ToString();
 
-                            this.DontDestroyOnLoad(singleton);
+                            GameObject.DontDestroyOnLoad(singleton);
 
                             Debug.Log("[Singleton] An instance of " + typeof(T) +
                                 " is needed in the scene, so '" + singleton +
