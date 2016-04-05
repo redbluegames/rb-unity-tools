@@ -384,6 +384,7 @@
             {
                 scenePaths[i] = UnityEngine.SceneManagement.SceneManager.GetSceneAt(i).path;
             }
+
             return scenePaths;
         }
 

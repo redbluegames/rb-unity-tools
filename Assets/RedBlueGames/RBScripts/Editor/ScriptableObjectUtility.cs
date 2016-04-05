@@ -15,6 +15,7 @@
         /// Creates and saves the Scriptable Object as an asset in the Editor. Adapted from Unity3D wiki:
         /// http://wiki.unity3d.com/index.php?title=CreateScriptableObjectAsset
         /// </summary>
+        /// <returns>"Reference to the created asset instance</returns>
         /// <typeparam name="T">The type of the Scriptable Object to create.</typeparam>
         public static T CreateAsset<T>() where T : ScriptableObject
         {

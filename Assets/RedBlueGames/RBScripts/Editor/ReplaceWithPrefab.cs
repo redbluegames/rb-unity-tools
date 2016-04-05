@@ -46,6 +46,7 @@
             {
                 GUILayout.Label(selectedObject.name);
             }
+
             EditorGUILayout.EndVertical();
 
             GUILayout.Label("Prefab Object", EditorStyles.boldLabel);
