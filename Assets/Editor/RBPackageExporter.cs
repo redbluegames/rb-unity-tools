@@ -103,7 +103,7 @@ public class RBPackageExporter : UnityEditor.EditorWindow
         var directoriesToExport = new List<string>(subDirectories);
 
         var testDirectories = GetTestDirectories(subDirectories);
-        if (includeTests)
+        if (!includeTests)
         {
             foreach (var testDirectory in testDirectories)
             {
